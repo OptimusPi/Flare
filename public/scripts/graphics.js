@@ -7,17 +7,14 @@ var graphics = {
 	screenHeight: 640,
 	app: {},
 
-	//game objects (also sprites!)
-	player: null,
-	beam: null,
-
 	//game sprites
+	beam: null,
 	ship: null,
 	shipBoosting1: null,
 	shipBoosting2: null,
 	shipBoosting3: null,
 	space: null,
-
+	
 	//mobile controls
 	mobileMode: true,
 	leftArrow: null,
@@ -34,7 +31,7 @@ var graphics = {
 	addPlayer: function(x, y) {
 
 		//create player base, then add a sprite to it.
-		var player = { sprite: null, battery: 100 };
+		var player = game.player;
 
 		// create new sprite TOO make it from the image textures loaded in
 		player.sprite = new PIXI.Sprite(this.ship.texture);
@@ -42,20 +39,14 @@ var graphics = {
 		//add sprite to player
 		player.sprite.x = x;
 		player.sprite.y = y;
-		this.player = player;
+		game.player = player;
 
 		//add sprite to the screen.
-		this.app.stage.addChild(this.player.sprite);
+		this.app.stage.addChild(game.player.sprite);
 	},
 
 	setPlayerSprite: function(player, newSprite){
-		player.sprite.texture = newSprite.texture;
-	},
-
-	movePlayer: function(x, y) {
-		//move the player's ship on screen
-		this.players[i].sprite.x = x;
-		this.players[i].sprite.y = y;
+		game.player.sprite.texture = newSprite.texture;
 	},
 
 	removeGUI: function(){
@@ -148,6 +139,16 @@ var graphics = {
 			graphics.volumeSlider = new PIXI.Sprite(PIXI.loader.resources.volumeSlider.texture);
 
 			graphics.init();
+			
+			
+			//TODO move this?
+			//connect sprites to physics in game code
+			const ticker = new PIXI.ticker.Ticker();
+			ticker.stop();
+			ticker.add((deltaTime) => {
+				game.physics(deltaTime);
+			});
+			ticker.start();
 		});
 	},
 

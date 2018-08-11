@@ -1,6 +1,11 @@
 debug.log('game.js');
   
 var game = {
+
+  //player
+  player: { sprite: null, battery: 100, xSpeed: 0, ySpeed: 0 },
+  beams: {}, //TODO do I need this?
+
   //keyboard arrow keys
   left: keyboard(37),
   up: keyboard(38),
@@ -23,19 +28,23 @@ var game = {
     game.playSound('game');
   },
   movePlayerLeft: function(){
-    graphics.player.sprite.x -= 1;
+    this.player.xSpeed -= 1;
   },
   movePlayerRight: function(){
-    graphics.player.sprite.x += 1;
+    this.player.xSpeed += 1;
   },
   movePlayerUp: function(){
-    graphics.player.sprite.y -= 1;
+    this.player.ySpeed -= 1;
   },
   movePlayerDown: function(){
-    graphics.player.sprite.y += 1;
+    this.player.ySpeed += 1;
   },
   fireFlare: function(){
     //TODO fire flare
+  },
+  physics: function(deltaTime) {
+      this.player.sprite.x += this.player.xSpeed;
+      this.player.sprite.y += this.player.ySpeed;
   },
   init: function(){
     //Left arrow key press method
