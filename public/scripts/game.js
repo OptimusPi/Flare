@@ -72,9 +72,6 @@ var game = {
         url: 'sounds/menu.ogg',
         loop: true
     });
-
-    //Connect to game server
-    network.init();
   }
 }
 
