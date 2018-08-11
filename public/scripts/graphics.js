@@ -16,6 +16,7 @@ var graphics = {
 	shipBoosting1: null,
 	shipBoosting2: null,
 	shipBoosting3: null,
+	space: null,
 
 	//mobile controls
 	mobileMode: true,
@@ -27,6 +28,9 @@ var graphics = {
 	volumeSlider: null,
 	volumeLine: null,
 
+	addSpace: function() {
+		this.app.stage.addChild(this.space);
+	},
 	addPlayer: function(x, y) {
 
 		//create player base, then add a sprite to it.
@@ -79,6 +83,7 @@ var graphics = {
 	},
 
 	runOverworld: function(){
+		this.addSpace();
 		this.addPlayer(352, 800);
 
 		if (this.mobileMode)
@@ -103,6 +108,7 @@ var graphics = {
 		this.mobileMode = true;
 
 		PIXI.loader
+		.add({name: 'space', url: 'images/space.png'})
 		.add({name: 'beam', url: 'images/beam.png'})
 		.add({name: 'ship', url: 'images/ship.png'})
 		.add({name: 'shipBoosting1', url: 'images/shipBoosting1.png'})
@@ -116,6 +122,10 @@ var graphics = {
 		.add({name: 'volumeLine', url: 'images/GUI/volume_line.png'})
 		.add({name: 'volumeSlider', url: 'images/GUI/volume_slider.png'})	
 		.load(function (){
+			//Load space
+			var spaceTexture = new PIXI.Texture(PIXI.loader.resources.space.texture);
+			graphics.space =  new PIXI.Sprite(spaceTexture);
+
 			//Load player ship
 			var shipTexture = new PIXI.Texture(PIXI.loader.resources.ship.texture);
 			graphics.ship =  new PIXI.Sprite(shipTexture);
