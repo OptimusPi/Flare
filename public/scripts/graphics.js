@@ -36,7 +36,6 @@ var graphics = {
 		player.sprite = new PIXI.Sprite(this.ship.texture);
 		
 		//add sprite to player
-		player.sprite = ship;
 		player.sprite.x = x;
 		player.sprite.y = y;
 
