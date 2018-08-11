@@ -1,22 +1,22 @@
 debug.log('button.js');
 
 $('#button-up').click(function(){
-	//TODO move up
+	game.movePlayerUp();
 	return false;
 });
 
 $('#button-down').click(function(){
-	//TODO move down
+	game.movePlayerDown();
 	return false;
 });
 
 $('#button-left').click(function(){
-	//TODO move left
+	game.movePlayerLeft();
 	return false;
 });
 
 $('#button-right').click(function(){
-	//TODO move right
+	game.movePlayerRight();
 	return false;
 });
 		

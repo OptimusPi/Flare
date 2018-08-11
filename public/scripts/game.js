@@ -23,16 +23,16 @@ var game = {
     game.playSound('game');
   },
   movePlayerLeft: function(){
-    //TODO move left
+    graphics.player.sprite.x -= 1;
   },
   movePlayerRight: function(){
-    //TODO move right
+    graphics.player.sprite.x += 1;
   },
   movePlayerUp: function(){
-    //TODO move up
+    graphics.player.sprite.y -= 1;
   },
   movePlayerDown: function(){
-    //TODO move down
+    graphics.player.sprite.y += 1;
   },
   fireFlare: function(){
     //TODO fire flare
