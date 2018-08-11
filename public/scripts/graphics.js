@@ -42,14 +42,10 @@ var graphics = {
 		//add sprite to player
 		player.sprite.x = x;
 		player.sprite.y = y;
+		this.player = player;
 
 		//add sprite to the screen.
-		this.app.stage.addChild(player.sprite);
-
-		//Add GUI
-		this.addGUI();
-
-		this.player = player;
+		this.app.stage.addChild(this.player.sprite);
 	},
 
 	setPlayerSprite: function(player, newSprite){
@@ -84,7 +80,7 @@ var graphics = {
 
 	runOverworld: function(){
 		this.addSpace();
-		this.addPlayer(352, 800);
+		this.addPlayer(512, 512);
 
 		if (this.mobileMode)
 			this.addGUI();
