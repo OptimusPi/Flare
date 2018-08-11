@@ -7,13 +7,15 @@ var graphics = {
 	screenHeight: 640,
 	app: {},
 
-	//game sprites
+	//game objects (also sprites!)
 	player: null,
+	beam: null,
+
+	//game sprites
 	ship: null,
 	shipBoosting1: null,
 	shipBoosting2: null,
 	shipBoosting3: null,
-	beam: null,
 
 	//mobile controls
 	mobileMode: true,
@@ -25,16 +27,18 @@ var graphics = {
 	volumeSlider: null,
 	volumeLine: null,
 
-	addPlayer: function(playerInfo) {
+	addPlayer: function(x, y) {
 
 		//create player base, then add a sprite to it.
-		var player = new Player(playerInfo.name, playerInfo.x, playerInfo.y);
+		var player = { sprite: null, battery: 100 };
 
 		// create new sprite TOO make it from the image textures loaded in
-		var playerSprite = new PIXI.Sprite(this.playerDown.texture);
+		player.sprite = new PIXI.Sprite(this.ship.texture);
 		
 		//add sprite to player
 		player.sprite = ship;
+		player.sprite.x = x;
+		player.sprite.y = y;
 
 		//add sprite to the screen.
 		this.app.stage.addChild(player.sprite);
@@ -72,10 +76,12 @@ var graphics = {
 		this.app.stage.addChild(this.downArrow);	
 		this.app.stage.addChild(this.flareButton);
 		this.app.stage.addChild(this.volumeLine);
-		this.app.stage.addChild(this.volumeSlider);	
+		this.app.stage.addChild(this.volumeSlider);		
 	},
 
 	runOverworld: function(){
+		this.addPlayer(352, 800);
+
 		if (this.mobileMode)
 			this.addGUI();
 	},
@@ -109,7 +115,7 @@ var graphics = {
 		.add({name: 'downArrow', url: 'images/GUI/down_arrow.png'})
 		.add({name: 'flareButton', url: 'images/GUI/flare_button.png'})
 		.add({name: 'volumeLine', url: 'images/GUI/volume_line.png'})
-		.add({name: 'volumeSlider', url: 'images/GUI/volume_slider.png'})
+		.add({name: 'volumeSlider', url: 'images/GUI/volume_slider.png'})	
 		.load(function (){
 			//Load player ship
 			var shipTexture = new PIXI.Texture(PIXI.loader.resources.ship.texture);
@@ -208,18 +214,16 @@ var layout = {
 	graphics.app.renderer.view.style.height = h + 'px';
 },
 
-
-   addListeners: function(){
-	   //Scale game to fit perfectly as the user resizes their browser window
-	   $(window).resize(function(){
-		   layout.resizeCanvas();
-	   });
-	   
-	   //Resize when a mobile devices switches between portrait and landscape orientation
-	   $(window).on( "orientationchange", function(){
-		   layout.resizeCanvas();
-	   });
-   }
-};
+addListeners: function(){
+	//Scale game to fit perfectly as the user resizes their browser window
+	$(window).resize(function(){
+		layout.resizeCanvas();
+	});
+	
+	//Resize when a mobile devices switches between portrait and landscape orientation
+	$(window).on( "orientationchange", function(){
+		layout.resizeCanvas();
+	});
+}};
 
 graphics.start();
