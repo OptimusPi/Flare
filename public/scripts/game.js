@@ -1,6 +1,11 @@
 debug.log('game.js');
-  
+
 var game = {
+
+  //player
+  player: { sprite: null, battery: 100, xSpeed: 0, ySpeed: 0, vertical: 0, horizontal: 0 },
+  beams: {}, //TODO do I need this?
+
   //keyboard arrow keys
   left: keyboard(37),
   up: keyboard(38),
@@ -8,8 +13,6 @@ var game = {
   down: keyboard(40),
 
   //Functions
-
-
   onDragStart: function(event){
     this.data = event.data;
     this.alpha = 0.5;
@@ -40,7 +43,7 @@ var game = {
   playSound: function(sound){
     PIXI.sound.play(sound);
   },
-  stopSound: function(sound){
+  stopSound: function (sound) {
     PIXI.sound.play(sound);
   },
   updateSound: function(){
@@ -50,48 +53,82 @@ var game = {
     graphics.runMenu();
     game.playSound('menu');
   },
-  runOverworld: function(){
+  runOverworld: function () {
     graphics.runOverworld();
     game.playSound('game');
   },
-  movePlayerLeft: function(){
-    //TODO move left
+
+  //start moving, flag that controls acceleration
+  movePlayerLeft: function () {
+    this.player.horizontal -= 1;
   },
-  movePlayerRight: function(){
-    //TODO move right
+  movePlayerRight: function () {
+    this.player.horizontal += 1;
   },
-  movePlayerUp: function(){
-    //TODO move up
+  movePlayerUp: function () {
+    this.player.vertical -= 1;
   },
-  movePlayerDown: function(){
-    //TODO move down
+  movePlayerDown: function () {
+    this.player.vertical += 1;
   },
-  fireFlare: function(){
-    //TODO fire flare
+
+  //stop moving, flag that controls acceleration
+  stopPlayerLeft: function () {
+    this.player.horizontal = 0;
   },
-  init: function(){
+  stopPlayerRight: function () {
+    this.player.horizontal = 0;
+  },
+  stopPlayerUp: function () {
+    this.player.vertical = 0;
+  },
+  stopPlayerDown: function () {
+    this.player.vertical = 0;
+  },
+
+  shootFlare: function () {
+    //TODO shoot flare
+  },
+
+  init: function () {
     //Left arrow key press method
-    this.left.press = function() {
+    this.left.press = function () {
       game.movePlayerLeft();
       debug.log('I pressed left.');
     };
-    
+    this.left.release = function () {
+      game.stopPlayerLeft();
+      debug.log('I released left.');
+    };
+
     //Right arrow key press method
-    this.right.press = function() {
+    this.right.press = function () {
       game.movePlayerRight();
       debug.log('I pressed right.');
     };
-    
+    this.right.release = function () {
+      game.stopPlayerRight();
+      debug.log('I released right.');
+    };
+
     //Up arrow key press method
-    this.up.press = function() {
+    this.up.press = function () {
       game.movePlayerUp();
       debug.log('I pressed up.');
     };
-    
+    this.up.release = function () {
+      game.stopPlayerUp();
+      debug.log('I released up.');
+    };
+
     //Down arrow key press method
-    this.down.press = function() {
-        game.movePlayerDown();
-        debug.log('I pressed down.');
+    this.down.press = function () {
+      game.movePlayerDown();
+      debug.log('I pressed down.');
+    };
+    this.down.release = function () {
+      game.stopPlayerDown();
+      debug.log('I released down.');
     };
 
     //Game music
@@ -103,7 +140,29 @@ var game = {
     PIXI.sound.add('menu', {
         url: 'sounds/menu.ogg',
         loop: true,
+
     });
+  },
+  physics: function (deltaTime) {
+    //Accelerate ship
+    var maxHorizontal = 5;
+    var maxVertical = 5;
+
+    //X
+    this.player.xSpeed += this.player.horizontal;
+    if (this.player.xSpeed >  maxHorizontal) this.player.xSpeed = maxHorizontal;
+    if (this.player.xSpeed < -maxHorizontal) this.player.xSpeed = -maxHorizontal;
+    if (this.player.horizontal === 0) this.player.xSpeed *= 0.5;
+
+    //Y
+    this.player.ySpeed += this.player.vertical;
+    if (this.player.ySpeed >  maxVertical) this.player.ySpeed = maxVertical;
+    if (this.player.ySpeed < -maxVertical) this.player.ySpeed = -maxVertical; 
+    if (this.player.vertical === 0) this.player.ySpeed *= 0.5;
+
+    //Move ship based on it's calculated 
+    this.player.sprite.x += this.player.xSpeed;
+    this.player.sprite.y += this.player.ySpeed;
   }
 }
 

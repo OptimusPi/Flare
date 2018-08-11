@@ -7,16 +7,14 @@ var graphics = {
 	screenHeight: 640,
 	app: {},
 
-	//game objects (also sprites!)
-	player: null,
-	beam: null,
-
 	//game sprites
+	beam: null,
 	ship: null,
 	shipBoosting1: null,
 	shipBoosting2: null,
 	shipBoosting3: null,
-
+	space: null,
+	
 	//mobile controls
 	mobileMode: true,
 	leftArrow: null,
@@ -27,10 +25,13 @@ var graphics = {
 	volumeSlider: null,
 	volumeLine: null,
 
+	addSpace: function() {
+		this.app.stage.addChild(this.space);
+	},
 	addPlayer: function(x, y) {
 
 		//create player base, then add a sprite to it.
-		var player = { sprite: null, battery: 100 };
+		var player = game.player;
 
 		// create new sprite TOO make it from the image textures loaded in
 		player.sprite = new PIXI.Sprite(this.ship.texture);
@@ -38,24 +39,14 @@ var graphics = {
 		//add sprite to player
 		player.sprite.x = x;
 		player.sprite.y = y;
+		game.player = player;
 
 		//add sprite to the screen.
-		this.app.stage.addChild(player.sprite);
-
-		//Add GUI
-		this.addGUI();
-
-		this.player = player;
+		this.app.stage.addChild(game.player.sprite);
 	},
 
 	setPlayerSprite: function(player, newSprite){
-		player.sprite.texture = newSprite.texture;
-	},
-
-	movePlayer: function(x, y) {
-		//move the player's ship on screen
-		this.players[i].sprite.x = x;
-		this.players[i].sprite.y = y;
+		game.player.sprite.texture = newSprite.texture;
 	},
 
 	removeGUI: function(){
@@ -79,7 +70,8 @@ var graphics = {
 	},
 
 	runOverworld: function(){
-		this.addPlayer(352, 800);
+		this.addSpace();
+		this.addPlayer(512, 512);
 
 		if (this.mobileMode)
 			this.addGUI();
@@ -103,6 +95,7 @@ var graphics = {
 		this.mobileMode = true;
 
 		PIXI.loader
+		.add({name: 'space', url: 'images/space.png'})
 		.add({name: 'beam', url: 'images/beam.png'})
 		.add({name: 'ship', url: 'images/ship.png'})
 		.add({name: 'shipBoosting1', url: 'images/shipBoosting1.png'})
@@ -116,6 +109,10 @@ var graphics = {
 		.add({name: 'volumeLine', url: 'images/GUI/volume_line.png'})
 		.add({name: 'volumeSlider', url: 'images/GUI/volume_slider.png'})	
 		.load(function (){
+			//Load space
+			var spaceTexture = new PIXI.Texture(PIXI.loader.resources.space.texture);
+			graphics.space =  new PIXI.Sprite(spaceTexture);
+
 			//Load player ship
 			var shipTexture = new PIXI.Texture(PIXI.loader.resources.ship.texture);
 			graphics.ship =  new PIXI.Sprite(shipTexture);
@@ -142,6 +139,16 @@ var graphics = {
 			graphics.volumeSlider = new PIXI.Sprite(PIXI.loader.resources.volumeSlider.texture);
 
 			graphics.init();
+			
+			
+			//TODO move this?
+			//connect sprites to physics in game code
+			const ticker = new PIXI.ticker.Ticker();
+			ticker.stop();
+			ticker.add((deltaTime) => {
+				game.physics(deltaTime);
+			});
+			ticker.start();
 		});
 	},
 
