@@ -12,6 +12,8 @@ var graphics = {
 	space: null,
 	stars: [],
 	starTexture: [],
+	wallLeft: null,
+	wallRight: null,
 
 	//Textures
 	batteryLifeTexture_100: null,
@@ -55,7 +57,15 @@ var graphics = {
 			this.app.stage.addChild(star.sprite);
 			this.stars.push(star);
 		}
+	},
+	addWalls: function() {
+		this.wallLeft.x = -500;
+		this.wallLeft.y = 0;
+		this.app.stage.addChild(this.wallLeft);
 
+		this.wallRight.x = 950;
+		this.wallRight.y = 0;
+		this.app.stage.addChild(this.wallRight);
 	},
 	addPlayer: function(x, y) {
 
@@ -98,6 +108,7 @@ var graphics = {
 
 	runOverworld: function(){
 		this.addSpace();
+		this.addWalls();
 		this.addPlayer(512, 512);
 
 		if (this.mobileMode)
@@ -132,7 +143,6 @@ var graphics = {
 		this.mobileMode = true;
 
 		PIXI.loader
-		.add({name: 'space', url: 'images/space.png'})
 		.add({name: 'star1', url: 'images/star1.png'})
 		.add({name: 'star2', url: 'images/star2.png'})
 		.add({name: 'star3', url: 'images/star3.png'})
@@ -161,10 +171,13 @@ var graphics = {
 		.add({name: 'batteryLife_25', url: 'images/GUI/battery_25.png'})
 		.add({name: 'batteryLife_0', url: 'images/GUI/battery_0.png'})	
 		.add({name: 'battery', url: 'images/battery.png'})
+		.add({name: 'wallLeft', url: 'images/wall_left.png'})
+		.add({name: 'wallRight', url: 'images/wall_right.png'})
+		
 		.load(function (){
-			//Load space
-			var spaceTexture = new PIXI.Texture(PIXI.loader.resources.space.texture);
-			graphics.space =  new PIXI.Sprite(spaceTexture);
+			//Load walls
+			graphics.wallLeft =  new PIXI.Sprite(PIXI.loader.resources.wallLeft.texture);
+			graphics.wallRight =  new PIXI.Sprite(PIXI.loader.resources.wallRight.texture);
 
 			//Load stars
 			graphics.starTexture[0] = new PIXI.Texture(PIXI.loader.resources.star1.texture);

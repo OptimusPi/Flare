@@ -5,6 +5,7 @@ var game = {
   //player
   player: { sprite: null, battery: 100, xSpeed: 0, ySpeed: 0, left: 0, right: 0, up: 0, down: 0 },
   beams: {}, //TODO do I need this?
+  powerupTimer: null,
 
   //keyboard arrow keys
   left: keyboard(37),
@@ -16,7 +17,7 @@ var game = {
   //Functions
   onDragStart: function(event){
     this.data = event.data;
-    this.alpha = 0.5;
+    this.alpha = 0.6;
     this.dragging = true;
   },
 
@@ -96,7 +97,7 @@ var game = {
   shootFlare: function () {
     //TODO shoot flare
   },
-
+  
   init: function () {
     //Left arrow key press method
     this.left.press = function () {
@@ -181,9 +182,8 @@ var game = {
     {
       //TODO put animations in graphics.js ?
       game.player.sprite.frame += deltaTime;
-      if (game.player.sprite.frame % 8 < 8) game.player.sprite.texture = graphics.shipTexture;
-      if (game.player.sprite.frame % 8 < 6) game.player.sprite.texture = graphics.shipBoosting3Texture;
-      if (game.player.sprite.frame % 8 < 4) game.player.sprite.texture = graphics.shipBoosting2Texture;
+      if (game.player.sprite.frame % 8 < 8) game.player.sprite.texture = graphics.shipBoosting3Texture;
+      if (game.player.sprite.frame % 8 < 5) game.player.sprite.texture = graphics.shipBoosting2Texture;
       if (game.player.sprite.frame % 8 < 2) game.player.sprite.texture = graphics.shipBoosting1Texture;
     } else {
       game.player.sprite.texture = graphics.shipTexture;
