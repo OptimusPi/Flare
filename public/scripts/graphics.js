@@ -140,7 +140,6 @@ var graphics = {
 
 			graphics.init();
 			
-			
 			//TODO move this?
 			//connect sprites to physics in game code
 			const ticker = new PIXI.ticker.Ticker();
@@ -178,11 +177,19 @@ var graphics = {
 		this.downArrow.buttonMode = true;
 		this.flareButton.interactive = true;
 		this.flareButton.buttonMode = true;
+		//press touch screen constrols
 		this.leftArrow.on('pointerdown', game.movePlayerLeft);	
 		this.rightArrow.on('pointerdown', game.movePlayerRight);	
 		this.upArrow.on('pointerdown', game.movePlayerUp);	
 		this.downArrow.on('pointerdown', game.movePlayerDown);	
-		this.flareButton.on('pointerdown', game.fireFlare); //TODO
+		//release touch screen controls
+		this.leftArrow.on('pointerup', game.stopPlayerLeft);	
+		this.rightArrow.on('pointerup', game.stopPlayerRight);	
+		this.upArrow.on('pointerup', game.stopPlayerUp);	
+		this.downArrow.on('pointerup', game.stopPlayerDown);
+
+		//shoot a flare to battle the walls
+		this.flareButton.on('pointerdown', game.fireFlare);
 
 		//Auto resize window
 		layout.addListeners();

@@ -60,30 +60,30 @@ var game = {
 
   //start moving, flag that controls acceleration
   movePlayerLeft: function () {
-    this.player.horizontal -= 1;
+    game.player.horizontal -= 1;
   },
   movePlayerRight: function () {
-    this.player.horizontal += 1;
+    game.player.horizontal += 1;
   },
   movePlayerUp: function () {
-    this.player.vertical -= 1;
+    game.player.vertical -= 1;
   },
   movePlayerDown: function () {
-    this.player.vertical += 1;
+    game.player.vertical += 1;
   },
 
   //stop moving, flag that controls acceleration
   stopPlayerLeft: function () {
-    this.player.horizontal = 0;
+    game.player.horizontal = 0;
   },
   stopPlayerRight: function () {
-    this.player.horizontal = 0;
+    game.player.horizontal = 0;
   },
   stopPlayerUp: function () {
-    this.player.vertical = 0;
+    game.player.vertical = 0;
   },
   stopPlayerDown: function () {
-    this.player.vertical = 0;
+    game.player.vertical = 0;
   },
 
   shootFlare: function () {
@@ -145,20 +145,20 @@ var game = {
   },
   physics: function (deltaTime) {
     //Accelerate ship
-    var maxHorizontal = 5;
-    var maxVertical = 5;
+    var maxHorizontal = 10;
+    var maxVertical = 10;
 
     //X
-    this.player.xSpeed += this.player.horizontal;
+    this.player.xSpeed += this.player.horizontal * 0.75;
     if (this.player.xSpeed >  maxHorizontal) this.player.xSpeed = maxHorizontal;
     if (this.player.xSpeed < -maxHorizontal) this.player.xSpeed = -maxHorizontal;
-    if (this.player.horizontal === 0) this.player.xSpeed *= 0.5;
+    if (this.player.horizontal === 0) this.player.xSpeed *= 0.75;
 
     //Y
-    this.player.ySpeed += this.player.vertical;
+    this.player.ySpeed += this.player.vertical * 0.75;
     if (this.player.ySpeed >  maxVertical) this.player.ySpeed = maxVertical;
     if (this.player.ySpeed < -maxVertical) this.player.ySpeed = -maxVertical; 
-    if (this.player.vertical === 0) this.player.ySpeed *= 0.5;
+    if (this.player.vertical === 0) this.player.ySpeed *= 0.75;
 
     //Move ship based on it's calculated 
     this.player.sprite.x += this.player.xSpeed;
