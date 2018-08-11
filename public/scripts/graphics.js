@@ -2,17 +2,21 @@ debug.log("graphics.js");
 
 var graphics = {
 
+	//screen dimensions
 	screenWidth: 960,
 	screenHeight: 640,
 	app: {},
-	player: {},
+
+	//game sprites
+	player: null,
 	ship: null,
 	shipBoosting1: null,
 	shipBoosting2: null,
 	shipBoosting3: null,
-	mobileMode: true,
+	beam: null,
 
 	//mobile controls
+	mobileMode: true,
 	leftArrow: null,
 	rightArrow: null,
 	upArrow: null,
@@ -88,6 +92,7 @@ var graphics = {
 		this.mobileMode = true;
 
 		PIXI.loader
+		.add({name: 'beam', url: 'images/beam.png'})
 		.add({name: 'ship', url: 'images/ship.png'})
 		.add({name: 'shipBoosting1', url: 'images/shipBoosting1.png'})
 		.add({name: 'shipBoosting2', url: 'images/shipBoosting2.png'})
@@ -111,12 +116,15 @@ var graphics = {
 			var shipBoosting3Texture = new PIXI.Texture(PIXI.loader.resources.ship.texture);
 			graphics.shipBoosting3 =  new PIXI.Sprite(shipBoosting3Texture);
 
+			var beamTexture = new PIXI.Texture(PIXI.loader.resources.beam.texture);
+			graphics.beam =  new PIXI.Sprite(beamTexture);
+
 			//D-pad and flare button for mobile on-screen controls
 			graphics.leftArrow  = new PIXI.Sprite(PIXI.loader.resources.leftArrow.texture);
 			graphics.rightArrow = new PIXI.Sprite(PIXI.loader.resources.rightArrow.texture);
 			graphics.upArrow    = new PIXI.Sprite(PIXI.loader.resources.upArrow.texture);
 			graphics.downArrow  = new PIXI.Sprite(PIXI.loader.resources.downArrow.texture);
-			graphics.flareButton  = new PIXI.Sprite(PIXI.loader.resources.downArrow.texture);
+			graphics.flareButton  = new PIXI.Sprite(PIXI.loader.resources.flareButton.texture);
 
 			graphics.init();
 		});
@@ -132,8 +140,8 @@ var graphics = {
 		this.upArrow.y = 310;
 		this.downArrow.x = 150;
 		this.downArrow.y = 510;
-		this.flareButton.x = 100;
-		this.flareButton.y = 360;
+		this.flareButton.x = 150;
+		this.flareButton.y = 410;
 		this.leftArrow.interactive = true;
 		this.leftArrow.buttonMode = true;
 		this.rightArrow.interactive = true;
