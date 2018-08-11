@@ -8,11 +8,43 @@ var game = {
   down: keyboard(40),
 
   //Functions
+
+
+  onDragStart: function(event){
+    this.data = event.data;
+    this.alpha = 0.5;
+    this.dragging = true;
+  },
+
+  onDragEnd: function(){
+    this.alpha = 1;
+    this.dragging = false;
+    this.data= null;
+  },
+
+  onDragMove: function(){
+    if (this.dragging) {
+      var newPosition =
+        this.data.getLocalPosition(this.parent);
+        if (newPosition.x > 134){
+          newPosition.x = 134;
+        }
+        if (newPosition.x < 34){
+          newPosition.x = 34;
+        }
+        this.x = newPosition.x;
+        PIXI.sound.volumeAll = 1 - ((134-graphics.volumeSlider.x)/100);
+    }
+  },
+
   playSound: function(sound){
     PIXI.sound.play(sound);
   },
   stopSound: function(sound){
     PIXI.sound.play(sound);
+  },
+  updateSound: function(){
+    PIXI.sound.volumeAll = 1 - ((134-graphics.volumeSlider.x)/100);
   },
   runMenu: function(){
     graphics.runMenu();
@@ -65,12 +97,12 @@ var game = {
     //Game music
     PIXI.sound.add('game', {
         url: 'sounds/game.ogg', 
-        loop: true
+        loop: true,
     });
     //Menu music
     PIXI.sound.add('menu', {
         url: 'sounds/menu.ogg',
-        loop: true
+        loop: true,
     });
   }
 }
