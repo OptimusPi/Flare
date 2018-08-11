@@ -156,7 +156,7 @@ var graphics = {
 		// GUI elements
 		this.volumeLine.x = 50;
 		this.volumeLine.y = 16;
-		this.volumeSlider.x = 150;
+		this.volumeSlider.x = 134;
 		this.volumeSlider.y = 8;
 		this.leftArrow.x = 50;
 		this.leftArrow.y = 410;
@@ -187,6 +187,15 @@ var graphics = {
 		//Auto resize window
 		layout.addListeners();
 		layout.resizeCanvas();
+
+		//Interactivity for volume slide 
+		this.volumeSlider.interactive = true;
+		this.volumeSlider.buttonMode = true;
+		this.volumeSlider.on('pointerdown', game.onDragStart);
+		this.volumeSlider.on('pointerup', game.onDragEnd);
+		this.volumeSlider.on('pointerupoutside', game.onDragEnd);
+		this.volumeSlider.on('pointerup', game.updateSound);
+		this.volumeSlider.on('pointermove', game.onDragMove);
 
 		//Start the game!
 		game.init();
