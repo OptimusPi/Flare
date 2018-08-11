@@ -1,0 +1,34 @@
+{
+  "name": "flare",
+  "version": "0.0.1",
+  "description": "Flare is Nate Howard's JavaScript entry for Ludum Dare 42 Game Jam",
+  "main": "app.js",
+  "dependencies": {
+    "express": "^4.15.3",
+    "http": "0.0.0",
+    "path": "^0.12.7"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OptimusPi/Flare.git"
+  },
+  "keywords": [
+    "Flare",
+    "Ludum",
+    "Dare",
+    "42",
+    "online",
+    "playing",
+    "game",
+    "html5",
+    "javascript",
+    "space"
+  ],
+  "author": "Nate Howard",
+  "license": "Unlicense",
+  "homepage": "https://github.com/OptimusPi/Flare#readme"
+}
