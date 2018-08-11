@@ -74,10 +74,10 @@ var game = {
   },
   shootProjectile: function () {
     if(this.player.battery > 0) this.player.battery = this.player.battery - 25;
-    if(this.player.battery == 75) graphics.batteryLife_100.texture = graphics.batteryLife_75.texture;
-    if(this.player.battery == 50) graphics.batteryLife_100.texture = graphics.batteryLife_50.texture;
-    if(this.player.battery == 25) graphics.batteryLife_100.texture = graphics.batteryLife_25.texture;
-    if(this.player.battery == 0) graphics.batteryLife_100.texture = graphics.batteryLife_0.texture;
+    if(this.player.battery == 75) graphics.batteryLife.texture = graphics.batteryLifeTexture_75;
+    if(this.player.battery == 50) graphics.batteryLife.texture = graphics.batteryLifeTexture_50;
+    if(this.player.battery == 25) graphics.batteryLife.texture = graphics.batteryLifeTexture_25;
+    if(this.player.battery == 0) graphics.batteryLife.texture = graphics.batteryLifeTexture_0;
   },
   //stop moving, flag that controls acceleration
   stopPlayerLeft: function () {
@@ -180,17 +180,13 @@ var game = {
     if (horizontal !== 0 || vertical !== 0)
     {
       //TODO put animations in graphics.js ?
-      var coords = this.player.sprite.x + this.player.sprite.y;
-
       game.player.sprite.frame += deltaTime;
-      if (game.player.sprite.frame % 20 < 20) game.player.sprite.texture = graphics.ship.texture;
-      if (game.player.sprite.frame % 20 < 15) game.player.sprite.texture = graphics.shipBoosting3.texture;
-      if (game.player.sprite.frame % 20 < 10) game.player.sprite.texture = graphics.shipBoosting2.texture;
-      if (game.player.sprite.frame % 20 < 5) {
-        game.player.sprite.texture = graphics.shipBoosting1.texture;
-      }
+      if (game.player.sprite.frame % 8 < 8) game.player.sprite.texture = graphics.shipTexture;
+      if (game.player.sprite.frame % 8 < 6) game.player.sprite.texture = graphics.shipBoosting3Texture;
+      if (game.player.sprite.frame % 8 < 4) game.player.sprite.texture = graphics.shipBoosting2Texture;
+      if (game.player.sprite.frame % 8 < 2) game.player.sprite.texture = graphics.shipBoosting1Texture;
     } else {
-      game.player.sprite.texture = graphics.ship.texture;
+      game.player.sprite.texture = graphics.shipTexture;
       game.player.sprite.frame = 0;
     }
   }

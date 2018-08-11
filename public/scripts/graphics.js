@@ -8,19 +8,23 @@ var graphics = {
 	app: {},
 
 	//game sprites
-	batteryLife_100: null,
-	batteryLife_75: null,
-	batteryLife_50: null,
-	batteryLife_25: null,
-	batteryLife_0: null,
-	beam: null,
-	ship: null,
-	shipBoosting1: null,
-	shipBoosting2: null,
-	shipBoosting3: null,
+	batteryLife: null,
 	space: null,
 	stars: [],
 	starTexture: [],
+
+	//Textures
+	batteryLifeTexture_100: null,
+	batteryLifeTexture_75: null,
+	batteryLifeTexture_50: null,
+	batteryLifeTexture_25: null,
+	batteryLifeTexture_0: null,
+	batteryPowerupTexture: null,
+	shipBoostingTexture1: null,
+	shipBoostingTexture2: null,
+	shipBoostingTexture3: null,
+	shipTexture: null,
+	beamTexture: null,
 	
 	//mobile controls
 	mobileMode: true,
@@ -59,7 +63,7 @@ var graphics = {
 		var player = game.player;
 
 		// create new sprite TOO make it from the image textures loaded in
-		player.sprite = new PIXI.Sprite(this.ship.texture);
+		player.sprite = new PIXI.Sprite(this.shipTexture);
 		
 		//add sprite to player
 		player.sprite.x = x;
@@ -89,7 +93,7 @@ var graphics = {
 		this.app.stage.addChild(this.flareButton);
 		this.app.stage.addChild(this.volumeLine);
 		this.app.stage.addChild(this.volumeSlider);		
-		this.app.stage.addChild(this.batteryLife_100);
+		this.app.stage.addChild(this.batteryLife);
 	},
 
 	runOverworld: function(){
@@ -156,6 +160,7 @@ var graphics = {
 		.add({name: 'batteryLife_50', url: 'images/GUI/battery_50.png'})
 		.add({name: 'batteryLife_25', url: 'images/GUI/battery_25.png'})
 		.add({name: 'batteryLife_0', url: 'images/GUI/battery_0.png'})	
+		.add({name: 'battery', url: 'images/battery.png'})
 		.load(function (){
 			//Load space
 			var spaceTexture = new PIXI.Texture(PIXI.loader.resources.space.texture);
@@ -174,20 +179,12 @@ var graphics = {
 			graphics.starTexture[9] = new PIXI.Texture(PIXI.loader.resources.star10.texture);
 
 			//Load player ship
-			var shipTexture = new PIXI.Texture(PIXI.loader.resources.ship.texture);
-			graphics.ship =  new PIXI.Sprite(shipTexture);
+			graphics.shipTexture = new PIXI.Texture(PIXI.loader.resources.ship.texture);
+			graphics.shipBoosting1Texture = new PIXI.Texture(PIXI.loader.resources.shipBoosting1.texture);
+			graphics.shipBoosting2Texture = new PIXI.Texture(PIXI.loader.resources.shipBoosting2.texture);
+			graphics.shipBoosting3Texture = new PIXI.Texture(PIXI.loader.resources.shipBoosting3.texture);
 
-			var shipBoosting1Texture = new PIXI.Texture(PIXI.loader.resources.shipBoosting1.texture);
-			graphics.shipBoosting1 =  new PIXI.Sprite(shipBoosting1Texture);
-
-			var shipBoosting2Texture = new PIXI.Texture(PIXI.loader.resources.shipBoosting2.texture);
-			graphics.shipBoosting2 =  new PIXI.Sprite(shipBoosting2Texture);
-
-			var shipBoosting3Texture = new PIXI.Texture(PIXI.loader.resources.shipBoosting3.texture);
-			graphics.shipBoosting3 =  new PIXI.Sprite(shipBoosting3Texture);
-
-			var beamTexture = new PIXI.Texture(PIXI.loader.resources.beam.texture);
-			graphics.beam =  new PIXI.Sprite(beamTexture);
+			graphics.beamTexture = new PIXI.Texture(PIXI.loader.resources.beam.texture);
 
 			//D-pad and flare button for mobile on-screen controls
 			graphics.leftArrow  = new PIXI.Sprite(PIXI.loader.resources.leftArrow.texture);
@@ -199,12 +196,16 @@ var graphics = {
 			graphics.volumeSlider = new PIXI.Sprite(PIXI.loader.resources.volumeSlider.texture);
 
 			//Battery
-			graphics.batteryLife_100 = new PIXI.Sprite(PIXI.loader.resources.batteryLife_100.texture);
-			graphics.batteryLife_75 = new PIXI.Sprite(PIXI.loader.resources.batteryLife_75.texture);
-			graphics.batteryLife_50 = new PIXI.Sprite(PIXI.loader.resources.batteryLife_50.texture);
-			graphics.batteryLife_25 = new PIXI.Sprite(PIXI.loader.resources.batteryLife_25.texture);
-			graphics.batteryLife_0 = new PIXI.Sprite(PIXI.loader.resources.batteryLife_0.texture);
+			graphics.batteryLifeTexture_100 = new PIXI.Texture(PIXI.loader.resources.batteryLife_100.texture);
+			graphics.batteryLifeTexture_75 = new PIXI.Texture(PIXI.loader.resources.batteryLife_75.texture);
+			graphics.batteryLifeTexture_50 = new PIXI.Texture(PIXI.loader.resources.batteryLife_50.texture);
+			graphics.batteryLifeTexture_25 = new PIXI.Texture(PIXI.loader.resources.batteryLife_25.texture);
+			graphics.batteryLifeTexture_0 = new PIXI.Texture(PIXI.loader.resources.batteryLife_0.texture);
+			graphics.batteryLife = new PIXI.Sprite(PIXI.loader.resources.batteryLife_100.texture);
+			graphics.batteryPowerupTexture = new PIXI.Texture(PIXI.loader.resources.battery.texture);
+			
 
+			//Initialize graphics
 			graphics.init();
 			
 			//TODO move this?
@@ -213,16 +214,24 @@ var graphics = {
 			ticker.stop();
 			ticker.add((deltaTime) => {
 				game.physics(deltaTime);
-				graphics.animateStars(deltaTime);
 			});
 			ticker.start();
+
+			const animationTicker = new PIXI.ticker.Ticker();
+			animationTicker.stop();
+			animationTicker.add((deltaTime) => {
+				graphics.animateStars(deltaTime);
+			});
+			animationTicker.start();
+
+			
 		});
 	},
 
 	init: function() {
 		// GUI elements
-		this.batteryLife_100.x = 850;
-		this.batteryLife_100.y = 600;
+		this.batteryLife.x = 850;
+		this.batteryLife.y = 600;
 		this.volumeLine.x = 50;
 		this.volumeLine.y = 16;
 		this.volumeSlider.x = 134;
