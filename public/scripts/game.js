@@ -163,6 +163,20 @@ var game = {
     //Move ship based on it's calculated 
     this.player.sprite.x += this.player.xSpeed;
     this.player.sprite.y += this.player.ySpeed;
+
+    //Display ship boosters
+    if (this.player.horizontal !== 0 || this.player.vertical !== 0)
+    {
+      //TODO put animations in graphics.js ?
+      var coords = this.player.sprite.x + this.player.sprite.y;
+
+      if (coords % 40 < 40) game.player.sprite.texture = graphics.ship.texture;
+      if (coords % 40 < 30) game.player.sprite.texture = graphics.shipBoosting1.texture;
+      if (coords % 40 < 20) game.player.sprite.texture = graphics.shipBoosting2.texture;
+      if (coords % 40 < 10) game.player.sprite.texture = graphics.shipBoosting3.texture;
+    } else {
+      game.player.sprite.texture = graphics.ship.texture;
+    }
   }
 }
 

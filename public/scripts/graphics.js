@@ -45,10 +45,6 @@ var graphics = {
 		this.app.stage.addChild(game.player.sprite);
 	},
 
-	setPlayerSprite: function(player, newSprite){
-		game.player.sprite.texture = newSprite.texture;
-	},
-
 	removeGUI: function(){
 		this.app.stage.removeChild(this.leftArrow);
 		this.app.stage.removeChild(this.rightArrow);
@@ -117,13 +113,13 @@ var graphics = {
 			var shipTexture = new PIXI.Texture(PIXI.loader.resources.ship.texture);
 			graphics.ship =  new PIXI.Sprite(shipTexture);
 
-			var shipBoosting1Texture = new PIXI.Texture(PIXI.loader.resources.ship.texture);
+			var shipBoosting1Texture = new PIXI.Texture(PIXI.loader.resources.shipBoosting1.texture);
 			graphics.shipBoosting1 =  new PIXI.Sprite(shipBoosting1Texture);
 
-			var shipBoosting2Texture = new PIXI.Texture(PIXI.loader.resources.ship.texture);
+			var shipBoosting2Texture = new PIXI.Texture(PIXI.loader.resources.shipBoosting2.texture);
 			graphics.shipBoosting2 =  new PIXI.Sprite(shipBoosting2Texture);
 
-			var shipBoosting3Texture = new PIXI.Texture(PIXI.loader.resources.ship.texture);
+			var shipBoosting3Texture = new PIXI.Texture(PIXI.loader.resources.shipBoosting3.texture);
 			graphics.shipBoosting3 =  new PIXI.Sprite(shipBoosting3Texture);
 
 			var beamTexture = new PIXI.Texture(PIXI.loader.resources.beam.texture);
