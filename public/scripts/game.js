@@ -11,6 +11,7 @@ var game = {
   up: keyboard(38),
   right: keyboard(39),
   down: keyboard(40),
+  space: keyboard(32),
 
   //Functions
   onDragStart: function(event){
@@ -71,7 +72,13 @@ var game = {
   movePlayerDown: function () {
     game.player.down = 1;
   },
-
+  shootProjectile: function () {
+    if(this.player.battery > 0) this.player.battery = this.player.battery - 25;
+    if(this.player.battery == 75) graphics.batteryLife_100.texture = graphics.batteryLife_75.texture;
+    if(this.player.battery == 50) graphics.batteryLife_100.texture = graphics.batteryLife_50.texture;
+    if(this.player.battery == 25) graphics.batteryLife_100.texture = graphics.batteryLife_25.texture;
+    if(this.player.battery == 0) graphics.batteryLife_100.texture = graphics.batteryLife_0.texture;
+  },
   //stop moving, flag that controls acceleration
   stopPlayerLeft: function () {
     game.player.left = 0;
@@ -102,6 +109,10 @@ var game = {
     };
 
     //Right arrow key press method
+    this.space.press = function () {
+      game.shootProjectile();
+      debug.log('I shot a projectile');
+    };
     this.right.press = function () {
       game.movePlayerRight();
       debug.log('I pressed right.');
@@ -175,7 +186,9 @@ var game = {
       if (game.player.sprite.frame % 20 < 20) game.player.sprite.texture = graphics.ship.texture;
       if (game.player.sprite.frame % 20 < 15) game.player.sprite.texture = graphics.shipBoosting3.texture;
       if (game.player.sprite.frame % 20 < 10) game.player.sprite.texture = graphics.shipBoosting2.texture;
-      if (game.player.sprite.frame % 20 < 5) game.player.sprite.texture = graphics.shipBoosting1.texture;
+      if (game.player.sprite.frame % 20 < 5) {
+        game.player.sprite.texture = graphics.shipBoosting1.texture;
+      }
     } else {
       game.player.sprite.texture = graphics.ship.texture;
       game.player.sprite.frame = 0;

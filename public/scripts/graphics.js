@@ -8,6 +8,11 @@ var graphics = {
 	app: {},
 
 	//game sprites
+	batteryLife_100: null,
+	batteryLife_75: null,
+	batteryLife_50: null,
+	batteryLife_25: null,
+	batteryLife_0: null,
 	beam: null,
 	ship: null,
 	shipBoosting1: null,
@@ -73,6 +78,7 @@ var graphics = {
 		this.app.stage.removeChild(this.flareButton);	
 		this.app.stage.removeChild(this.volumeSlider);
 		this.app.stage.removeChild(this.volumeLine);
+		this.app.stage.removeChild(this.batteryLife);
 	},
 
 	addGUI: function(){
@@ -83,6 +89,7 @@ var graphics = {
 		this.app.stage.addChild(this.flareButton);
 		this.app.stage.addChild(this.volumeLine);
 		this.app.stage.addChild(this.volumeSlider);		
+		this.app.stage.addChild(this.batteryLife_100);
 	},
 
 	runOverworld: function(){
@@ -143,7 +150,12 @@ var graphics = {
 		.add({name: 'downArrow', url: 'images/GUI/down_arrow.png'})
 		.add({name: 'flareButton', url: 'images/GUI/flare_button.png'})
 		.add({name: 'volumeLine', url: 'images/GUI/volume_line.png'})
-		.add({name: 'volumeSlider', url: 'images/GUI/volume_slider.png'})	
+		.add({name: 'volumeSlider', url: 'images/GUI/volume_slider.png'})
+		.add({name: 'batteryLife_100', url: 'images/GUI/battery_100.png'})
+		.add({name: 'batteryLife_75', url: 'images/GUI/battery_75.png'})
+		.add({name: 'batteryLife_50', url: 'images/GUI/battery_50.png'})
+		.add({name: 'batteryLife_25', url: 'images/GUI/battery_25.png'})
+		.add({name: 'batteryLife_0', url: 'images/GUI/battery_0.png'})	
 		.load(function (){
 			//Load space
 			var spaceTexture = new PIXI.Texture(PIXI.loader.resources.space.texture);
@@ -186,6 +198,13 @@ var graphics = {
 			graphics.volumeLine = new PIXI.Sprite(PIXI.loader.resources.volumeLine.texture);
 			graphics.volumeSlider = new PIXI.Sprite(PIXI.loader.resources.volumeSlider.texture);
 
+			//Battery
+			graphics.batteryLife_100 = new PIXI.Sprite(PIXI.loader.resources.batteryLife_100.texture);
+			graphics.batteryLife_75 = new PIXI.Sprite(PIXI.loader.resources.batteryLife_75.texture);
+			graphics.batteryLife_50 = new PIXI.Sprite(PIXI.loader.resources.batteryLife_50.texture);
+			graphics.batteryLife_25 = new PIXI.Sprite(PIXI.loader.resources.batteryLife_25.texture);
+			graphics.batteryLife_0 = new PIXI.Sprite(PIXI.loader.resources.batteryLife_0.texture);
+
 			graphics.init();
 			
 			//TODO move this?
@@ -202,6 +221,8 @@ var graphics = {
 
 	init: function() {
 		// GUI elements
+		this.batteryLife_100.x = 850;
+		this.batteryLife_100.y = 600;
 		this.volumeLine.x = 50;
 		this.volumeLine.y = 16;
 		this.volumeSlider.x = 134;
