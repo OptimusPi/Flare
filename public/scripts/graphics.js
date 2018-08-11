@@ -14,6 +14,8 @@ var graphics = {
 	shipBoosting2: null,
 	shipBoosting3: null,
 	space: null,
+	stars: [],
+	starTexture: [],
 	
 	//mobile controls
 	mobileMode: true,
@@ -26,7 +28,25 @@ var graphics = {
 	volumeLine: null,
 
 	addSpace: function() {
-		this.app.stage.addChild(this.space);
+		//this.app.stage.addChild(this.space);
+		for (var i = 0; i < 200; i++) {
+			var x = Math.random() * 1000 % 960;
+			var y = Math.random() * 700 % 640;
+			var ySpeed = Math.random() * 1000 % 3;
+			ySpeed *= 0.04 + 1.1;
+
+			var img = Math.ceil(Math.random() * 20) - 1;
+
+			var star = { 
+				sprite: new PIXI.Sprite(this.starTexture[img]), 
+				ySpeed: ySpeed * 0.04 + 1.1
+			}; 
+			star.sprite.x = x;
+			star.sprite.y = y;
+			this.app.stage.addChild(star.sprite);
+			this.stars.push(star);
+		}
+
 	},
 	addPlayer: function(x, y) {
 
@@ -73,6 +93,16 @@ var graphics = {
 			this.addGUI();
 	},
 
+	animateStars: function (deltaTime) {
+		graphics.stars.forEach(star => { 
+			star.sprite.y += star.ySpeed * deltaTime;
+			if (star.sprite.y > 640) {
+				star.sprite.y = -star.sprite.height;
+				star.sprite.x = Math.random() * 1000 % 960;
+			}
+		});
+	},
+
 	start: function(){
 		var type = "WebGL";
 		if(!PIXI.utils.isWebGLSupported()){
@@ -92,6 +122,16 @@ var graphics = {
 
 		PIXI.loader
 		.add({name: 'space', url: 'images/space.png'})
+		.add({name: 'star1', url: 'images/star1.png'})
+		.add({name: 'star2', url: 'images/star2.png'})
+		.add({name: 'star3', url: 'images/star3.png'})
+		.add({name: 'star4', url: 'images/star4.png'})
+		.add({name: 'star5', url: 'images/star5.png'})
+		.add({name: 'star6', url: 'images/star6.png'})
+		.add({name: 'star7', url: 'images/star7.png'})
+		.add({name: 'star8', url: 'images/star8.png'})
+		.add({name: 'star9', url: 'images/star9.png'})
+		.add({name: 'star10', url: 'images/star10.png'})
 		.add({name: 'beam', url: 'images/beam.png'})
 		.add({name: 'ship', url: 'images/ship.png'})
 		.add({name: 'shipBoosting1', url: 'images/shipBoosting1.png'})
@@ -108,6 +148,18 @@ var graphics = {
 			//Load space
 			var spaceTexture = new PIXI.Texture(PIXI.loader.resources.space.texture);
 			graphics.space =  new PIXI.Sprite(spaceTexture);
+
+			//Load stars
+			graphics.starTexture[0] = new PIXI.Texture(PIXI.loader.resources.star1.texture);
+			graphics.starTexture[1] = new PIXI.Texture(PIXI.loader.resources.star2.texture);
+			graphics.starTexture[2] = new PIXI.Texture(PIXI.loader.resources.star3.texture);
+			graphics.starTexture[3] = new PIXI.Texture(PIXI.loader.resources.star4.texture);
+			graphics.starTexture[4] = new PIXI.Texture(PIXI.loader.resources.star5.texture);
+			graphics.starTexture[5] = new PIXI.Texture(PIXI.loader.resources.star6.texture);
+			graphics.starTexture[6] = new PIXI.Texture(PIXI.loader.resources.star7.texture);
+			graphics.starTexture[7] = new PIXI.Texture(PIXI.loader.resources.star8.texture);
+			graphics.starTexture[7] = new PIXI.Texture(PIXI.loader.resources.star9.texture);
+			graphics.starTexture[9] = new PIXI.Texture(PIXI.loader.resources.star10.texture);
 
 			//Load player ship
 			var shipTexture = new PIXI.Texture(PIXI.loader.resources.ship.texture);
@@ -142,6 +194,7 @@ var graphics = {
 			ticker.stop();
 			ticker.add((deltaTime) => {
 				game.physics(deltaTime);
+				graphics.animateStars(deltaTime);
 			});
 			ticker.start();
 		});
