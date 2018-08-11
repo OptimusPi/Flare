@@ -22,6 +22,8 @@ var graphics = {
 	upArrow: null,
 	downArrow: null,
 	flareButton: null,
+	volumeSlider: null,
+	volumeLine: null,
 
 	addPlayer: function(playerInfo) {
 
@@ -59,6 +61,8 @@ var graphics = {
 		this.app.stage.removeChild(this.upArrow);
 		this.app.stage.removeChild(this.downArrow);	
 		this.app.stage.removeChild(this.flareButton);	
+		this.app.stage.removeChild(this.volumeSlider);
+		this.app.stage.removeChild(this.volumeLine);
 	},
 
 	addGUI: function(){
@@ -66,7 +70,9 @@ var graphics = {
 		this.app.stage.addChild(this.rightArrow);
 		this.app.stage.addChild(this.upArrow);
 		this.app.stage.addChild(this.downArrow);	
-		this.app.stage.addChild(this.flareButton);	
+		this.app.stage.addChild(this.flareButton);
+		this.app.stage.addChild(this.volumeLine);
+		this.app.stage.addChild(this.volumeSlider);	
 	},
 
 	runOverworld: function(){
@@ -102,6 +108,8 @@ var graphics = {
 		.add({name: 'upArrow', url: 'images/GUI/up_arrow.png'})
 		.add({name: 'downArrow', url: 'images/GUI/down_arrow.png'})
 		.add({name: 'flareButton', url: 'images/GUI/flare_button.png'})
+		.add({name: 'volumeLine', url: 'images/GUI/volume_line.png'})
+		.add({name: 'volumeSlider', url: 'images/GUI/volume_slider.png'})
 		.load(function (){
 			//Load player ship
 			var shipTexture = new PIXI.Texture(PIXI.loader.resources.ship.texture);
@@ -125,6 +133,8 @@ var graphics = {
 			graphics.upArrow    = new PIXI.Sprite(PIXI.loader.resources.upArrow.texture);
 			graphics.downArrow  = new PIXI.Sprite(PIXI.loader.resources.downArrow.texture);
 			graphics.flareButton  = new PIXI.Sprite(PIXI.loader.resources.flareButton.texture);
+			graphics.volumeLine = new PIXI.Sprite(PIXI.loader.resources.volumeLine.texture);
+			graphics.volumeSlider = new PIXI.Sprite(PIXI.loader.resources.volumeSlider.texture);
 
 			graphics.init();
 		});
@@ -132,6 +142,10 @@ var graphics = {
 
 	init: function() {
 		// GUI elements
+		this.volumeLine.x = 50;
+		this.volumeLine.y = 16;
+		this.volumeSlider.x = 150;
+		this.volumeSlider.y = 8;
 		this.leftArrow.x = 50;
 		this.leftArrow.y = 410;
 		this.rightArrow.x = 250;
