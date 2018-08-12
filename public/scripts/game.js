@@ -4,10 +4,7 @@ var game = {
 
   //player
   player: { sprite: null, dead: false, battery: 100, xSpeed: 0, ySpeed: 0, left: 0, right: 0, up: 0, down: 0 },
-  shipPart1: {},
-  shipPart2: {},
-  shipPart3: {},
-  shipPart4: {},
+  shipParts: [],
   beams: [],
   powerups: [],
   powerupTimer: 0,
@@ -127,42 +124,42 @@ var game = {
 
   killPlayer: function () {
     //Make dead ship pieces
-    this.shipPart1 = {
-      sprite: new PIXI.Sprite(graphics.shipPart1Texture), xSpeed: -4, ySpeed: -4,
+    this.shipParts[0] = {
+      sprite: new PIXI.Sprite(graphics.shipPart1Texture), xSpeed: -4, ySpeed: -4, dead: false
     };
-    this.shipPart2 = {
-      sprite: new PIXI.Sprite(graphics.shipPart2Texture), xSpeed: -4, ySpeed: -4,
+    this.shipParts[1] = {
+      sprite: new PIXI.Sprite(graphics.shipPart2Texture), xSpeed: -4, ySpeed: -4, dead: false
     };
-    this.shipPart3 = {
-      sprite: new PIXI.Sprite(graphics.shipPart3Texture), xSpeed: -4, ySpeed: -4,
+    this.shipParts[2] = {
+      sprite: new PIXI.Sprite(graphics.shipPart3Texture), xSpeed: -4, ySpeed: -4, dead: false
     };
-    this.shipPart4 = {
-      sprite: new PIXI.Sprite(graphics.shipPart4Texture), xSpeed: -4, ySpeed: -4,
+    this.shipParts[3] = {
+      sprite: new PIXI.Sprite(graphics.shipPart4Texture), xSpeed: -4, ySpeed: -4, dead: false
     };
     //
     //Position dead ship parts in each corner
     //
     //top left
-    game.shipPart1.sprite.x = game.player.sprite.x;
-    game.shipPart1.sprite.y = game.player.sprite.y;
+    this.shipParts[0].sprite.x = game.player.sprite.x;
+    this.shipParts[0].sprite.y = game.player.sprite.y;
 
     //top right
-    game.shipPart2.sprite.x = game.player.sprite.x + 32;
-    game.shipPart2.sprite.y = game.player.sprite.y;
+    this.shipParts[1].sprite.x = game.player.sprite.x + 32;
+    this.shipParts[1].sprite.y = game.player.sprite.y;
 
     //bottom left
-    game.shipPart3.sprite.x = game.player.sprite.x;
-    game.shipPart3.sprite.y = game.player.sprite.y + 32;
+    this.shipParts[2].sprite.x = game.player.sprite.x;
+    this.shipParts[2].sprite.y = game.player.sprite.y + 32;
 
     //bottom right
-    game.shipPart4.sprite.x = game.player.sprite.x + 32;
-    game.shipPart4.sprite.y = game.player.sprite.y + 32;
+    this.shipParts[3].sprite.x = game.player.sprite.x + 32;
+    this.shipParts[3].sprite.y = game.player.sprite.y + 32;
 
     //add ship pieces to the screen
-    graphics.app.stage.addChild(game.shipPart1.sprite);
-    graphics.app.stage.addChild(game.shipPart2.sprite);
-    graphics.app.stage.addChild(game.shipPart3.sprite);
-    graphics.app.stage.addChild(game.shipPart4.sprite);
+    graphics.app.stage.addChild(game.shipParts[0].sprite);
+    graphics.app.stage.addChild(game.shipParts[1].sprite);
+    graphics.app.stage.addChild(game.shipParts[2].sprite);
+    graphics.app.stage.addChild(game.shipParts[3].sprite);
 
     //remove original ship
     graphics.app.stage.removeChild(game.player.sprite);
@@ -229,9 +226,9 @@ var game = {
     });
   },
   physics: function (deltaTime) {
-
-    //Player physicsgoes into game.playerPhysics()
-    game.playerPhysics(deltaTime);
+    //Ship physics
+    if (game.player.dead === false) game.playerPhysics(deltaTime);
+    if (game.player.dead === true) game.deadPlayerPhysics(deltaTime);
 
     //move beams
     game.beams.forEach(function (beam, index, object) {
@@ -275,53 +272,66 @@ var game = {
     }
   },
 
-  playerPhysics: function(deltaTime) {
-    if (game.player.dead == false) {
-      //Accelerate ship
-      var maxHorizontal = 7;
-      var maxVertical = 7;
-      horizontal = this.player.right + this.player.left;
-      vertical = this.player.down + this.player.up;
-      //X
-      this.player.xSpeed += horizontal * 0.5 * deltaTime;
-      if (this.player.xSpeed > maxHorizontal) this.player.xSpeed = maxHorizontal;
-      if (this.player.xSpeed < -maxHorizontal) this.player.xSpeed = -maxHorizontal;
-      if (horizontal === 0) this.player.xSpeed *= 0.91 * deltaTime;
+  deadPlayerPhysics: function (deltaTime) {
+    for (var i = 0; i < 4; i++) {
+      if (game.shipPart[i].dead === true)continue;
+      game.shipPart[i].sprite.x += game.shipPart[i].xSpeed * deltaTime;
+      game.shipPart[i].sprite.y += game.shipPart[i].ySpeed * deltaTime;
 
-      //Y
-      this.player.ySpeed += vertical * 0.5 * deltaTime;
-      if (this.player.ySpeed > maxVertical) this.player.ySpeed = maxVertical;
-      if (this.player.ySpeed < -maxVertical) this.player.ySpeed = -maxVertical;
-      if (vertical === 0) this.player.ySpeed *= 0.91 * deltaTime;
+      //check for walls
+      if (this.boxesIntersect(game.shipPart[i].sprite, game.wallLeft.sprite) ||
+        this.boxesIntersect(game.shipPart[i].sprite, game.wallRight.sprite)) {
+        this.shipPart[i].dead = true;
+        graphics.app.stage.addChild(this.shipPart[i].sprite);
+      }
+      //todo check asteroids
+    }
+  },
+  playerPhysics: function (deltaTime) {
+    //Accelerate ship
+    var maxHorizontal = 7;
+    var maxVertical = 7;
+    horizontal = this.player.right + this.player.left;
+    vertical = this.player.down + this.player.up;
+    //X
+    this.player.xSpeed += horizontal * 0.5 * deltaTime;
+    if (this.player.xSpeed > maxHorizontal) this.player.xSpeed = maxHorizontal;
+    if (this.player.xSpeed < -maxHorizontal) this.player.xSpeed = -maxHorizontal;
+    if (horizontal === 0) this.player.xSpeed *= 0.91 * deltaTime;
 
-      //Move ship based on it's calculated 
-      this.player.sprite.x += this.player.xSpeed * deltaTime;
-      this.player.sprite.y += this.player.ySpeed * deltaTime;
+    //Y
+    this.player.ySpeed += vertical * 0.5 * deltaTime;
+    if (this.player.ySpeed > maxVertical) this.player.ySpeed = maxVertical;
+    if (this.player.ySpeed < -maxVertical) this.player.ySpeed = -maxVertical;
+    if (vertical === 0) this.player.ySpeed *= 0.91 * deltaTime;
 
-      //Display ship boosters
-      if (horizontal !== 0 || vertical !== 0) {
-        //TODO put animations in graphics.js ?
-        game.player.sprite.frame += deltaTime;
-        if (game.player.sprite.frame % 8 < 8) game.player.sprite.texture = graphics.shipBoosting3Texture;
-        if (game.player.sprite.frame % 8 < 5) game.player.sprite.texture = graphics.shipBoosting2Texture;
-        if (game.player.sprite.frame % 8 < 2) game.player.sprite.texture = graphics.shipBoosting1Texture;
-      } else {
-        game.player.sprite.frame = 0;
-        game.player.sprite.frame += deltaTime;
-        if (game.player.sprite.frame % 8 < 5) game.player.sprite.texture = graphics.upArrow.texture;
-        if (game.player.sprite.frame % 8 < 2) game.player.sprite.texture = graphics.shipBoosting3Texture;
-      }
-      //bounce off the walls! 
-      if (game.boxesIntersect(this.wallLeft.sprite, game.player.sprite)) {
-        game.player.xSpeed *= -1.75;//bounce off the walls! 
-        game.player.sprite.x += 2;
-        game.killPlayer();
-      }
-      if (game.boxesIntersect(this.wallRight.sprite, game.player.sprite)) {
-        game.player.xSpeed *= -1.75;//bounce off the walls! 
-        game.player.sprite.x -= 2.0;
-        game.killPlayer();
-      }
+    //Move ship based on it's calculated 
+    this.player.sprite.x += this.player.xSpeed * deltaTime;
+    this.player.sprite.y += this.player.ySpeed * deltaTime;
+
+    //Display ship boosters
+    if (horizontal !== 0 || vertical !== 0) {
+      //TODO put animations in graphics.js ?
+      game.player.sprite.frame += deltaTime;
+      if (game.player.sprite.frame % 8 < 8) game.player.sprite.texture = graphics.shipBoosting3Texture;
+      if (game.player.sprite.frame % 8 < 5) game.player.sprite.texture = graphics.shipBoosting2Texture;
+      if (game.player.sprite.frame % 8 < 2) game.player.sprite.texture = graphics.shipBoosting1Texture;
+    } else {
+      game.player.sprite.frame = 0;
+      game.player.sprite.frame += deltaTime;
+      if (game.player.sprite.frame % 8 < 5) game.player.sprite.texture = graphics.upArrow.texture;
+      if (game.player.sprite.frame % 8 < 2) game.player.sprite.texture = graphics.shipBoosting3Texture;
+    }
+    //bounce off the walls! 
+    if (game.boxesIntersect(this.wallLeft.sprite, game.player.sprite)) {
+      game.player.xSpeed *= -1.75;//bounce off the walls! 
+      game.player.sprite.x += 2;
+      game.killPlayer();
+    }
+    if (game.boxesIntersect(this.wallRight.sprite, game.player.sprite)) {
+      game.player.xSpeed *= -1.75;//bounce off the walls! 
+      game.player.sprite.x -= 2.0;
+      game.killPlayer();
     }
   }
 }
