@@ -26,9 +26,6 @@ var game = {
   //Functions
   onDragStart: function (event) {
     this.data = event.data;
-    var position = this.data.getLocalPosition(this);
-    this.pivot.set(position.x, position.y);
-    this.position.set(this.data.global.x, this.data.global.y);
     this.alpha = 0.6;
     this.dragging = true;
   },
@@ -41,15 +38,25 @@ var game = {
 
   onDragMove: function () {
     if (this.dragging) {
-      var newPosition =
-        this.data.getLocalPosition(this.parent);
-      if (newPosition.x > 150) {
-        newPosition.x = 150;
+      var offset = this.data.getLocalPosition(this).x - 16;
+      var x = this.data.getLocalPosition(this.parent).x;
+      
+      console.log('onDragMove(): x: ' + this.x);
+      console.log('onDragMove(): x: ' + this.x);
+
+      if (x > 150) {
+        x = 150;
       }
-      if (newPosition.x < 50) {
-        newPosition.x = 50;
+      if (x < 50) {
+        x = 50;
       }
-      this.x = newPosition.x;
+
+      graphics.volumeSlider.x = x - 16;
+
+      
+      console.log('onDragMove(): x: ' + this.x);
+      console.log('offset: ' + offset);
+
       game.updateSound();
     }
   },
@@ -61,7 +68,8 @@ var game = {
     PIXI.sound.play(sound);
   },
   updateSound: function () {
-    PIXI.sound.volumeAll = 1 - ((134 - graphics.volumeSlider.x) / 100);
+    var volume = 1 - ((150 - graphics.volumeSlider.x) / 100);
+    PIXI.sound.volumeAll = volume;
   },
   runMenu: function () {
     graphics.runMenu();
@@ -481,7 +489,7 @@ var game = {
   },
 
   gameOver: function() {
-    alert('Nice work! Your score is: ' + graphics.gameScore.text);
+      //TODO alert('Nice work! Your score is: ' + graphics.gameScore.text);
   }
 }
 
