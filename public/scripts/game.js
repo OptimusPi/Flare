@@ -4,8 +4,11 @@ var game = {
 
   //player
   player: { sprite: null, battery: 100, xSpeed: 0, ySpeed: 0, left: 0, right: 0, up: 0, down: 0 },
-  beams: {}, //TODO do I need this?
-  powerupTimer: null,
+  beams: [],
+  powerups: [],
+  powerupTimer: 0,
+  wallLeft: {},
+  wallRight: {},
 
   //keyboard arrow keys
   left: keyboard(37),
@@ -38,7 +41,7 @@ var game = {
           newPosition.x = 34;
         }
         this.x = newPosition.x;
-        PIXI.sound.volumeAll = 1 - ((134-graphics.volumeSlider.x)/100);
+        game.updateSound();
     }
   },
 
@@ -67,18 +70,32 @@ var game = {
   movePlayerRight: function () {
     game.player.right = 1;
   },
-  movePlayerUp: function () {
+  movePlayerUp: function() {
     game.player.up = -1;
   },
-  movePlayerDown: function () {
+  movePlayerDown: function() {
     game.player.down = 1;
   },
-  shootProjectile: function () {
-    if(this.player.battery > 0) this.player.battery = this.player.battery - 25;
-    if(this.player.battery == 75) graphics.batteryLife.texture = graphics.batteryLifeTexture_75;
-    if(this.player.battery == 50) graphics.batteryLife.texture = graphics.batteryLifeTexture_50;
-    if(this.player.battery == 25) graphics.batteryLife.texture = graphics.batteryLifeTexture_25;
-    if(this.player.battery == 0) graphics.batteryLife.texture = graphics.batteryLifeTexture_0;
+  shootProjectile: function() {
+    if (this.player.battery === 0) return;
+
+    this.addBattery(-25);
+
+    graphics.addBeam();
+  },
+  addBattery: function(percent) {
+    game.player.battery += percent;
+
+    if (game.player.battery > 100)
+      game.player.battery = 100;
+    if (game.player.battery < 0)
+      game.player.battery = 0;
+
+    if (game.player.battery === 100) graphics.batteryLife.texture = graphics.batteryLifeTexture_100;
+    if (game.player.battery === 75) graphics.batteryLife.texture = graphics.batteryLifeTexture_75;
+    if (game.player.battery === 50) graphics.batteryLife.texture = graphics.batteryLifeTexture_50;
+    if (game.player.battery === 25) graphics.batteryLife.texture = graphics.batteryLifeTexture_25;
+    if (game.player.battery ===  0) graphics.batteryLife.texture = graphics.batteryLifeTexture_0;
   },
   //stop moving, flag that controls acceleration
   stopPlayerLeft: function () {
@@ -97,7 +114,7 @@ var game = {
   shootFlare: function () {
     //TODO shoot flare
   },
-  
+
   init: function () {
     //Left arrow key press method
     this.left.press = function () {
@@ -152,7 +169,6 @@ var game = {
     PIXI.sound.add('menu', {
         url: 'sounds/menu.ogg',
         loop: true,
-
     });
   },
   physics: function (deltaTime) {
@@ -188,6 +204,47 @@ var game = {
     } else {
       game.player.sprite.texture = graphics.shipTexture;
       game.player.sprite.frame = 0;
+    }
+
+    //move beams
+    game.beams.forEach(function (beam, index, object) {
+      beam.sprite.y += beam.ySpeed;
+      if (beam.y < -16) {
+        graphics.app.stage.removeChild(beam.sprite);
+        game.beams.splice(index, 1);
+      }
+
+      //TODO collision detection with asteroids
+    });
+
+    //spawn powerups 
+    this.powerupTimer += deltaTime;
+    if (this.powerupTimer > 1500) {
+      graphics.addPowerup();
+      this.powerupTimer= 0;
+    }
+
+    //move powerups
+    game.powerups.forEach(function (powerup, index, object)  {
+      powerup.sprite.y += powerup.ySpeed;
+
+      //TODO collision detection with ship
+      if (powerup.sprite.y > game.player.sprite.y){
+        graphics.app.stage.removeChild(powerup.sprite);
+        game.powerups.splice(index, 1);
+        game.addBattery(50);
+      }
+    });
+
+    //Run out of space!
+    game.wallLeft.sprite.x += game.wallLeft.xSpeed * deltaTime;
+    game.wallRight.sprite.x += game.wallRight.xSpeed * deltaTime;
+
+    if (this.wallLeft.sprite.x > -100) {
+      this.wallLeft.sprite.x = -100;
+    }
+    if (this.wallRight.sprite.x < 550) {
+      this.wallRight.sprite.x = 550;
     }
   }
 }

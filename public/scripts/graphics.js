@@ -21,7 +21,7 @@ var graphics = {
 	batteryLifeTexture_50: null,
 	batteryLifeTexture_25: null,
 	batteryLifeTexture_0: null,
-	batteryPowerupTexture: null,
+	powerupTexture: null,
 	shipBoostingTexture1: null,
 	shipBoostingTexture2: null,
 	shipBoostingTexture3: null,
@@ -41,8 +41,8 @@ var graphics = {
 	addSpace: function() {
 		//this.app.stage.addChild(this.space);
 		for (var i = 0; i < 200; i++) {
-			var x = Math.random() * 1000 % 960;
-			var y = Math.random() * 700 % 640;
+			var x = Math.random() * 960 % 960;
+			var y = Math.random() * 640 % 640;
 			var ySpeed = Math.random() * 1000 % 3;
 			ySpeed *= 0.04 + 1.1;
 
@@ -66,6 +66,10 @@ var graphics = {
 		this.wallRight.x = 950;
 		this.wallRight.y = 0;
 		this.app.stage.addChild(this.wallRight);
+
+		game.wallLeft = {sprite: this.wallLeft, xSpeed: 0.03};
+		game.wallRight = {sprite: this.wallRight, xSpeed: -0.03};
+		
 	},
 	addPlayer: function(x, y) {
 
@@ -120,12 +124,32 @@ var graphics = {
 			star.sprite.y += star.ySpeed * deltaTime;
 			if (star.sprite.y > 640) {
 				star.sprite.y = -star.sprite.height;
-				star.sprite.x = Math.random() * 1000 % 960;
+				star.sprite.x = Math.random() * 960 % 960;
 			}
 		});
 	},
 
-	start: function(){
+	addBeam: function() {
+		var beamSprite = new PIXI.Sprite(graphics.beamTexture);
+		beamSprite.x = game.player.sprite.x + game.player.sprite.width / 2 - this.beamTexture.width/2;
+		beamSprite.y = game.player.sprite.y;
+		graphics.app.stage.addChild(beamSprite);
+
+		var beam = { sprite: beamSprite, ySpeed: -10};
+		game.beams.push(beam);
+	},
+
+	addPowerup: function() {
+		var powerupSprite = new PIXI.Sprite(graphics.powerupTexture);
+		powerupSprite.x = game.player.sprite.x + game.player.sprite.width / 2 - this.powerupTexture.width / 2;
+		powerupSprite.y = 0;
+		graphics.app.stage.addChild(powerupSprite);
+
+		var powerup = { sprite: powerupSprite, ySpeed: 5};
+		game.powerups.push(powerup);
+	},
+
+	start: function() {
 		var type = "WebGL";
 		if(!PIXI.utils.isWebGLSupported()){
 			type = "canvas";
@@ -215,7 +239,7 @@ var graphics = {
 			graphics.batteryLifeTexture_25 = new PIXI.Texture(PIXI.loader.resources.batteryLife_25.texture);
 			graphics.batteryLifeTexture_0 = new PIXI.Texture(PIXI.loader.resources.batteryLife_0.texture);
 			graphics.batteryLife = new PIXI.Sprite(PIXI.loader.resources.batteryLife_100.texture);
-			graphics.batteryPowerupTexture = new PIXI.Texture(PIXI.loader.resources.battery.texture);
+			graphics.powerupTexture = new PIXI.Texture(PIXI.loader.resources.battery.texture);
 			
 
 			//Initialize graphics
