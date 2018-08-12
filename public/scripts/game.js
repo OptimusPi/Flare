@@ -306,11 +306,6 @@ var game = {
       this.wallRight.sprite.x = 550;
     }
 
-<<<<<<< HEAD
-   
-		
-    
-=======
   },
 
   deadPlayerPhysics: function (deltaTime) {
@@ -374,7 +369,6 @@ var game = {
       game.player.sprite.x -= 2.0;
       game.killPlayer();
     }
->>>>>>> c363062b63b16f5b4f482b08ec3066fb00401c94
   }
 }
 
