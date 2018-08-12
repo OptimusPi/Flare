@@ -12,6 +12,7 @@ var graphics = {
 	space: null,
 	stars: [],
 	starTexture: [],
+	asteroidTexture: [],
 	wallLeft: null,
 	wallRight: null,
 
@@ -149,7 +150,7 @@ var graphics = {
 	},
 
 	addAsteroid: function () {
-		var asteroidSprite = new PIXI.Sprite(graphics.astroid1Texture);
+		var asteroidSprite = new PIXI.Sprite(graphics.asteroidTexture[0]);
 		//spawn between the walls
 		asteroidSprite.x = Math.random()
 			* (game.wallRight.sprite.x - ((game.wallLeft.sprite.x + game.wallLeft.sprite.width)) - asteroidSprite.width * 2)
@@ -204,6 +205,9 @@ var graphics = {
 			.add({ name: 'star9', url: 'images/star9.png' })
 			.add({ name: 'star10', url: 'images/star10.png' })
 			.add({ name: 'asteroid1', url: 'images/asteroid1.png' })
+			.add({ name: 'asteroid2', url: 'images/asteroid2.png' })
+			.add({ name: 'asteroid3', url: 'images/asteroid3.png' })
+			.add({ name: 'asteroid4', url: 'images/asteroid4.png' })
 			.add({ name: 'beam', url: 'images/beam.png' })
 			.add({ name: 'ship', url: 'images/ship.png' })
 			.add({ name: 'shipPart1', url: 'images/ship_part1.png' })
@@ -235,7 +239,10 @@ var graphics = {
 				graphics.wallRight = new PIXI.Sprite(PIXI.loader.resources.wallRight.texture);
 
 				//Load asteroids
-				graphics.astroid1Texture = new PIXI.Texture(PIXI.loader.resources.asteroid1.texture);
+				graphics.asteroidTexture[0] = new PIXI.Texture(PIXI.loader.resources.asteroid1.texture);
+				graphics.asteroidTexture[1] = new PIXI.Texture(PIXI.loader.resources.asteroid2.texture);
+				graphics.asteroidTexture[2] = new PIXI.Texture(PIXI.loader.resources.asteroid3.texture);
+				graphics.asteroidTexture[3] = new PIXI.Texture(PIXI.loader.resources.asteroid4.texture);
 
 				//Load stars
 				graphics.starTexture[0] = new PIXI.Texture(PIXI.loader.resources.star1.texture);

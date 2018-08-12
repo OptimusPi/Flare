@@ -260,6 +260,7 @@ var game = {
 
       //this this asteroid hits players it kills them
       if (game.boxesIntersect(asteroid.sprite, game.player.sprite)) {
+        //TODO NATE
         graphics.app.stage.removeChild(asteroid.sprite);
         game.asteroids.splice(index, 1);
         game.killPlayer();
