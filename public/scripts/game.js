@@ -79,7 +79,7 @@ var game = {
   movePlayerDown: function () {
     game.player.down = 1;
   },
-  shootProjectile: function () {
+  shootBeam: function () {
     if (this.player.battery === 0) return;
 
     this.addBattery(-25);
@@ -187,8 +187,8 @@ var game = {
 
     //Right arrow key press method
     this.space.press = function () {
-      game.shootProjectile();
-      debug.log('I shot a projectile');
+      game.shootBeam();
+      debug.log('I shot a beam');
     };
     this.right.press = function () {
       game.movePlayerRight();
@@ -241,14 +241,14 @@ var game = {
 
     //spawn powerups 
     this.powerupTimer += deltaTime;
-    if (this.powerupTimer > 420) {
+    if (this.powerupTimer > 200) {
       graphics.addPowerup();
       this.powerupTimer = 0;
     }
 
     //spawn asteroids 
     this.asteroidTimer += deltaTime;
-    if (this.asteroidTimer > 100) {
+    if (this.asteroidTimer > 80) {
       graphics.addAsteroid();
       this.asteroidTimer = 0;
     }
@@ -290,7 +290,7 @@ var game = {
       if (game.boxesIntersect(powerup.sprite, game.player.sprite)) {
         graphics.app.stage.removeChild(powerup.sprite);
         game.powerups.splice(index, 1);
-        game.addBattery(50);
+        game.addBattery(100);
       }
     });
 
