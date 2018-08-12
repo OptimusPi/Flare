@@ -29,6 +29,10 @@ var graphics = {
 	shipBoostingTexture2: null,
 	shipBoostingTexture3: null,
 	shipTexture: null,
+	shipPart1Texture: null,
+	shipPart2Texture: null,
+	shipPart3Texture: null,
+	shipPart4Texture: null,
 	beamTexture: null,
 	
 	//mobile controls
@@ -183,6 +187,10 @@ var graphics = {
 		.add({name: 'star10', url: 'images/star10.png'})
 		.add({name: 'beam', url: 'images/beam.png'})
 		.add({name: 'ship', url: 'images/ship.png'})
+		.add({name: 'shipPart1', url: 'images/ship_part1.png'})
+		.add({name: 'shipPart2', url: 'images/ship_part2.png'})
+		.add({name: 'shipPart3', url: 'images/ship_part3.png'})
+		.add({name: 'shipPart4', url: 'images/ship_part4.png'})
 		.add({name: 'shipBoosting1', url: 'images/shipBoosting1.png'})
 		.add({name: 'shipBoosting2', url: 'images/shipBoosting2.png'})
 		.add({name: 'shipBoosting3', url: 'images/shipBoosting3.png'})
@@ -221,10 +229,15 @@ var graphics = {
 
 			//Load player ship
 			graphics.shipTexture = new PIXI.Texture(PIXI.loader.resources.ship.texture);
+			graphics.shipPart1Texture = new PIXI.Texture(PIXI.loader.resources.shipPart1.texture);
+			graphics.shipPart2Texture = new PIXI.Texture(PIXI.loader.resources.shipPart2.texture);
+			graphics.shipPart3Texture = new PIXI.Texture(PIXI.loader.resources.shipPart3.texture);
+			graphics.shipPart4Texture = new PIXI.Texture(PIXI.loader.resources.shipPart4.texture);
 			graphics.shipBoosting1Texture = new PIXI.Texture(PIXI.loader.resources.shipBoosting1.texture);
 			graphics.shipBoosting2Texture = new PIXI.Texture(PIXI.loader.resources.shipBoosting2.texture);
 			graphics.shipBoosting3Texture = new PIXI.Texture(PIXI.loader.resources.shipBoosting3.texture);
 
+			//laser beam on the ship
 			graphics.beamTexture = new PIXI.Texture(PIXI.loader.resources.beam.texture);
 
 			//D-pad and flare button for mobile on-screen controls
