@@ -160,7 +160,7 @@ var graphics = {
 		var asteroid = {
 			sprite: asteroidSprite, 
 			ySpeed: Math.random() + 1, 
-			xSpeed: (Math.random()*2 - 1) * 2
+			xSpeed: Math.random()*2 - 1
 		};
 		game.asteroids.push(asteroid);
 	},

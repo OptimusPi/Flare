@@ -249,14 +249,14 @@ var game = {
 
     //spawn powerups 
     this.powerupTimer += deltaTime;
-    if (this.powerupTimer > 200) {
+    if (this.powerupTimer > 1800) {
       graphics.addPowerup();
       this.powerupTimer = 0;
     }
 
     //spawn asteroids 
     this.asteroidTimer += deltaTime;
-    if (this.asteroidTimer > 20) {
+    if (this.asteroidTimer > 90) {
       graphics.addAsteroid();
       this.asteroidTimer = 0;
     }
