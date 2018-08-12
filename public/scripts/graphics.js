@@ -18,6 +18,7 @@ var graphics = {
 
 	//Text
 	gameScore: null,
+	batteryLabel: null,
 
 	//Textures
 	batteryLifeTexture_100: null,
@@ -118,6 +119,7 @@ var graphics = {
 		this.app.stage.addChild(this.volumeSlider);
 		this.app.stage.addChild(this.batteryLife);
 		this.app.stage.addChild(this.gameScore);
+		this.app.stage.addChild(this.batteryLabel);
 	},
 
 	runOverworld: function () {
@@ -288,15 +290,27 @@ var graphics = {
 				graphics.powerupTexture = new PIXI.Texture(PIXI.loader.resources.battery.texture);
 
 				//Score
-				graphics.gameScore = new PIXI.Text('SCORE: 0', {
-					fontWeight: 'bold',
+				graphics.gameScore = new PIXI.Text('Score:0', {
+					fontWeight: 'normal',
 					fontStyle: 'normal',
-					fontSize: 36,
-					fontFamily: 'Monaco',
-					fill: '#0b47d5',
-					align: 'center',
-					stroke: '#a4410e',
-					strokeThickness: 4
+					fontSize: 24,
+					fontFamily: 'Courier New',
+					fill: '#FFF',
+					align: 'left',
+					stroke: '#AAA',
+					strokeThickness: 1
+				});
+
+				//Score
+				graphics.batteryLabel = new PIXI.Text('Battery', {
+					fontWeight: 'normal',
+					fontStyle: 'normal',
+					fontSize: 24,
+					fontFamily: 'Courier New',
+					fill: '#FFF',
+					align: 'left',
+					stroke: '#AAA',
+					strokeThickness: 1
 				});
 
 
@@ -325,9 +339,12 @@ var graphics = {
 
 	init: function () {
 		// GUI elements
-		this.gameScore.x = 800;
+		this.gameScore.x = 740;
 		this.gameScore.y = 560;
-		this.gameScore.anchor.x = 0.5;
+		this.gameScore.anchor.x = 0;
+		this.batteryLabel.x = 740;
+		this.batteryLabel.y = 594;
+		this.batteryLabel.anchor.x = 0;
 		this.batteryLife.x = 850;
 		this.batteryLife.y = 600;
 		this.volumeLine.x = 50;

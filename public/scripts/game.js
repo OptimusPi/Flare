@@ -40,9 +40,6 @@ var game = {
     if (this.dragging) {
       var offset = this.data.getLocalPosition(this).x - 16;
       var x = this.data.getLocalPosition(this.parent).x;
-      
-      console.log('onDragMove(): x: ' + this.x);
-      console.log('onDragMove(): x: ' + this.x);
 
       if (x > 150) {
         x = 150;
@@ -52,11 +49,6 @@ var game = {
       }
 
       graphics.volumeSlider.x = x - 16;
-
-      
-      console.log('onDragMove(): x: ' + this.x);
-      console.log('offset: ' + offset);
-
       game.updateSound();
     }
   },
@@ -69,6 +61,7 @@ var game = {
   },
   updateSound: function () {
     var volume = 1 - ((134 - graphics.volumeSlider.x) / 100);
+    volume *= .4;//TODO sigmoid?
     PIXI.sound.volumeAll = volume;
   },
   runMenu: function () {
@@ -78,6 +71,7 @@ var game = {
   runOverworld: function () {
     graphics.runOverworld();
     game.playSound('game');
+    game.updateSound();
     game.startScore();
   },
 
@@ -150,7 +144,7 @@ var game = {
         return;
 
 			game.score += 0.0175 * deltaTime;
-			graphics.gameScore.text = 'Score: ' + Math.floor(game.score);
+			graphics.gameScore.text = 'Score:' + Math.floor(game.score);
 		});
   },
 
@@ -476,6 +470,9 @@ var game = {
       //check for asteroids
       game.asteroids.forEach(function (asteroid, index, object) {
         if (game.boxesIntersect(asteroid.sprite, beam.sprite)) {
+
+          graphics.app.stage.removeChild(beam.sprite);
+          game.beams.splice(index, 1);
 
           //remove original asteroid
           graphics.app.stage.removeChild(asteroid.sprite);
