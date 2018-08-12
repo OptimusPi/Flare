@@ -226,6 +226,41 @@ var game = {
     });
   },
   physics: function (deltaTime) {
+
+    
+    //Accelerate ship
+    var maxHorizontal = 10;
+    var maxVertical = 10;
+    horizontal = this.player.right + this.player.left;
+    vertical = this.player.down + this.player.up;
+    //X
+    this.player.xSpeed += horizontal * 0.8 * deltaTime;
+    if (this.player.xSpeed >  maxHorizontal) this.player.xSpeed = maxHorizontal;
+    if (this.player.xSpeed < -maxHorizontal) this.player.xSpeed = -maxHorizontal;
+    if (horizontal === 0) this.player.xSpeed *= 0.8 * deltaTime;
+
+    //Y
+    this.player.ySpeed += vertical * 0.8 * deltaTime;
+    if (this.player.ySpeed >  maxVertical) this.player.ySpeed = maxVertical;
+    if (this.player.ySpeed < -maxVertical) this.player.ySpeed = -maxVertical; 
+    if (vertical === 0) this.player.ySpeed *= 0.8 * deltaTime;
+
+    //Move ship based on it's calculated 
+    this.player.sprite.x += this.player.xSpeed * deltaTime;
+    this.player.sprite.y += this.player.ySpeed * deltaTime;
+
+    //Display ship boosters
+    if (horizontal !== 0 || vertical !== 0)
+    {
+      //TODO put animations in graphics.js ?
+      game.player.sprite.frame += deltaTime;
+      if (game.player.sprite.frame % 8 < 8) game.player.sprite.texture = graphics.shipBoosting3Texture;
+      if (game.player.sprite.frame % 8 < 5) game.player.sprite.texture = graphics.shipBoosting2Texture;
+      if (game.player.sprite.frame % 8 < 2) game.player.sprite.texture = graphics.shipBoosting1Texture;
+    } else {
+      game.player.sprite.texture = graphics.shipTexture;
+      game.player.sprite.frame = 0;
+    }
     //Ship physics
     if (game.player.dead === false) game.playerPhysics(deltaTime);
     if (game.player.dead === true) game.deadPlayerPhysics(deltaTime);
@@ -270,6 +305,7 @@ var game = {
     if (this.wallRight.sprite.x < 550) {
       this.wallRight.sprite.x = 550;
     }
+
   },
 
   deadPlayerPhysics: function (deltaTime) {
@@ -335,5 +371,4 @@ var game = {
     }
   }
 }
-
 

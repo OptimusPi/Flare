@@ -15,6 +15,9 @@ var graphics = {
 	wallLeft: null,
 	wallRight: null,
 
+	//Text
+	gameScore: null,
+
 	//Textures
 	batteryLifeTexture_100: null,
 	batteryLifeTexture_75: null,
@@ -112,6 +115,7 @@ var graphics = {
 		this.app.stage.addChild(this.volumeLine);
 		this.app.stage.addChild(this.volumeSlider);		
 		this.app.stage.addChild(this.batteryLife);
+		this.app.stage.addChild(this.gameScore);
 	},
 
 	runOverworld: function(){
@@ -253,6 +257,18 @@ var graphics = {
 			graphics.batteryLifeTexture_0 = new PIXI.Texture(PIXI.loader.resources.batteryLife_0.texture);
 			graphics.batteryLife = new PIXI.Sprite(PIXI.loader.resources.batteryLife_100.texture);
 			graphics.powerupTexture = new PIXI.Texture(PIXI.loader.resources.battery.texture);
+
+			//Score
+			graphics.gameScore = new PIXI.Text('SCORE: 0', {
+				fontWeight: 'bold',
+				fontStyle: 'italic',
+				fontSize: 36,
+				fontFamily: 'Arvo',
+				fill: '#3e1707',
+				align: 'center',
+				stroke: '#a4410e',
+				strokeThickness: 4
+			});
 			
 
 			//Initialize graphics
@@ -280,6 +296,9 @@ var graphics = {
 
 	init: function() {
 		// GUI elements
+		this.gameScore.x = 800;
+		this.gameScore.y = 560;
+		this.gameScore.anchor.x = 0.5;
 		this.batteryLife.x = 850;
 		this.batteryLife.y = 600;
 		this.volumeLine.x = 50;
@@ -332,8 +351,14 @@ var graphics = {
 		this.volumeSlider.on('pointerupoutside', game.onDragEnd);
 		this.volumeSlider.on('pointerup', game.updateSound);
 		this.volumeSlider.on('pointermove', game.onDragMove);
-
 		//Start the game!
+
+		var score = 0;
+		this.app.ticker.add(function() {
+			score = score + 0.0175;
+			graphics.gameScore.text = 'SCORE: ' + Math.floor(score);
+		});
+
 		game.init();
 		game.runOverworld(); //TODO add main menu
 	}
