@@ -3,7 +3,8 @@ debug.log('game.js');
 var game = {
 
   //player
-  player: { sprite: null, battery: 100, xSpeed: 0, ySpeed: 0, left: 0, right: 0, up: 0, down: 0 },
+  player: { sprite: null, dead: false, battery: 100, xSpeed: 0, ySpeed: 0, left: 0, right: 0, up: 0, down: 0 },
+  shipParts: [],
   beams: [],
   powerups: [],
   powerupTimer: 0,
@@ -18,43 +19,43 @@ var game = {
   space: keyboard(32),
 
   //Functions
-  onDragStart: function(event){
+  onDragStart: function (event) {
     this.data = event.data;
     this.alpha = 0.6;
     this.dragging = true;
   },
 
-  onDragEnd: function(){
+  onDragEnd: function () {
     this.alpha = 1;
     this.dragging = false;
-    this.data= null;
+    this.data = null;
   },
 
-  onDragMove: function(){
+  onDragMove: function () {
     if (this.dragging) {
       var newPosition =
         this.data.getLocalPosition(this.parent);
-        if (newPosition.x > 134){
-          newPosition.x = 134;
-        }
-        if (newPosition.x < 34){
-          newPosition.x = 34;
-        }
-        this.x = newPosition.x;
-        game.updateSound();
+      if (newPosition.x > 134) {
+        newPosition.x = 134;
+      }
+      if (newPosition.x < 34) {
+        newPosition.x = 34;
+      }
+      this.x = newPosition.x;
+      game.updateSound();
     }
   },
 
-  playSound: function(sound){
+  playSound: function (sound) {
     PIXI.sound.play(sound);
   },
   stopSound: function (sound) {
     PIXI.sound.play(sound);
   },
-  updateSound: function(){
-    PIXI.sound.volumeAll = 1 - ((134-graphics.volumeSlider.x)/100);
+  updateSound: function () {
+    PIXI.sound.volumeAll = 1 - ((134 - graphics.volumeSlider.x) / 100);
   },
-  runMenu: function(){
+  runMenu: function () {
     graphics.runMenu();
     game.playSound('menu');
   },
@@ -70,20 +71,20 @@ var game = {
   movePlayerRight: function () {
     game.player.right = 1;
   },
-  movePlayerUp: function() {
+  movePlayerUp: function () {
     game.player.up = -1;
   },
-  movePlayerDown: function() {
+  movePlayerDown: function () {
     game.player.down = 1;
   },
-  shootProjectile: function() {
+  shootProjectile: function () {
     if (this.player.battery === 0) return;
 
     this.addBattery(-25);
 
     graphics.addBeam();
   },
-  addBattery: function(percent) {
+  addBattery: function (percent) {
     game.player.battery += percent;
 
     if (game.player.battery > 100)
@@ -95,7 +96,7 @@ var game = {
     if (game.player.battery === 75) graphics.batteryLife.texture = graphics.batteryLifeTexture_75;
     if (game.player.battery === 50) graphics.batteryLife.texture = graphics.batteryLifeTexture_50;
     if (game.player.battery === 25) graphics.batteryLife.texture = graphics.batteryLifeTexture_25;
-    if (game.player.battery ===  0) graphics.batteryLife.texture = graphics.batteryLifeTexture_0;
+    if (game.player.battery === 0) graphics.batteryLife.texture = graphics.batteryLifeTexture_0;
   },
   //stop moving, flag that controls acceleration
   stopPlayerLeft: function () {
@@ -115,11 +116,57 @@ var game = {
     //TODO shoot flare
   },
 
-  boxesIntersect: function (a, b)
-  {
+  boxesIntersect: function (a, b) {
     var ab = a.getBounds();
     var bb = b.getBounds();
     return ab.x + ab.width > bb.x && ab.x < bb.x + bb.width && ab.y + ab.height > bb.y && ab.y < bb.y + bb.height;
+  },
+
+  killPlayer: function () {
+    //Make dead ship pieces
+    this.shipParts[0] = {
+      sprite: new PIXI.Sprite(graphics.shipPart1Texture), xSpeed: -4, ySpeed: -4, dead: false
+    };
+    this.shipParts[1] = {
+      sprite: new PIXI.Sprite(graphics.shipPart2Texture), xSpeed: -4, ySpeed: -4, dead: false
+    };
+    this.shipParts[2] = {
+      sprite: new PIXI.Sprite(graphics.shipPart3Texture), xSpeed: -4, ySpeed: -4, dead: false
+    };
+    this.shipParts[3] = {
+      sprite: new PIXI.Sprite(graphics.shipPart4Texture), xSpeed: -4, ySpeed: -4, dead: false
+    };
+    //
+    //Position dead ship parts in each corner
+    //
+    //top left
+    this.shipParts[0].sprite.x = game.player.sprite.x;
+    this.shipParts[0].sprite.y = game.player.sprite.y;
+
+    //top right
+    this.shipParts[1].sprite.x = game.player.sprite.x + 32;
+    this.shipParts[1].sprite.y = game.player.sprite.y;
+
+    //bottom left
+    this.shipParts[2].sprite.x = game.player.sprite.x;
+    this.shipParts[2].sprite.y = game.player.sprite.y + 32;
+
+    //bottom right
+    this.shipParts[3].sprite.x = game.player.sprite.x + 32;
+    this.shipParts[3].sprite.y = game.player.sprite.y + 32;
+
+    //add ship pieces to the screen
+    graphics.app.stage.addChild(game.shipParts[0].sprite);
+    graphics.app.stage.addChild(game.shipParts[1].sprite);
+    graphics.app.stage.addChild(game.shipParts[2].sprite);
+    graphics.app.stage.addChild(game.shipParts[3].sprite);
+
+    //remove original ship
+    graphics.app.stage.removeChild(game.player.sprite);
+
+    //mark player as dead
+    //TODO game over screen
+    game.player.dead = true;
   },
 
   init: function () {
@@ -169,13 +216,13 @@ var game = {
 
     //Game music
     PIXI.sound.add('game', {
-        url: 'sounds/game.ogg', 
-        loop: true,
+      url: 'sounds/game.ogg',
+      loop: true,
     });
     //Menu music
     PIXI.sound.add('menu', {
-        url: 'sounds/menu.ogg',
-        loop: true,
+      url: 'sounds/menu.ogg',
+      loop: true,
     });
   },
   physics: function (deltaTime) {
@@ -214,6 +261,9 @@ var game = {
       game.player.sprite.texture = graphics.shipTexture;
       game.player.sprite.frame = 0;
     }
+    //Ship physics
+    if (game.player.dead === false) game.playerPhysics(deltaTime);
+    if (game.player.dead === true) game.deadPlayerPhysics(deltaTime);
 
     //move beams
     game.beams.forEach(function (beam, index, object) {
@@ -225,20 +275,20 @@ var game = {
       //TODO collision detection with asteroids
     });
 
-    
+
     //spawn powerups 
     this.powerupTimer += deltaTime;
     if (this.powerupTimer > 200) {
       graphics.addPowerup();
-      this.powerupTimer= 0;
+      this.powerupTimer = 0;
     }
 
     //move powerups
-    game.powerups.forEach(function (powerup, index, object)  {
+    game.powerups.forEach(function (powerup, index, object) {
       powerup.sprite.y += powerup.ySpeed;
 
       //TODO collision detection with ship
-      if (game.boxesIntersect(powerup.sprite, game.player.sprite)){
+      if (game.boxesIntersect(powerup.sprite, game.player.sprite)) {
         graphics.app.stage.removeChild(powerup.sprite);
         game.powerups.splice(index, 1);
         game.addBattery(50);
@@ -256,9 +306,75 @@ var game = {
       this.wallRight.sprite.x = 550;
     }
 
+<<<<<<< HEAD
    
 		
     
+=======
+  },
+
+  deadPlayerPhysics: function (deltaTime) {
+    for (var i = 0; i < 4; i++) {
+      if (game.shipPart[i].dead === true)continue;
+      game.shipPart[i].sprite.x += game.shipPart[i].xSpeed * deltaTime;
+      game.shipPart[i].sprite.y += game.shipPart[i].ySpeed * deltaTime;
+
+      //check for walls
+      if (this.boxesIntersect(game.shipPart[i].sprite, game.wallLeft.sprite) ||
+        this.boxesIntersect(game.shipPart[i].sprite, game.wallRight.sprite)) {
+        this.shipPart[i].dead = true;
+        graphics.app.stage.addChild(this.shipPart[i].sprite);
+      }
+      //todo check asteroids
+    }
+  },
+  playerPhysics: function (deltaTime) {
+    //Accelerate ship
+    var maxHorizontal = 7;
+    var maxVertical = 7;
+    horizontal = this.player.right + this.player.left;
+    vertical = this.player.down + this.player.up;
+    //X
+    this.player.xSpeed += horizontal * 0.5 * deltaTime;
+    if (this.player.xSpeed > maxHorizontal) this.player.xSpeed = maxHorizontal;
+    if (this.player.xSpeed < -maxHorizontal) this.player.xSpeed = -maxHorizontal;
+    if (horizontal === 0) this.player.xSpeed *= 0.91 * deltaTime;
+
+    //Y
+    this.player.ySpeed += vertical * 0.5 * deltaTime;
+    if (this.player.ySpeed > maxVertical) this.player.ySpeed = maxVertical;
+    if (this.player.ySpeed < -maxVertical) this.player.ySpeed = -maxVertical;
+    if (vertical === 0) this.player.ySpeed *= 0.91 * deltaTime;
+
+    //Move ship based on it's calculated 
+    this.player.sprite.x += this.player.xSpeed * deltaTime;
+    this.player.sprite.y += this.player.ySpeed * deltaTime;
+
+    //Display ship boosters
+    if (horizontal !== 0 || vertical !== 0) {
+      //TODO put animations in graphics.js ?
+      game.player.sprite.frame += deltaTime;
+      if (game.player.sprite.frame % 8 < 8) game.player.sprite.texture = graphics.shipBoosting3Texture;
+      if (game.player.sprite.frame % 8 < 5) game.player.sprite.texture = graphics.shipBoosting2Texture;
+      if (game.player.sprite.frame % 8 < 2) game.player.sprite.texture = graphics.shipBoosting1Texture;
+    } else {
+      game.player.sprite.frame = 0;
+      game.player.sprite.frame += deltaTime;
+      if (game.player.sprite.frame % 8 < 5) game.player.sprite.texture = graphics.upArrow.texture;
+      if (game.player.sprite.frame % 8 < 2) game.player.sprite.texture = graphics.shipBoosting3Texture;
+    }
+    //bounce off the walls! 
+    if (game.boxesIntersect(this.wallLeft.sprite, game.player.sprite)) {
+      game.player.xSpeed *= -1.75;//bounce off the walls! 
+      game.player.sprite.x += 2;
+      game.killPlayer();
+    }
+    if (game.boxesIntersect(this.wallRight.sprite, game.player.sprite)) {
+      game.player.xSpeed *= -1.75;//bounce off the walls! 
+      game.player.sprite.x -= 2.0;
+      game.killPlayer();
+    }
+>>>>>>> c363062b63b16f5b4f482b08ec3066fb00401c94
   }
 }
 
