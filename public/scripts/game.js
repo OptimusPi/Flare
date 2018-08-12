@@ -68,7 +68,7 @@ var game = {
     PIXI.sound.play(sound);
   },
   updateSound: function () {
-    var volume = 1 - ((150 - graphics.volumeSlider.x) / 100);
+    var volume = 1 - ((134 - graphics.volumeSlider.x) / 100);
     PIXI.sound.volumeAll = volume;
   },
   runMenu: function () {
