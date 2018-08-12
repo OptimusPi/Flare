@@ -19,10 +19,14 @@ var game = {
   right: keyboard(39),
   down: keyboard(40),
   space: keyboard(32),
+  shift: keyboard(16),
 
   //Functions
   onDragStart: function (event) {
     this.data = event.data;
+    var position = this.data.getLocalPosition(this);
+    this.pivot.set(position.x, position.y);
+    this.position.set(this.data.global.x, this.data.global.y);
     this.alpha = 0.6;
     this.dragging = true;
   },
@@ -37,11 +41,11 @@ var game = {
     if (this.dragging) {
       var newPosition =
         this.data.getLocalPosition(this.parent);
-      if (newPosition.x > 134) {
-        newPosition.x = 134;
+      if (newPosition.x > 150) {
+        newPosition.x = 150;
       }
-      if (newPosition.x < 34) {
-        newPosition.x = 34;
+      if (newPosition.x < 50) {
+        newPosition.x = 50;
       }
       this.x = newPosition.x;
       game.updateSound();
@@ -115,7 +119,11 @@ var game = {
   },
 
   shootFlare: function () {
-    //TODO shoot flare
+    if(this.player.battery == 100){
+      graphics.wallLeft.x = -500;
+      graphics.wallRight.x = 950;
+      this.addBattery(-100);
+    }
   },
 
   boxesIntersect: function (a, b) {
@@ -207,6 +215,11 @@ var game = {
     this.up.release = function () {
       game.stopPlayerUp();
       debug.log('I released up.');
+    };
+    //shift button press
+    this.shift.press = function () {
+          game.shootFlare();
+          debug.log('I pressed shift');
     };
 
     //Down arrow key press method

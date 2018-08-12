@@ -290,10 +290,10 @@ var graphics = {
 				//Score
 				graphics.gameScore = new PIXI.Text('SCORE: 0', {
 					fontWeight: 'bold',
-					fontStyle: 'italic',
+					fontStyle: 'normal',
 					fontSize: 36,
-					fontFamily: 'Arvo',
-					fill: '#3e1707',
+					fontFamily: 'Monaco',
+					fill: '#0b47d5',
 					align: 'center',
 					stroke: '#a4410e',
 					strokeThickness: 4
