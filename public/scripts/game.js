@@ -6,6 +6,7 @@ var game = {
   player: { sprite: null, dead: false, battery: 100, xSpeed: 0, ySpeed: 0, left: 0, right: 0, up: 0, down: 0 },
   shipParts: [],
   beams: [],
+  flares: [],
   powerups: [],
   asteroids: [],
   asteroidPieces: [],
@@ -126,12 +127,14 @@ var game = {
 
   shootFlare: function () {
     if(this.player.battery == 100){
-      graphics.wallLeft.x = -500;
-      graphics.wallRight.x = 950;
+      graphics.addFlare();
       this.addBattery(-100);
     }
   },
-
+  resetWalls: function() {
+    graphics.wallLeft.x = -500;
+    graphics.wallRight.x = 950;
+  },
   boxesIntersect: function (a, b) {
     var ab = a.getBounds();
     var bb = b.getBounds();
@@ -306,6 +309,9 @@ var game = {
 
     //laser beam projectile physics
     game.beamPhysics(deltaTime);
+    
+    //flare physucs
+    game.flarePhysics(deltaTime);
 
     //asteroids and broken asteroid pieces physics
     game.asteroidPhysics(deltaTime);
@@ -458,6 +464,19 @@ var game = {
     }
   },
 
+  flarePhysics: function (deltaTime) {
+    //move flares to the right
+    game.flares.forEach(function (flare, index, object) {
+      //move to the right
+      flare.sprite.x += flare.xSpeed * deltaTime;
+
+      //Check if it hits the wall, then get rid of it
+      if (game.boxesIntersect(flare.sprite, game.wallRight.sprite)){
+        graphics.app.stage.removeChild(flare.sprite);
+        game.resetWalls();
+      }
+    });
+  },
   beamPhysics: function (deltaTime) {
     //move beams
     game.beams.forEach(function (beam, index, object) {
