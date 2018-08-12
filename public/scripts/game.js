@@ -61,8 +61,9 @@ var game = {
   },
   updateSound: function () {
     var volume = 1 - ((134 - graphics.volumeSlider.x) / 100);
-    volume *= .4;//TODO sigmoid?
+    volume = volume * volume;
     PIXI.sound.volumeAll = volume;
+    console.log('volume: ' + volume);
   },
   runMenu: function () {
     graphics.runMenu();
