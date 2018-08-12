@@ -230,33 +230,25 @@ var game = {
       loop: true,
     });
   },
+
   physics: function (deltaTime) {
 
     //Ship physics
     if (game.player.dead === false) game.playerPhysics(deltaTime);
     if (game.player.dead === true) game.deadPlayerPhysics(deltaTime);
 
-    //move beams
-    game.beams.forEach(function (beam, index, object) {
-      beam.sprite.y += beam.ySpeed;
-      if (beam.y < -16) {
-        graphics.app.stage.removeChild(beam.sprite);
-        game.beams.splice(index, 1);
-      }
-      //TODO collision detection with asteroids
-    });
-
+    game.beamPhysics(deltaTime);
 
     //spawn powerups 
     this.powerupTimer += deltaTime;
-    if (this.powerupTimer > 1800) {
+    if (this.powerupTimer > 420) {
       graphics.addPowerup();
       this.powerupTimer = 0;
     }
 
     //spawn asteroids 
     this.asteroidTimer += deltaTime;
-    if (this.asteroidTimer > 90) {
+    if (this.asteroidTimer > 100) {
       graphics.addAsteroid();
       this.asteroidTimer = 0;
     }
@@ -331,6 +323,7 @@ var game = {
       }
     }
   },
+
   playerPhysics: function (deltaTime) {
     //Accelerate ship
     var maxHorizontal = 6;
@@ -375,6 +368,27 @@ var game = {
       game.player.xSpeed *= -1.75;//bounce off the walls! 
       game.player.sprite.x -= 2.0;
     }
+  },
+  beamPhysics: function (deltaTime) {
+    //move beams
+    game.beams.forEach(function (beam, index, object) {
+      //move upward
+      beam.sprite.y += beam.ySpeed * deltaTime;
+      //if it moves off screen get rid of it
+      if (beam.y < -16) {
+        graphics.app.stage.removeChild(beam.sprite);
+        game.beams.splice(index, 1);
+      }
+      //check for asteroids
+      game.asteroids.forEach(function (asteroid, index, object) {
+        if (game.boxesIntersect(asteroid.sprite, beam.sprite)) {
+          graphics.app.stage.removeChild(beam.sprite);
+          game.beams.splice(index, 1);
+          graphics.app.stage.removeChild(asteroid.sprite);
+          game.asteroids.splice(index, 1);
+        }
+      });
+    });
   }
 }
 

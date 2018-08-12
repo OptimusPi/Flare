@@ -75,8 +75,8 @@ var graphics = {
 		this.wallRight.y = 0;
 		this.app.stage.addChild(this.wallRight);
 
-		game.wallLeft = { sprite: this.wallLeft, xSpeed: 0.1 };
-		game.wallRight = { sprite: this.wallRight, xSpeed: -0.1 };
+		game.wallLeft = { sprite: this.wallLeft, xSpeed: 0.08 };
+		game.wallRight = { sprite: this.wallRight, xSpeed: -0.08 };
 
 	},
 	addPlayer: function (x, y) {
@@ -171,7 +171,7 @@ var graphics = {
 		powerupSprite.y = 0;
 		graphics.app.stage.addChild(powerupSprite);
 
-		var powerup = { sprite: powerupSprite, ySpeed: 5 };
+		var powerup = { sprite: powerupSprite, ySpeed: 3.14 };
 		game.powerups.push(powerup);
 	},
 
