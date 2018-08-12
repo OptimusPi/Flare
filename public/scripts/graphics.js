@@ -12,7 +12,7 @@ var graphics = {
 	space: null,
 	stars: [],
 	starTexture: [],
-	asteroidTexture: [],
+	asteroidsTexture: [],
 	wallLeft: null,
 	wallRight: null,
 
@@ -142,15 +142,15 @@ var graphics = {
 	addBeam: function () {
 		var beamSprite = new PIXI.Sprite(graphics.beamTexture);
 		beamSprite.x = game.player.sprite.x + game.player.sprite.width / 2 - this.beamTexture.width / 2;
-		beamSprite.y = game.player.sprite.y;
+		beamSprite.y = game.player.sprite.y - this.beamTexture.height;
 		graphics.app.stage.addChild(beamSprite);
 
-		var beam = { sprite: beamSprite, ySpeed: -28 };
+		var beam = { sprite: beamSprite, ySpeed: -30 };
 		game.beams.push(beam);
 	},
 
 	addAsteroid: function () {
-		var asteroidSprite = new PIXI.Sprite(graphics.asteroidTexture[0]);
+		var asteroidSprite = new PIXI.Sprite(graphics.asteroidsTexture[0]);
 		//spawn between the walls
 		asteroidSprite.x = Math.random()
 			* (game.wallRight.sprite.x - ((game.wallLeft.sprite.x + game.wallLeft.sprite.width)) - asteroidSprite.width * 2)
@@ -239,10 +239,10 @@ var graphics = {
 				graphics.wallRight = new PIXI.Sprite(PIXI.loader.resources.wallRight.texture);
 
 				//Load asteroids
-				graphics.asteroidTexture[0] = new PIXI.Texture(PIXI.loader.resources.asteroid1.texture);
-				graphics.asteroidTexture[1] = new PIXI.Texture(PIXI.loader.resources.asteroid2.texture);
-				graphics.asteroidTexture[2] = new PIXI.Texture(PIXI.loader.resources.asteroid3.texture);
-				graphics.asteroidTexture[3] = new PIXI.Texture(PIXI.loader.resources.asteroid4.texture);
+				graphics.asteroidsTexture[0] = new PIXI.Texture(PIXI.loader.resources.asteroid1.texture);
+				graphics.asteroidsTexture[1] = new PIXI.Texture(PIXI.loader.resources.asteroid2.texture);
+				graphics.asteroidsTexture[2] = new PIXI.Texture(PIXI.loader.resources.asteroid3.texture);
+				graphics.asteroidsTexture[3] = new PIXI.Texture(PIXI.loader.resources.asteroid4.texture);
 
 				//Load stars
 				graphics.starTexture[0] = new PIXI.Texture(PIXI.loader.resources.star1.texture);
@@ -380,14 +380,8 @@ var graphics = {
 		this.volumeSlider.on('pointerupoutside', game.onDragEnd);
 		this.volumeSlider.on('pointerup', game.updateSound);
 		this.volumeSlider.on('pointermove', game.onDragMove);
+		
 		//Start the game!
-
-		var score = 0;
-		this.app.ticker.add(function () {
-			score = score + 0.0175;
-			graphics.gameScore.text = 'SCORE: ' + Math.floor(score);
-		});
-
 		game.init();
 		game.runOverworld(); //TODO add main menu
 	}
