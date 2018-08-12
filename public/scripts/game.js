@@ -231,7 +231,7 @@ var game = {
     });
   },
   physics: function (deltaTime) {
-    
+
     //Ship physics
     if (game.player.dead === false) game.playerPhysics(deltaTime);
     if (game.player.dead === true) game.deadPlayerPhysics(deltaTime);
@@ -256,7 +256,7 @@ var game = {
 
     //spawn asteroids 
     this.asteroidTimer += deltaTime;
-    if (this.asteroidTimer > 100) {
+    if (this.asteroidTimer > 20) {
       graphics.addAsteroid();
       this.asteroidTimer = 0;
     }
@@ -264,14 +264,33 @@ var game = {
     //move asteroids
     game.asteroids.forEach(function (asteroid, index, object) {
       asteroid.sprite.y += asteroid.ySpeed;
+      asteroid.sprite.x += asteroid.xSpeed;
 
+      //this this asteroid hits players it kills them
       if (game.boxesIntersect(asteroid.sprite, game.player.sprite)) {
         graphics.app.stage.removeChild(asteroid.sprite);
         game.asteroids.splice(index, 1);
         game.killPlayer();
       }
+
+      //bounce off the walls! 
+      if (game.boxesIntersect(game.wallLeft.sprite, asteroid.sprite)) {
+        asteroid.xSpeed *= -1;//bounce off the walls! 
+        asteroid.sprite.x += 2;
+      }
+      if (game.boxesIntersect(game.wallRight.sprite, asteroid.sprite)) {
+        asteroid.xSpeed *= -1;//bounce off the walls! 
+        asteroid.sprite.x -= 2.0;
+      }
+
+      //disappear off screen
+      if (asteroid.y > 640) {
+        graphics.app.stage.removeChild(asteroid.sprite);
+        game.asteroids.splice(index, 1);
+      }
+
     });
-        
+
     //move powerups
     game.powerups.forEach(function (powerup, index, object) {
       powerup.sprite.y += powerup.ySpeed;
@@ -310,7 +329,6 @@ var game = {
         graphics.app.stage.removeChild(this.shipParts[i].sprite);
         game.shipParts[i].dead = true;
       }
-      //todo check asteroids
     }
   },
   playerPhysics: function (deltaTime) {

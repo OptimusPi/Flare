@@ -52,13 +52,13 @@ var graphics = {
 			var x = Math.random() * 960 % 960;
 			var y = Math.random() * 640 % 640;
 			var ySpeed = Math.random() * 1000 % 3;
-			ySpeed *= 0.04 + 1.1;
+			ySpeed *= 0.04 + 0.9;
 
 			var img = Math.ceil(Math.random() * 20) - 1;
 
 			var star = {
 				sprite: new PIXI.Sprite(this.starTexture[img]),
-				ySpeed: ySpeed * 0.04 + 1.1
+				ySpeed: ySpeed * 0.04 + 0.8
 			};
 			star.sprite.x = x;
 			star.sprite.y = y;
@@ -152,12 +152,16 @@ var graphics = {
 		var asteroidSprite = new PIXI.Sprite(graphics.astroid1Texture);
 		//spawn between the walls
 		asteroidSprite.x = Math.random()
-			* (game.wallRight.sprite.x - ((game.wallLeft.sprite.x + game.wallLeft.sprite.width)) - asteroidSprite.width*2)
+			* (game.wallRight.sprite.x - ((game.wallLeft.sprite.x + game.wallLeft.sprite.width)) - asteroidSprite.width * 2)
 			+ game.wallLeft.sprite.x + game.wallLeft.sprite.width + asteroidSprite.width;
 		asteroidSprite.y = -30;
 		graphics.app.stage.addChild(asteroidSprite);
 
-		var asteroid = { sprite: asteroidSprite, ySpeed: 1.75 };
+		var asteroid = {
+			sprite: asteroidSprite, 
+			ySpeed: Math.random() + 1, 
+			xSpeed: (Math.random()*2 - 1) * 2
+		};
 		game.asteroids.push(asteroid);
 	},
 
