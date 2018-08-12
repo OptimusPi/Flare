@@ -185,32 +185,33 @@ var game = {
     horizontal = this.player.right + this.player.left;
     vertical = this.player.down + this.player.up;
     //X
-    this.player.xSpeed += horizontal * 0.8 * deltaTime;
+    this.player.xSpeed += horizontal * 0.35 * deltaTime;
     if (this.player.xSpeed >  maxHorizontal) this.player.xSpeed = maxHorizontal;
     if (this.player.xSpeed < -maxHorizontal) this.player.xSpeed = -maxHorizontal;
-    if (horizontal === 0) this.player.xSpeed *= 0.8 * deltaTime;
+    if (horizontal === 0) this.player.xSpeed *= 0.92 * deltaTime;
 
     //Y
-    this.player.ySpeed += vertical * 0.8 * deltaTime;
+    this.player.ySpeed += vertical * 0.35 * deltaTime;
     if (this.player.ySpeed >  maxVertical) this.player.ySpeed = maxVertical;
     if (this.player.ySpeed < -maxVertical) this.player.ySpeed = -maxVertical; 
-    if (vertical === 0) this.player.ySpeed *= 0.8 * deltaTime;
+    if (vertical === 0) this.player.ySpeed *= 0.92 * deltaTime;
 
     //Move ship based on it's calculated 
     this.player.sprite.x += this.player.xSpeed * deltaTime;
     this.player.sprite.y += this.player.ySpeed * deltaTime;
 
     //Display ship boosters
-    if (horizontal !== 0 || vertical !== 0)
-    {
+    if (horizontal !== 0 || vertical !== 0){
       //TODO put animations in graphics.js ?
       game.player.sprite.frame += deltaTime;
       if (game.player.sprite.frame % 8 < 8) game.player.sprite.texture = graphics.shipBoosting3Texture;
       if (game.player.sprite.frame % 8 < 5) game.player.sprite.texture = graphics.shipBoosting2Texture;
       if (game.player.sprite.frame % 8 < 2) game.player.sprite.texture = graphics.shipBoosting1Texture;
     } else {
-      game.player.sprite.texture = graphics.shipTexture;
       game.player.sprite.frame = 0;
+      game.player.sprite.frame += deltaTime;
+      if (game.player.sprite.frame % 8 < 5) game.player.sprite.texture = graphics.shipTexture;
+      if (game.player.sprite.frame % 8 < 2) game.player.sprite.texture = graphics.shipBoosting3Texture;
     }
 
     //move beams
@@ -228,7 +229,7 @@ var game = {
     this.powerupTimer += deltaTime;
     if (this.powerupTimer > 200) {
       graphics.addPowerup();
-      this.powerupTimer= 0;
+      this.powerupTimer = 0;
     }
 
     //move powerups
@@ -252,6 +253,15 @@ var game = {
     }
     if (this.wallRight.sprite.x < 550) {
       this.wallRight.sprite.x = 550;
+    }
+    //bounce off the walls! 
+    if (game.boxesIntersect(this.wallLeft.sprite, game.player.sprite)){
+      game.player.xSpeed *= -1.75;//bounce off the walls! 
+      game.player.sprite.x += 2;
+    }
+    if (game.boxesIntersect(this.wallRight.sprite, game.player.sprite)){
+      game.player.xSpeed *= -1.75;//bounce off the walls! 
+      game.player.sprite.x -= 2.0;
     }
   }
 }
