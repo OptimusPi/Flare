@@ -128,13 +128,13 @@ var game = {
       sprite: new PIXI.Sprite(graphics.shipPart1Texture), xSpeed: -4, ySpeed: -4, dead: false
     };
     this.shipParts[1] = {
-      sprite: new PIXI.Sprite(graphics.shipPart2Texture), xSpeed: -4, ySpeed: -4, dead: false
+      sprite: new PIXI.Sprite(graphics.shipPart2Texture), xSpeed: 4, ySpeed: -4, dead: false
     };
     this.shipParts[2] = {
-      sprite: new PIXI.Sprite(graphics.shipPart3Texture), xSpeed: -4, ySpeed: -4, dead: false
+      sprite: new PIXI.Sprite(graphics.shipPart3Texture), xSpeed: -4, ySpeed: 4, dead: false
     };
     this.shipParts[3] = {
-      sprite: new PIXI.Sprite(graphics.shipPart4Texture), xSpeed: -4, ySpeed: -4, dead: false
+      sprite: new PIXI.Sprite(graphics.shipPart4Texture), xSpeed: 4, ySpeed: 4, dead: false
     };
     //
     //Position dead ship parts in each corner
@@ -310,15 +310,15 @@ var game = {
 
   deadPlayerPhysics: function (deltaTime) {
     for (var i = 0; i < 4; i++) {
-      if (game.shipPart[i].dead === true)continue;
-      game.shipPart[i].sprite.x += game.shipPart[i].xSpeed * deltaTime;
-      game.shipPart[i].sprite.y += game.shipPart[i].ySpeed * deltaTime;
+      if (game.shipParts[i].dead === true) continue;
+      game.shipParts[i].sprite.x += game.shipParts[i].xSpeed * deltaTime;
+      game.shipParts[i].sprite.y += game.shipParts[i].ySpeed * deltaTime;
 
       //check for walls
-      if (this.boxesIntersect(game.shipPart[i].sprite, game.wallLeft.sprite) ||
-        this.boxesIntersect(game.shipPart[i].sprite, game.wallRight.sprite)) {
-        this.shipPart[i].dead = true;
-        graphics.app.stage.addChild(this.shipPart[i].sprite);
+      if (this.boxesIntersect(game.shipParts[i].sprite, game.wallLeft.sprite) ||
+        this.boxesIntersect(game.shipParts[i].sprite, game.wallRight.sprite)) {
+        graphics.app.stage.removeChild(this.shipParts[i].sprite);
+        game.shipParts[i].dead = true;
       }
       //todo check asteroids
     }
@@ -355,8 +355,8 @@ var game = {
     } else {
       game.player.sprite.frame = 0;
       game.player.sprite.frame += deltaTime;
-      if (game.player.sprite.frame % 8 < 5) game.player.sprite.texture = graphics.upArrow.texture;
-      if (game.player.sprite.frame % 8 < 2) game.player.sprite.texture = graphics.shipBoosting3Texture;
+      if (game.player.sprite.frame % 8 < 8) game.player.sprite.texture = graphics.shipTexture;
+      if (game.player.sprite.frame % 8 < 4) game.player.sprite.texture = graphics.shipBoosting1Texture;
     }
     //bounce off the walls! 
     if (game.boxesIntersect(this.wallLeft.sprite, game.player.sprite)) {
