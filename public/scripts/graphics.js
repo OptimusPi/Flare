@@ -144,7 +144,7 @@ var graphics = {
 		beamSprite.y = game.player.sprite.y;
 		graphics.app.stage.addChild(beamSprite);
 
-		var beam = { sprite: beamSprite, ySpeed: -10 };
+		var beam = { sprite: beamSprite, ySpeed: -28 };
 		game.beams.push(beam);
 	},
 
