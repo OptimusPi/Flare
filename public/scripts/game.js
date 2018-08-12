@@ -256,7 +256,7 @@ var game = {
 
     //spawn asteroids 
     this.asteroidTimer += deltaTime;
-    if (this.asteroidTimer > 15) {
+    if (this.asteroidTimer > 100) {
       graphics.addAsteroid();
       this.asteroidTimer = 0;
     }
@@ -315,21 +315,21 @@ var game = {
   },
   playerPhysics: function (deltaTime) {
     //Accelerate ship
-    var maxHorizontal = 7;
-    var maxVertical = 7;
+    var maxHorizontal = 6;
+    var maxVertical = 6;
     horizontal = this.player.right + this.player.left;
     vertical = this.player.down + this.player.up;
     //X
-    this.player.xSpeed += horizontal * 0.5 * deltaTime;
+    this.player.xSpeed += horizontal * 0.4 * deltaTime;
     if (this.player.xSpeed > maxHorizontal) this.player.xSpeed = maxHorizontal;
     if (this.player.xSpeed < -maxHorizontal) this.player.xSpeed = -maxHorizontal;
-    if (horizontal === 0) this.player.xSpeed *= 0.91 * deltaTime;
+    if (horizontal === 0) this.player.xSpeed *= 0.8 * deltaTime;
 
     //Y
-    this.player.ySpeed += vertical * 0.5 * deltaTime;
+    this.player.ySpeed += vertical * 0.4 * deltaTime;
     if (this.player.ySpeed > maxVertical) this.player.ySpeed = maxVertical;
     if (this.player.ySpeed < -maxVertical) this.player.ySpeed = -maxVertical;
-    if (vertical === 0) this.player.ySpeed *= 0.91 * deltaTime;
+    if (vertical === 0) this.player.ySpeed *= 0.8 * deltaTime;
 
     //Move ship based on it's calculated 
     this.player.sprite.x += this.player.xSpeed * deltaTime;
@@ -352,12 +352,10 @@ var game = {
     if (game.boxesIntersect(this.wallLeft.sprite, game.player.sprite)) {
       game.player.xSpeed *= -1.75;//bounce off the walls! 
       game.player.sprite.x += 2;
-      game.killPlayer();
     }
     if (game.boxesIntersect(this.wallRight.sprite, game.player.sprite)) {
       game.player.xSpeed *= -1.75;//bounce off the walls! 
       game.player.sprite.x -= 2.0;
-      game.killPlayer();
     }
   }
 }

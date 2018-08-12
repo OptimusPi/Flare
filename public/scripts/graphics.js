@@ -48,7 +48,7 @@ var graphics = {
 
 	addSpace: function () {
 		//this.app.stage.addChild(this.space);
-		for (var i = 0; i < 200; i++) {
+		for (var i = 0; i < 50; i++) {
 			var x = Math.random() * 960 % 960;
 			var y = Math.random() * 640 % 640;
 			var ySpeed = Math.random() * 1000 % 3;
@@ -75,8 +75,8 @@ var graphics = {
 		this.wallRight.y = 0;
 		this.app.stage.addChild(this.wallRight);
 
-		game.wallLeft = { sprite: this.wallLeft, xSpeed: 0.03 };
-		game.wallRight = { sprite: this.wallRight, xSpeed: -0.03 };
+		game.wallLeft = { sprite: this.wallLeft, xSpeed: 0.1 };
+		game.wallRight = { sprite: this.wallRight, xSpeed: -0.1 };
 
 	},
 	addPlayer: function (x, y) {
@@ -152,12 +152,12 @@ var graphics = {
 		var asteroidSprite = new PIXI.Sprite(graphics.astroid1Texture);
 		//spawn between the walls
 		asteroidSprite.x = Math.random()
-			* (game.wallRight.sprite.y - game.wallLeft.sprite.x)
-			+ game.wallLeft.sprite.x + 512 + asteroidSprite.width;
-		asteroidSprite.y = -16;
+			* (game.wallRight.sprite.x - ((game.wallLeft.sprite.x + game.wallLeft.sprite.width)) - asteroidSprite.width*2)
+			+ game.wallLeft.sprite.x + game.wallLeft.sprite.width + asteroidSprite.width;
+		asteroidSprite.y = -30;
 		graphics.app.stage.addChild(asteroidSprite);
 
-		var asteroid = { sprite: asteroidSprite, ySpeed: 6.5 };
+		var asteroid = { sprite: asteroidSprite, ySpeed: 1.75 };
 		game.asteroids.push(asteroid);
 	},
 
