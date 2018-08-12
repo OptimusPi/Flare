@@ -179,6 +179,8 @@ var game = {
     });
   },
   physics: function (deltaTime) {
+
+    
     //Accelerate ship
     var maxHorizontal = 10;
     var maxVertical = 10;
@@ -253,7 +255,10 @@ var game = {
     if (this.wallRight.sprite.x < 550) {
       this.wallRight.sprite.x = 550;
     }
+
+   
+		
+    
   }
 }
-
 
