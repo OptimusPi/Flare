@@ -57,7 +57,7 @@ var game = {
     PIXI.sound.play(sound);
   },
   stopSound: function (sound) {
-    PIXI.sound.play(sound);
+    PIXI.sound.stop(sound);
   },
   updateSound: function () {
     var volume = 1 - ((134 - graphics.volumeSlider.x) / 100);
@@ -68,12 +68,22 @@ var game = {
   runMenu: function () {
     graphics.runMenu();
     game.playSound('menu');
+    game.updateSound();
   },
-  runOverworld: function () {
-    graphics.runOverworld();
+  runOverworld: function (mobileMode) {
+    game.stopSound('menu');
+    graphics.runOverworld(mobileMode);
     game.playSound('game');
     game.updateSound();
     game.startScore();
+
+    //connect sprites to physics in game code
+    const ticker = new PIXI.ticker.Ticker();
+    ticker.stop();
+    ticker.add((deltaTime) => {
+      game.physics(deltaTime);
+    });
+    ticker.start();
   },
 
   //start moving, flag that controls acceleration

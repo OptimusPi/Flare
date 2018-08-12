@@ -19,6 +19,8 @@ var graphics = {
 	//Text
 	gameScore: null,
 	batteryLabel: null,
+	playLabel: null,
+	playMobileLabel: null,
 
 	//Textures
 	batteryLifeTexture_100: null,
@@ -39,7 +41,7 @@ var graphics = {
 	astroid1Texture: null,
 
 	//mobile controls
-	mobileMode: true,
+	mobileMode: false,
 	leftArrow: null,
 	rightArrow: null,
 	upArrow: null,
@@ -98,23 +100,25 @@ var graphics = {
 		this.app.stage.addChild(game.player.sprite);
 	},
 
-	removeGUI: function () {
-		this.app.stage.removeChild(this.leftArrow);
-		this.app.stage.removeChild(this.rightArrow);
-		this.app.stage.removeChild(this.upArrow);
-		this.app.stage.removeChild(this.downArrow);
-		this.app.stage.removeChild(this.flareButton);
-		this.app.stage.removeChild(this.volumeSlider);
-		this.app.stage.removeChild(this.volumeLine);
+	removeOverworldGUI: function () {
+		if (this.mobileMode) {
+			this.app.stage.removeChild(this.leftArrow);
+			this.app.stage.removeChild(this.rightArrow);
+			this.app.stage.removeChild(this.upArrow);
+			this.app.stage.removeChild(this.downArrow);
+			this.app.stage.removeChild(this.flareButton);
+		}
 		this.app.stage.removeChild(this.batteryLife);
 	},
 
-	addGUI: function () {
-		this.app.stage.addChild(this.leftArrow);
-		this.app.stage.addChild(this.rightArrow);
-		this.app.stage.addChild(this.upArrow);
-		this.app.stage.addChild(this.downArrow);
-		this.app.stage.addChild(this.flareButton);
+	addOverworldGUI: function () {
+		if (this.mobileMode) {
+			this.app.stage.addChild(this.leftArrow);
+			this.app.stage.addChild(this.rightArrow);
+			this.app.stage.addChild(this.upArrow);
+			this.app.stage.addChild(this.downArrow);
+			this.app.stage.addChild(this.flareButton);
+		}
 		this.app.stage.addChild(this.volumeLine);
 		this.app.stage.addChild(this.volumeSlider);
 		this.app.stage.addChild(this.batteryLife);
@@ -122,13 +126,33 @@ var graphics = {
 		this.app.stage.addChild(this.batteryLabel);
 	},
 
-	runOverworld: function () {
-		this.addSpace();
+	addMenuGUI: function () {
+		this.app.stage.addChild(this.playButton);
+		this.app.stage.addChild(this.playLabel);
+		this.app.stage.addChild(this.playMobileButton);
+		this.app.stage.addChild(this.playMobileLabel);
+		this.app.stage.addChild(this.volumeLine);
+		this.app.stage.addChild(this.volumeSlider);
+	},
+
+	removeMenuGUI: function () {
+		this.app.stage.removeChild(this.playButton);
+		this.app.stage.removeChild(this.playLabel);
+		this.app.stage.removeChild(this.playMobileButton);
+		this.app.stage.removeChild(this.playMobileLabel);
+	},
+
+	runOverworld: function (mobileMode) {
+		this.removeMenuGUI();
+		this.mobileMode = mobileMode;
 		this.addWalls();
 		this.addPlayer(512, 512);
+		this.addOverworldGUI();
+	},
 
-		if (this.mobileMode)
-			this.addGUI();
+	runMenu: function () {
+		this.addSpace();
+		this.addMenuGUI();
 	},
 
 	animateStars: function (deltaTime) {
@@ -192,9 +216,6 @@ var graphics = {
 
 		document.getElementById('content').appendChild(this.app.view);
 
-		//TODO: determine if mobile or not
-		this.mobileMode = true;
-
 		PIXI.loader
 			.add({ name: 'star1', url: 'images/star1.png' })
 			.add({ name: 'star2', url: 'images/star2.png' })
@@ -226,6 +247,7 @@ var graphics = {
 			.add({ name: 'flareButton', url: 'images/GUI/flare_button.png' })
 			.add({ name: 'volumeLine', url: 'images/GUI/volume_line.png' })
 			.add({ name: 'volumeSlider', url: 'images/GUI/volume_slider.png' })
+			.add({ name: 'playButton', url: 'images/GUI/menu_button.png' })
 			.add({ name: 'batteryLife_100', url: 'images/GUI/battery_100.png' })
 			.add({ name: 'batteryLife_75', url: 'images/GUI/battery_75.png' })
 			.add({ name: 'batteryLife_50', url: 'images/GUI/battery_50.png' })
@@ -313,18 +335,34 @@ var graphics = {
 					strokeThickness: 1
 				});
 
+				//Play Button
+				graphics.playButton = new PIXI.Sprite(PIXI.loader.resources.playButton.texture);
+				graphics.playLabel = new PIXI.Text('Play PC Mode', {
+					fontWeight: 'normal',
+					fontStyle: 'normal',
+					fontSize: 32,
+					fontFamily: 'Courier New',
+					fill: '#FFF',
+					align: 'left',
+					stroke: '#AAA',
+					strokeThickness: 1
+				});
+
+				//Play Mobile Button
+				graphics.playMobileButton = new PIXI.Sprite(PIXI.loader.resources.playButton.texture);
+				graphics.playMobileLabel = new PIXI.Text('Play Mobile', {
+					fontWeight: 'normal',
+					fontStyle: 'normal',
+					fontSize: 32,
+					fontFamily: 'Courier New',
+					fill: '#FFF',
+					align: 'left',
+					stroke: '#AAA',
+					strokeThickness: 1
+				});
 
 				//Initialize graphics
 				graphics.init();
-
-				//TODO move this?
-				//connect sprites to physics in game code
-				const ticker = new PIXI.ticker.Ticker();
-				ticker.stop();
-				ticker.add((deltaTime) => {
-					game.physics(deltaTime);
-				});
-				ticker.start();
 
 				const animationTicker = new PIXI.ticker.Ticker();
 				animationTicker.stop();
@@ -332,13 +370,23 @@ var graphics = {
 					graphics.animateStars(deltaTime);
 				});
 				animationTicker.start();
-
-
 			});
 	},
 
 	init: function () {
 		// GUI elements
+		this.playButton.x = 355;
+		this.playButton.y = 200;
+		this.playLabel.x = 483;
+		this.playLabel.y = 215;
+		this.playLabel.anchor.x = 0.5;
+		this.playMobileButton.x = 352;
+		this.playMobileButton.y = 300;
+		this.playMobileLabel.x = 483;
+		this.playMobileLabel.y = 315;
+		this.playMobileLabel.anchor.x = 0.5;
+
+
 		this.gameScore.x = 740;
 		this.gameScore.y = 560;
 		this.gameScore.anchor.x = 0;
@@ -371,6 +419,10 @@ var graphics = {
 		this.downArrow.buttonMode = true;
 		this.flareButton.interactive = true;
 		this.flareButton.buttonMode = true;
+		this.playButton.interactive = true;
+		this.playButton.buttonMode = true;
+		this.playMobileButton.interactive = true;
+		this.playMobileButton.buttonMode = true;
 		//press touch screen constrols
 		this.leftArrow.on('pointerdown', game.movePlayerLeft);
 		this.rightArrow.on('pointerdown', game.movePlayerRight);
@@ -384,6 +436,10 @@ var graphics = {
 
 		//shoot a flare to battle the walls
 		this.flareButton.on('pointerdown', game.fireFlare);
+
+		//Play the game
+		this.playButton.on('pointerdown', () => { game.runOverworld(false)});
+		this.playMobileButton.on('pointerdown', () => { game.runOverworld(true)});
 
 		//Auto resize window
 		layout.addListeners();
@@ -400,7 +456,7 @@ var graphics = {
 		
 		//Start the game!
 		game.init();
-		game.runOverworld(); //TODO add main menu
+		game.runMenu(); //TODO add main menu
 	}
 };
 
