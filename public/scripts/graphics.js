@@ -21,6 +21,7 @@ var graphics = {
 	batteryLabel: null,
 	playLabel: null,
 	playMobileLabel: null,
+	gameOverLabel: null,
 
 	//Textures
 	batteryLifeTexture_100: null,
@@ -47,8 +48,13 @@ var graphics = {
 	upArrow: null,
 	downArrow: null,
 	flareButton: null,
+
+	//GUI elements
 	volumeSlider: null,
 	volumeLine: null,
+	mainMenuButton: null,
+	playButton: null,
+	playMobileButton: null,
 
 	addSpace: function () {
 		//this.app.stage.addChild(this.space);
@@ -155,6 +161,18 @@ var graphics = {
 		this.addMenuGUI();
 	},
 
+	gameOver: function () {
+		this.app.stage.addChild(this.gameOverLabel);
+		this.app.stage.addChild(this.mainMenuButton);
+		this.app.stage.addChild(this.mainMenuLabel);
+	},
+
+	removeGameOver: function() {
+		this.app.stage.removeChild(this.gameOverLabel);
+		this.app.stage.removeChild(this.mainMenuButton);
+		this.app.stage.removeChild(this.mainMenuLabel);
+	},
+
 	animateStars: function (deltaTime) {
 		graphics.stars.forEach(star => {
 			star.sprite.y += star.ySpeed * deltaTime;
@@ -247,7 +265,7 @@ var graphics = {
 			.add({ name: 'flareButton', url: 'images/GUI/flare_button.png' })
 			.add({ name: 'volumeLine', url: 'images/GUI/volume_line.png' })
 			.add({ name: 'volumeSlider', url: 'images/GUI/volume_slider.png' })
-			.add({ name: 'playButton', url: 'images/GUI/menu_button.png' })
+			.add({ name: 'menuButton', url: 'images/GUI/menu_button.png' })
 			.add({ name: 'batteryLife_100', url: 'images/GUI/battery_100.png' })
 			.add({ name: 'batteryLife_75', url: 'images/GUI/battery_75.png' })
 			.add({ name: 'batteryLife_50', url: 'images/GUI/battery_50.png' })
@@ -336,7 +354,7 @@ var graphics = {
 				});
 
 				//Play Button
-				graphics.playButton = new PIXI.Sprite(PIXI.loader.resources.playButton.texture);
+				graphics.playButton = new PIXI.Sprite(PIXI.loader.resources.menuButton.texture);
 				graphics.playLabel = new PIXI.Text('Play PC Mode', {
 					fontWeight: 'normal',
 					fontStyle: 'normal',
@@ -349,7 +367,7 @@ var graphics = {
 				});
 
 				//Play Mobile Button
-				graphics.playMobileButton = new PIXI.Sprite(PIXI.loader.resources.playButton.texture);
+				graphics.playMobileButton = new PIXI.Sprite(PIXI.loader.resources.menuButton.texture);
 				graphics.playMobileLabel = new PIXI.Text('Play Mobile', {
 					fontWeight: 'normal',
 					fontStyle: 'normal',
@@ -360,6 +378,30 @@ var graphics = {
 					stroke: '#AAA',
 					strokeThickness: 1
 				});
+
+				//Game over screen and Main menu Button
+				graphics.gameOverLabel = new PIXI.Text('Game Over!', {
+					fontWeight: 'normal',
+					fontStyle: 'normal',
+					fontSize: 32,
+					fontFamily: 'Courier New',
+					fill: '#FFF',
+					align: 'left',
+					stroke: '#AAA',
+					strokeThickness: 1
+				});
+				graphics.mainMenuButton = new PIXI.Sprite(PIXI.loader.resources.menuButton.texture);
+				graphics.mainMenuLabel = new PIXI.Text('Main Menu', {
+					fontWeight: 'normal',
+					fontStyle: 'normal',
+					fontSize: 32,
+					fontFamily: 'Courier New',
+					fill: '#FFF',
+					align: 'left',
+					stroke: '#AAA',
+					strokeThickness: 1
+				});
+
 
 				//Initialize graphics
 				graphics.init();
@@ -385,6 +427,14 @@ var graphics = {
 		this.playMobileLabel.x = 483;
 		this.playMobileLabel.y = 315;
 		this.playMobileLabel.anchor.x = 0.5;
+		this.mainMenuButton.x = 352;
+		this.mainMenuButton.y = 300;
+		this.gameOverLabel.x = 483;
+		this.gameOverLabel.y = 215;
+		this.gameOverLabel.anchor.x = 0.5;
+		this.mainMenuLabel.x = 483;
+		this.mainMenuLabel.y = 315;
+		this.mainMenuLabel.anchor.x = 0.5;
 
 
 		this.gameScore.x = 740;
@@ -423,6 +473,8 @@ var graphics = {
 		this.playButton.buttonMode = true;
 		this.playMobileButton.interactive = true;
 		this.playMobileButton.buttonMode = true;
+		this.mainMenuButton.interactive = true;
+		this.mainMenuButton.buttonMode = true;
 		//press touch screen constrols
 		this.leftArrow.on('pointerdown', game.movePlayerLeft);
 		this.rightArrow.on('pointerdown', game.movePlayerRight);
@@ -440,6 +492,13 @@ var graphics = {
 		//Play the game
 		this.playButton.on('pointerdown', () => { game.runOverworld(false)});
 		this.playMobileButton.on('pointerdown', () => { game.runOverworld(true)});
+
+		//Game over, go back to main menu
+		this.mainMenuButton.on('pointerdown', () => { 
+			graphics.removeGameOver();
+			game.stopSound('game');
+			game.runMenu(true);
+		});
 
 		//Auto resize window
 		layout.addListeners();

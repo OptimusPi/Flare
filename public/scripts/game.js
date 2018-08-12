@@ -71,6 +71,8 @@ var game = {
     game.updateSound();
   },
   runOverworld: function (mobileMode) {
+    game.player.battery = 100;
+    game.player.dead = false;
     game.stopSound('menu');
     graphics.runOverworld(mobileMode);
     game.playSound('game');
@@ -251,50 +253,40 @@ var game = {
     //Left arrow key press method
     this.left.press = function () {
       game.movePlayerLeft();
-      debug.log('I pressed left.');
     };
     this.left.release = function () {
       game.stopPlayerLeft();
-      debug.log('I released left.');
     };
 
     //Right arrow key press method
     this.space.press = function () {
       game.shootBeam();
-      debug.log('I shot a beam');
     };
     this.right.press = function () {
       game.movePlayerRight();
-      debug.log('I pressed right.');
     };
     this.right.release = function () {
       game.stopPlayerRight();
-      debug.log('I released right.');
     };
 
     //Up arrow key press method
     this.up.press = function () {
       game.movePlayerUp();
-      debug.log('I pressed up.');
     };
     this.up.release = function () {
       game.stopPlayerUp();
-      debug.log('I released up.');
     };
     //shift button press
     this.shift.press = function () {
           game.shootFlare();
-          debug.log('I pressed shift');
     };
 
     //Down arrow key press method
     this.down.press = function () {
       game.movePlayerDown();
-      debug.log('I pressed down.');
     };
     this.down.release = function () {
       game.stopPlayerDown();
-      debug.log('I released down.');
     };
 
     //Game music
@@ -355,7 +347,7 @@ var game = {
   powerupPhysics: function (deltaTime) {
     //spawn powerups 
     this.powerupTimer += deltaTime;
-    if (this.powerupTimer > 200) {
+    if (this.powerupTimer > 200 && game.player.dead === false) {
       graphics.addPowerup();
       this.powerupTimer = 0;
     }
@@ -374,7 +366,7 @@ var game = {
   asteroidPhysics: function (deltaTime) {
     //spawn asteroids 
     game.asteroidTimer += deltaTime;
-    if (game.asteroidTimer > 80) {
+    if (game.asteroidTimer > 80 && game.player.dead == false) {
       graphics.addAsteroid();
       game.asteroidTimer = 0;
     }
@@ -389,7 +381,7 @@ var game = {
         graphics.app.stage.removeChild(asteroid.sprite);
         game.asteroids.splice(index, 1);
         game.killPlayer();
-        game.gameOver();
+        graphics.gameOver();
       }
 
       //bounce off the walls! 
@@ -495,10 +487,6 @@ var game = {
         }
       });
     });
-  },
-
-  gameOver: function() {
-      //TODO alert('Nice work! Your score is: ' + graphics.gameScore.text);
   }
 }
 
