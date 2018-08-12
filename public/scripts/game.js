@@ -115,6 +115,13 @@ var game = {
     //TODO shoot flare
   },
 
+  boxesIntersect: function (a, b)
+  {
+    var ab = a.getBounds();
+    var bb = b.getBounds();
+    return ab.x + ab.width > bb.x && ab.x < bb.x + bb.width && ab.y + ab.height > bb.y && ab.y < bb.y + bb.height;
+  },
+
   init: function () {
     //Left arrow key press method
     this.left.press = function () {
@@ -213,13 +220,13 @@ var game = {
         graphics.app.stage.removeChild(beam.sprite);
         game.beams.splice(index, 1);
       }
-
       //TODO collision detection with asteroids
     });
 
+    
     //spawn powerups 
     this.powerupTimer += deltaTime;
-    if (this.powerupTimer > 1500) {
+    if (this.powerupTimer > 200) {
       graphics.addPowerup();
       this.powerupTimer= 0;
     }
@@ -229,7 +236,7 @@ var game = {
       powerup.sprite.y += powerup.ySpeed;
 
       //TODO collision detection with ship
-      if (powerup.sprite.y > game.player.sprite.y){
+      if (game.boxesIntersect(powerup.sprite, game.player.sprite)){
         graphics.app.stage.removeChild(powerup.sprite);
         game.powerups.splice(index, 1);
         game.addBattery(50);
