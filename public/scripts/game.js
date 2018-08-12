@@ -100,6 +100,7 @@ var game = {
     game.player.down = 1;
   },
   shootBeam: function () {
+    if (this.player.dead === true) return;
     if (this.player.battery === 0) return;
 
     this.addBattery(-25);
@@ -416,7 +417,7 @@ var game = {
       //disappear off screen
       if (asteroidPiece.y < -32) {
         graphics.app.stage.removeChild(asteroidPiece.sprite);
-        game.asteroidPiecess.splice(index, 1);
+        game.asteroidPieces.splice(index, 1);
       }
     });
   },
@@ -470,20 +471,20 @@ var game = {
 
   beamPhysics: function (deltaTime) {
     //move beams
-    game.beams.forEach(function (beam, index, object) {
+    game.beams.forEach(function (beam, beamIndex, object) {
       //move upward
       beam.sprite.y += beam.ySpeed * deltaTime;
       //if it moves off screen get rid of it
       if (beam.y < -16) {
         graphics.app.stage.removeChild(beam.sprite);
-        game.beams.splice(index, 1);
+        game.beams.splice(beamIndex, 1);
       }
       //check for asteroids
       game.asteroids.forEach(function (asteroid, index, object) {
         if (game.boxesIntersect(asteroid.sprite, beam.sprite)) {
 
           graphics.app.stage.removeChild(beam.sprite);
-          game.beams.splice(index, 1);
+          game.beams.splice(beamIndex, 1);
 
           //remove original asteroid
           graphics.app.stage.removeChild(asteroid.sprite);
