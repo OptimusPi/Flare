@@ -7,7 +7,9 @@ var game = {
   shipParts: [],
   beams: [],
   powerups: [],
+  asteroids: [],
   powerupTimer: 0,
+  asteroidTimer: 0,
   wallLeft: {},
   wallRight: {},
 
@@ -123,6 +125,9 @@ var game = {
   },
 
   killPlayer: function () {
+    if (game.player.dead)
+      return;
+
     //Make dead ship pieces
     this.shipParts[0] = {
       sprite: new PIXI.Sprite(graphics.shipPart1Texture), xSpeed: -4, ySpeed: -4, dead: false
@@ -249,17 +254,36 @@ var game = {
       this.powerupTimer = 0;
     }
 
+    //spawn asteroids 
+    this.asteroidTimer += deltaTime;
+    if (this.asteroidTimer > 15) {
+      graphics.addAsteroid();
+      this.asteroidTimer = 0;
+    }
+
+    //move asteroids
+    game.asteroids.forEach(function (asteroid, index, object) {
+      asteroid.sprite.y += asteroid.ySpeed;
+
+      if (game.boxesIntersect(asteroid.sprite, game.player.sprite)) {
+        graphics.app.stage.removeChild(asteroid.sprite);
+        game.asteroids.splice(index, 1);
+        game.killPlayer();
+      }
+    });
+        
     //move powerups
     game.powerups.forEach(function (powerup, index, object) {
       powerup.sprite.y += powerup.ySpeed;
 
-      //TODO collision detection with ship
       if (game.boxesIntersect(powerup.sprite, game.player.sprite)) {
         graphics.app.stage.removeChild(powerup.sprite);
         game.powerups.splice(index, 1);
         game.addBattery(50);
       }
     });
+
+
 
     //Run out of space!
     game.wallLeft.sprite.x += game.wallLeft.xSpeed * deltaTime;

@@ -34,7 +34,8 @@ var graphics = {
 	shipPart3Texture: null,
 	shipPart4Texture: null,
 	beamTexture: null,
-	
+	astroid1Texture: null,
+
 	//mobile controls
 	mobileMode: true,
 	leftArrow: null,
@@ -45,7 +46,7 @@ var graphics = {
 	volumeSlider: null,
 	volumeLine: null,
 
-	addSpace: function() {
+	addSpace: function () {
 		//this.app.stage.addChild(this.space);
 		for (var i = 0; i < 200; i++) {
 			var x = Math.random() * 960 % 960;
@@ -55,17 +56,17 @@ var graphics = {
 
 			var img = Math.ceil(Math.random() * 20) - 1;
 
-			var star = { 
-				sprite: new PIXI.Sprite(this.starTexture[img]), 
+			var star = {
+				sprite: new PIXI.Sprite(this.starTexture[img]),
 				ySpeed: ySpeed * 0.04 + 1.1
-			}; 
+			};
 			star.sprite.x = x;
 			star.sprite.y = y;
 			this.app.stage.addChild(star.sprite);
 			this.stars.push(star);
 		}
 	},
-	addWalls: function() {
+	addWalls: function () {
 		this.wallLeft.x = -500;
 		this.wallLeft.y = 0;
 		this.app.stage.addChild(this.wallLeft);
@@ -74,18 +75,18 @@ var graphics = {
 		this.wallRight.y = 0;
 		this.app.stage.addChild(this.wallRight);
 
-		game.wallLeft = {sprite: this.wallLeft, xSpeed: 0.03};
-		game.wallRight = {sprite: this.wallRight, xSpeed: -0.03};
-		
+		game.wallLeft = { sprite: this.wallLeft, xSpeed: 0.03 };
+		game.wallRight = { sprite: this.wallRight, xSpeed: -0.03 };
+
 	},
-	addPlayer: function(x, y) {
+	addPlayer: function (x, y) {
 
 		//create player base, then add a sprite to it.
 		var player = game.player;
 
 		// create new sprite TOO make it from the image textures loaded in
 		player.sprite = new PIXI.Sprite(this.shipTexture);
-		
+
 		//add sprite to player
 		player.sprite.x = x;
 		player.sprite.y = y;
@@ -95,30 +96,30 @@ var graphics = {
 		this.app.stage.addChild(game.player.sprite);
 	},
 
-	removeGUI: function(){
+	removeGUI: function () {
 		this.app.stage.removeChild(this.leftArrow);
 		this.app.stage.removeChild(this.rightArrow);
 		this.app.stage.removeChild(this.upArrow);
-		this.app.stage.removeChild(this.downArrow);	
-		this.app.stage.removeChild(this.flareButton);	
+		this.app.stage.removeChild(this.downArrow);
+		this.app.stage.removeChild(this.flareButton);
 		this.app.stage.removeChild(this.volumeSlider);
 		this.app.stage.removeChild(this.volumeLine);
 		this.app.stage.removeChild(this.batteryLife);
 	},
 
-	addGUI: function(){
+	addGUI: function () {
 		this.app.stage.addChild(this.leftArrow);
 		this.app.stage.addChild(this.rightArrow);
 		this.app.stage.addChild(this.upArrow);
-		this.app.stage.addChild(this.downArrow);	
+		this.app.stage.addChild(this.downArrow);
 		this.app.stage.addChild(this.flareButton);
 		this.app.stage.addChild(this.volumeLine);
-		this.app.stage.addChild(this.volumeSlider);		
+		this.app.stage.addChild(this.volumeSlider);
 		this.app.stage.addChild(this.batteryLife);
 		this.app.stage.addChild(this.gameScore);
 	},
 
-	runOverworld: function(){
+	runOverworld: function () {
 		this.addSpace();
 		this.addWalls();
 		this.addPlayer(512, 512);
@@ -128,7 +129,7 @@ var graphics = {
 	},
 
 	animateStars: function (deltaTime) {
-		graphics.stars.forEach(star => { 
+		graphics.stars.forEach(star => {
 			star.sprite.y += star.ySpeed * deltaTime;
 			if (star.sprite.y > 640) {
 				star.sprite.y = -star.sprite.height;
@@ -137,34 +138,47 @@ var graphics = {
 		});
 	},
 
-	addBeam: function() {
+	addBeam: function () {
 		var beamSprite = new PIXI.Sprite(graphics.beamTexture);
-		beamSprite.x = game.player.sprite.x + game.player.sprite.width / 2 - this.beamTexture.width/2;
+		beamSprite.x = game.player.sprite.x + game.player.sprite.width / 2 - this.beamTexture.width / 2;
 		beamSprite.y = game.player.sprite.y;
 		graphics.app.stage.addChild(beamSprite);
 
-		var beam = { sprite: beamSprite, ySpeed: -10};
+		var beam = { sprite: beamSprite, ySpeed: -10 };
 		game.beams.push(beam);
 	},
 
-	addPowerup: function() {
+	addAsteroid: function () {
+		var asteroidSprite = new PIXI.Sprite(graphics.astroid1Texture);
+		//spawn between the walls
+		asteroidSprite.x = Math.random()
+			* (game.wallRight.sprite.y - game.wallLeft.sprite.x)
+			+ game.wallLeft.sprite.x + 512 + asteroidSprite.width;
+		asteroidSprite.y = -16;
+		graphics.app.stage.addChild(asteroidSprite);
+
+		var asteroid = { sprite: asteroidSprite, ySpeed: 6.5 };
+		game.asteroids.push(asteroid);
+	},
+
+	addPowerup: function () {
 		var powerupSprite = new PIXI.Sprite(graphics.powerupTexture);
-		powerupSprite.x = game.player.sprite.x + game.player.sprite.width / 2 - this.powerupTexture.width / 2;
+		powerupSprite.x = game.player.sprite.x + game.player.sprite.width / 2 - graphics.powerupTexture.width / 2;
 		powerupSprite.y = 0;
 		graphics.app.stage.addChild(powerupSprite);
 
-		var powerup = { sprite: powerupSprite, ySpeed: 5};
+		var powerup = { sprite: powerupSprite, ySpeed: 5 };
 		game.powerups.push(powerup);
 	},
 
-	start: function() {
+	start: function () {
 		var type = "WebGL";
-		if(!PIXI.utils.isWebGLSupported()){
+		if (!PIXI.utils.isWebGLSupported()) {
 			type = "canvas";
 		}
 		PIXI.utils.sayHello(type);
 
-		this.app = new PIXI.Application(this.screenWidth, this.screenHeight, {backgroundColor : this.backgroundColor});
+		this.app = new PIXI.Application(this.screenWidth, this.screenHeight, { backgroundColor: this.backgroundColor });
 
 		console.log(document);
 		console.log(document.body);
@@ -175,126 +189,130 @@ var graphics = {
 		this.mobileMode = true;
 
 		PIXI.loader
-		.add({name: 'star1', url: 'images/star1.png'})
-		.add({name: 'star2', url: 'images/star2.png'})
-		.add({name: 'star3', url: 'images/star3.png'})
-		.add({name: 'star4', url: 'images/star4.png'})
-		.add({name: 'star5', url: 'images/star5.png'})
-		.add({name: 'star6', url: 'images/star6.png'})
-		.add({name: 'star7', url: 'images/star7.png'})
-		.add({name: 'star8', url: 'images/star8.png'})
-		.add({name: 'star9', url: 'images/star9.png'})
-		.add({name: 'star10', url: 'images/star10.png'})
-		.add({name: 'beam', url: 'images/beam.png'})
-		.add({name: 'ship', url: 'images/ship.png'})
-		.add({name: 'shipPart1', url: 'images/ship_part1.png'})
-		.add({name: 'shipPart2', url: 'images/ship_part2.png'})
-		.add({name: 'shipPart3', url: 'images/ship_part3.png'})
-		.add({name: 'shipPart4', url: 'images/ship_part4.png'})
-		.add({name: 'shipBoosting1', url: 'images/shipBoosting1.png'})
-		.add({name: 'shipBoosting2', url: 'images/shipBoosting2.png'})
-		.add({name: 'shipBoosting3', url: 'images/shipBoosting3.png'})
-		.add({name: 'leftArrow', url: 'images/GUI/left_arrow.png'})
-		.add({name: 'rightArrow', url: 'images/GUI/right_arrow.png'})
-		.add({name: 'upArrow', url: 'images/GUI/up_arrow.png'})
-		.add({name: 'downArrow', url: 'images/GUI/down_arrow.png'})
-		.add({name: 'flareButton', url: 'images/GUI/flare_button.png'})
-		.add({name: 'volumeLine', url: 'images/GUI/volume_line.png'})
-		.add({name: 'volumeSlider', url: 'images/GUI/volume_slider.png'})
-		.add({name: 'batteryLife_100', url: 'images/GUI/battery_100.png'})
-		.add({name: 'batteryLife_75', url: 'images/GUI/battery_75.png'})
-		.add({name: 'batteryLife_50', url: 'images/GUI/battery_50.png'})
-		.add({name: 'batteryLife_25', url: 'images/GUI/battery_25.png'})
-		.add({name: 'batteryLife_0', url: 'images/GUI/battery_0.png'})	
-		.add({name: 'battery', url: 'images/battery.png'})
-		.add({name: 'wallLeft', url: 'images/wall_left.png'})
-		.add({name: 'wallRight', url: 'images/wall_right.png'})
-		
-		.load(function (){
-			//Load walls
-			graphics.wallLeft =  new PIXI.Sprite(PIXI.loader.resources.wallLeft.texture);
-			graphics.wallRight =  new PIXI.Sprite(PIXI.loader.resources.wallRight.texture);
+			.add({ name: 'star1', url: 'images/star1.png' })
+			.add({ name: 'star2', url: 'images/star2.png' })
+			.add({ name: 'star3', url: 'images/star3.png' })
+			.add({ name: 'star4', url: 'images/star4.png' })
+			.add({ name: 'star5', url: 'images/star5.png' })
+			.add({ name: 'star6', url: 'images/star6.png' })
+			.add({ name: 'star7', url: 'images/star7.png' })
+			.add({ name: 'star8', url: 'images/star8.png' })
+			.add({ name: 'star9', url: 'images/star9.png' })
+			.add({ name: 'star10', url: 'images/star10.png' })
+			.add({ name: 'asteroid1', url: 'images/asteroid1.png' })
+			.add({ name: 'beam', url: 'images/beam.png' })
+			.add({ name: 'ship', url: 'images/ship.png' })
+			.add({ name: 'shipPart1', url: 'images/ship_part1.png' })
+			.add({ name: 'shipPart2', url: 'images/ship_part2.png' })
+			.add({ name: 'shipPart3', url: 'images/ship_part3.png' })
+			.add({ name: 'shipPart4', url: 'images/ship_part4.png' })
+			.add({ name: 'shipBoosting1', url: 'images/shipBoosting1.png' })
+			.add({ name: 'shipBoosting2', url: 'images/shipBoosting2.png' })
+			.add({ name: 'shipBoosting3', url: 'images/shipBoosting3.png' })
+			.add({ name: 'leftArrow', url: 'images/GUI/left_arrow.png' })
+			.add({ name: 'rightArrow', url: 'images/GUI/right_arrow.png' })
+			.add({ name: 'upArrow', url: 'images/GUI/up_arrow.png' })
+			.add({ name: 'downArrow', url: 'images/GUI/down_arrow.png' })
+			.add({ name: 'flareButton', url: 'images/GUI/flare_button.png' })
+			.add({ name: 'volumeLine', url: 'images/GUI/volume_line.png' })
+			.add({ name: 'volumeSlider', url: 'images/GUI/volume_slider.png' })
+			.add({ name: 'batteryLife_100', url: 'images/GUI/battery_100.png' })
+			.add({ name: 'batteryLife_75', url: 'images/GUI/battery_75.png' })
+			.add({ name: 'batteryLife_50', url: 'images/GUI/battery_50.png' })
+			.add({ name: 'batteryLife_25', url: 'images/GUI/battery_25.png' })
+			.add({ name: 'batteryLife_0', url: 'images/GUI/battery_0.png' })
+			.add({ name: 'battery', url: 'images/battery.png' })
+			.add({ name: 'wallLeft', url: 'images/wall_left.png' })
+			.add({ name: 'wallRight', url: 'images/wall_right.png' })
 
-			//Load stars
-			graphics.starTexture[0] = new PIXI.Texture(PIXI.loader.resources.star1.texture);
-			graphics.starTexture[1] = new PIXI.Texture(PIXI.loader.resources.star2.texture);
-			graphics.starTexture[2] = new PIXI.Texture(PIXI.loader.resources.star3.texture);
-			graphics.starTexture[3] = new PIXI.Texture(PIXI.loader.resources.star4.texture);
-			graphics.starTexture[4] = new PIXI.Texture(PIXI.loader.resources.star5.texture);
-			graphics.starTexture[5] = new PIXI.Texture(PIXI.loader.resources.star6.texture);
-			graphics.starTexture[6] = new PIXI.Texture(PIXI.loader.resources.star7.texture);
-			graphics.starTexture[7] = new PIXI.Texture(PIXI.loader.resources.star8.texture);
-			graphics.starTexture[7] = new PIXI.Texture(PIXI.loader.resources.star9.texture);
-			graphics.starTexture[9] = new PIXI.Texture(PIXI.loader.resources.star10.texture);
+			.load(function () {
+				//Load walls
+				graphics.wallLeft = new PIXI.Sprite(PIXI.loader.resources.wallLeft.texture);
+				graphics.wallRight = new PIXI.Sprite(PIXI.loader.resources.wallRight.texture);
 
-			//Load player ship
-			graphics.shipTexture = new PIXI.Texture(PIXI.loader.resources.ship.texture);
-			graphics.shipPart1Texture = new PIXI.Texture(PIXI.loader.resources.shipPart1.texture);
-			graphics.shipPart2Texture = new PIXI.Texture(PIXI.loader.resources.shipPart2.texture);
-			graphics.shipPart3Texture = new PIXI.Texture(PIXI.loader.resources.shipPart3.texture);
-			graphics.shipPart4Texture = new PIXI.Texture(PIXI.loader.resources.shipPart4.texture);
-			graphics.shipBoosting1Texture = new PIXI.Texture(PIXI.loader.resources.shipBoosting1.texture);
-			graphics.shipBoosting2Texture = new PIXI.Texture(PIXI.loader.resources.shipBoosting2.texture);
-			graphics.shipBoosting3Texture = new PIXI.Texture(PIXI.loader.resources.shipBoosting3.texture);
+				//Load asteroids
+				graphics.astroid1Texture = new PIXI.Texture(PIXI.loader.resources.asteroid1.texture);
 
-			//laser beam on the ship
-			graphics.beamTexture = new PIXI.Texture(PIXI.loader.resources.beam.texture);
+				//Load stars
+				graphics.starTexture[0] = new PIXI.Texture(PIXI.loader.resources.star1.texture);
+				graphics.starTexture[1] = new PIXI.Texture(PIXI.loader.resources.star2.texture);
+				graphics.starTexture[2] = new PIXI.Texture(PIXI.loader.resources.star3.texture);
+				graphics.starTexture[3] = new PIXI.Texture(PIXI.loader.resources.star4.texture);
+				graphics.starTexture[4] = new PIXI.Texture(PIXI.loader.resources.star5.texture);
+				graphics.starTexture[5] = new PIXI.Texture(PIXI.loader.resources.star6.texture);
+				graphics.starTexture[6] = new PIXI.Texture(PIXI.loader.resources.star7.texture);
+				graphics.starTexture[7] = new PIXI.Texture(PIXI.loader.resources.star8.texture);
+				graphics.starTexture[7] = new PIXI.Texture(PIXI.loader.resources.star9.texture);
+				graphics.starTexture[9] = new PIXI.Texture(PIXI.loader.resources.star10.texture);
 
-			//D-pad and flare button for mobile on-screen controls
-			graphics.leftArrow  = new PIXI.Sprite(PIXI.loader.resources.leftArrow.texture);
-			graphics.rightArrow = new PIXI.Sprite(PIXI.loader.resources.rightArrow.texture);
-			graphics.upArrow    = new PIXI.Sprite(PIXI.loader.resources.upArrow.texture);
-			graphics.downArrow  = new PIXI.Sprite(PIXI.loader.resources.downArrow.texture);
-			graphics.flareButton  = new PIXI.Sprite(PIXI.loader.resources.flareButton.texture);
-			graphics.volumeLine = new PIXI.Sprite(PIXI.loader.resources.volumeLine.texture);
-			graphics.volumeSlider = new PIXI.Sprite(PIXI.loader.resources.volumeSlider.texture);
+				//Load player ship
+				graphics.shipTexture = new PIXI.Texture(PIXI.loader.resources.ship.texture);
+				graphics.shipPart1Texture = new PIXI.Texture(PIXI.loader.resources.shipPart1.texture);
+				graphics.shipPart2Texture = new PIXI.Texture(PIXI.loader.resources.shipPart2.texture);
+				graphics.shipPart3Texture = new PIXI.Texture(PIXI.loader.resources.shipPart3.texture);
+				graphics.shipPart4Texture = new PIXI.Texture(PIXI.loader.resources.shipPart4.texture);
+				graphics.shipBoosting1Texture = new PIXI.Texture(PIXI.loader.resources.shipBoosting1.texture);
+				graphics.shipBoosting2Texture = new PIXI.Texture(PIXI.loader.resources.shipBoosting2.texture);
+				graphics.shipBoosting3Texture = new PIXI.Texture(PIXI.loader.resources.shipBoosting3.texture);
 
-			//Battery
-			graphics.batteryLifeTexture_100 = new PIXI.Texture(PIXI.loader.resources.batteryLife_100.texture);
-			graphics.batteryLifeTexture_75 = new PIXI.Texture(PIXI.loader.resources.batteryLife_75.texture);
-			graphics.batteryLifeTexture_50 = new PIXI.Texture(PIXI.loader.resources.batteryLife_50.texture);
-			graphics.batteryLifeTexture_25 = new PIXI.Texture(PIXI.loader.resources.batteryLife_25.texture);
-			graphics.batteryLifeTexture_0 = new PIXI.Texture(PIXI.loader.resources.batteryLife_0.texture);
-			graphics.batteryLife = new PIXI.Sprite(PIXI.loader.resources.batteryLife_100.texture);
-			graphics.powerupTexture = new PIXI.Texture(PIXI.loader.resources.battery.texture);
+				//laser beam on the ship
+				graphics.beamTexture = new PIXI.Texture(PIXI.loader.resources.beam.texture);
 
-			//Score
-			graphics.gameScore = new PIXI.Text('SCORE: 0', {
-				fontWeight: 'bold',
-				fontStyle: 'italic',
-				fontSize: 36,
-				fontFamily: 'Arvo',
-				fill: '#3e1707',
-				align: 'center',
-				stroke: '#a4410e',
-				strokeThickness: 4
+				//D-pad and flare button for mobile on-screen controls
+				graphics.leftArrow = new PIXI.Sprite(PIXI.loader.resources.leftArrow.texture);
+				graphics.rightArrow = new PIXI.Sprite(PIXI.loader.resources.rightArrow.texture);
+				graphics.upArrow = new PIXI.Sprite(PIXI.loader.resources.upArrow.texture);
+				graphics.downArrow = new PIXI.Sprite(PIXI.loader.resources.downArrow.texture);
+				graphics.flareButton = new PIXI.Sprite(PIXI.loader.resources.flareButton.texture);
+				graphics.volumeLine = new PIXI.Sprite(PIXI.loader.resources.volumeLine.texture);
+				graphics.volumeSlider = new PIXI.Sprite(PIXI.loader.resources.volumeSlider.texture);
+
+				//Battery
+				graphics.batteryLifeTexture_100 = new PIXI.Texture(PIXI.loader.resources.batteryLife_100.texture);
+				graphics.batteryLifeTexture_75 = new PIXI.Texture(PIXI.loader.resources.batteryLife_75.texture);
+				graphics.batteryLifeTexture_50 = new PIXI.Texture(PIXI.loader.resources.batteryLife_50.texture);
+				graphics.batteryLifeTexture_25 = new PIXI.Texture(PIXI.loader.resources.batteryLife_25.texture);
+				graphics.batteryLifeTexture_0 = new PIXI.Texture(PIXI.loader.resources.batteryLife_0.texture);
+				graphics.batteryLife = new PIXI.Sprite(PIXI.loader.resources.batteryLife_100.texture);
+				graphics.powerupTexture = new PIXI.Texture(PIXI.loader.resources.battery.texture);
+
+				//Score
+				graphics.gameScore = new PIXI.Text('SCORE: 0', {
+					fontWeight: 'bold',
+					fontStyle: 'italic',
+					fontSize: 36,
+					fontFamily: 'Arvo',
+					fill: '#3e1707',
+					align: 'center',
+					stroke: '#a4410e',
+					strokeThickness: 4
+				});
+
+
+				//Initialize graphics
+				graphics.init();
+
+				//TODO move this?
+				//connect sprites to physics in game code
+				const ticker = new PIXI.ticker.Ticker();
+				ticker.stop();
+				ticker.add((deltaTime) => {
+					game.physics(deltaTime);
+				});
+				ticker.start();
+
+				const animationTicker = new PIXI.ticker.Ticker();
+				animationTicker.stop();
+				animationTicker.add((deltaTime) => {
+					graphics.animateStars(deltaTime);
+				});
+				animationTicker.start();
+
+
 			});
-			
-
-			//Initialize graphics
-			graphics.init();
-			
-			//TODO move this?
-			//connect sprites to physics in game code
-			const ticker = new PIXI.ticker.Ticker();
-			ticker.stop();
-			ticker.add((deltaTime) => {
-				game.physics(deltaTime);
-			});
-			ticker.start();
-
-			const animationTicker = new PIXI.ticker.Ticker();
-			animationTicker.stop();
-			animationTicker.add((deltaTime) => {
-				graphics.animateStars(deltaTime);
-			});
-			animationTicker.start();
-
-			
-		});
 	},
 
-	init: function() {
+	init: function () {
 		// GUI elements
 		this.gameScore.x = 800;
 		this.gameScore.y = 560;
@@ -326,14 +344,14 @@ var graphics = {
 		this.flareButton.interactive = true;
 		this.flareButton.buttonMode = true;
 		//press touch screen constrols
-		this.leftArrow.on('pointerdown', game.movePlayerLeft);	
-		this.rightArrow.on('pointerdown', game.movePlayerRight);	
-		this.upArrow.on('pointerdown', game.movePlayerUp);	
-		this.downArrow.on('pointerdown', game.movePlayerDown);	
+		this.leftArrow.on('pointerdown', game.movePlayerLeft);
+		this.rightArrow.on('pointerdown', game.movePlayerRight);
+		this.upArrow.on('pointerdown', game.movePlayerUp);
+		this.downArrow.on('pointerdown', game.movePlayerDown);
 		//release touch screen controls
-		this.leftArrow.on('pointerup', game.stopPlayerLeft);	
-		this.rightArrow.on('pointerup', game.stopPlayerRight);	
-		this.upArrow.on('pointerup', game.stopPlayerUp);	
+		this.leftArrow.on('pointerup', game.stopPlayerLeft);
+		this.rightArrow.on('pointerup', game.stopPlayerRight);
+		this.upArrow.on('pointerup', game.stopPlayerUp);
 		this.downArrow.on('pointerup', game.stopPlayerDown);
 
 		//shoot a flare to battle the walls
@@ -354,7 +372,7 @@ var graphics = {
 		//Start the game!
 
 		var score = 0;
-		this.app.ticker.add(function() {
+		this.app.ticker.add(function () {
 			score = score + 0.0175;
 			graphics.gameScore.text = 'SCORE: ' + Math.floor(score);
 		});
@@ -364,42 +382,43 @@ var graphics = {
 	}
 };
 
-var layout = {    
-   ratio: graphics.screenWidth/graphics.screenHeight,
-			   
-   resizeCanvas: function(){
-	var content = $('#content');
-	var w = content.width();
-	var h = content.height();
-	  
+var layout = {
+	ratio: graphics.screenWidth / graphics.screenHeight,
 
-	//Landscape
-	if (w / h >= layout.ratio) {
-		w = h * layout.ratio;
-		h = h;
-	} 
-	//Portrait
-	else {
-		w = w;
-		h = w / layout.ratio;
+	resizeCanvas: function () {
+		var content = $('#content');
+		var w = content.width();
+		var h = content.height();
+
+
+		//Landscape
+		if (w / h >= layout.ratio) {
+			w = h * layout.ratio;
+			h = h;
+		}
+		//Portrait
+		else {
+			w = w;
+			h = w / layout.ratio;
+		}
+
+		//Resize game
+		debug.log("resize to w:" + w + " h: " + h);
+		graphics.app.renderer.view.style.width = w + 'px';
+		graphics.app.renderer.view.style.height = h + 'px';
+	},
+
+	addListeners: function () {
+		//Scale game to fit perfectly as the user resizes their browser window
+		$(window).resize(function () {
+			layout.resizeCanvas();
+		});
+
+		//Resize when a mobile devices switches between portrait and landscape orientation
+		$(window).on("orientationchange", function () {
+			layout.resizeCanvas();
+		});
 	}
- 
-	//Resize game
-	debug.log("resize to w:" + w + " h: " + h);
-	graphics.app.renderer.view.style.width = w + 'px';
-	graphics.app.renderer.view.style.height = h + 'px';
-},
-
-addListeners: function(){
-	//Scale game to fit perfectly as the user resizes their browser window
-	$(window).resize(function(){
-		layout.resizeCanvas();
-	});
-	
-	//Resize when a mobile devices switches between portrait and landscape orientation
-	$(window).on( "orientationchange", function(){
-		layout.resizeCanvas();
-	});
-}};
+};
 
 graphics.start();
