@@ -15,6 +15,9 @@ var graphics = {
 	wallLeft: null,
 	wallRight: null,
 
+	//Text
+	gameScore: null,
+
 	//Textures
 	batteryLifeTexture_100: null,
 	batteryLifeTexture_75: null,
@@ -26,6 +29,10 @@ var graphics = {
 	shipBoostingTexture2: null,
 	shipBoostingTexture3: null,
 	shipTexture: null,
+	shipPart1Texture: null,
+	shipPart2Texture: null,
+	shipPart3Texture: null,
+	shipPart4Texture: null,
 	beamTexture: null,
 	
 	//mobile controls
@@ -108,6 +115,7 @@ var graphics = {
 		this.app.stage.addChild(this.volumeLine);
 		this.app.stage.addChild(this.volumeSlider);		
 		this.app.stage.addChild(this.batteryLife);
+		this.app.stage.addChild(this.gameScore);
 	},
 
 	runOverworld: function(){
@@ -179,6 +187,10 @@ var graphics = {
 		.add({name: 'star10', url: 'images/star10.png'})
 		.add({name: 'beam', url: 'images/beam.png'})
 		.add({name: 'ship', url: 'images/ship.png'})
+		.add({name: 'shipPart1', url: 'images/ship_part1.png'})
+		.add({name: 'shipPart2', url: 'images/ship_part2.png'})
+		.add({name: 'shipPart3', url: 'images/ship_part3.png'})
+		.add({name: 'shipPart4', url: 'images/ship_part4.png'})
 		.add({name: 'shipBoosting1', url: 'images/shipBoosting1.png'})
 		.add({name: 'shipBoosting2', url: 'images/shipBoosting2.png'})
 		.add({name: 'shipBoosting3', url: 'images/shipBoosting3.png'})
@@ -217,10 +229,15 @@ var graphics = {
 
 			//Load player ship
 			graphics.shipTexture = new PIXI.Texture(PIXI.loader.resources.ship.texture);
+			graphics.shipPart1Texture = new PIXI.Texture(PIXI.loader.resources.shipPart1.texture);
+			graphics.shipPart2Texture = new PIXI.Texture(PIXI.loader.resources.shipPart2.texture);
+			graphics.shipPart3Texture = new PIXI.Texture(PIXI.loader.resources.shipPart3.texture);
+			graphics.shipPart4Texture = new PIXI.Texture(PIXI.loader.resources.shipPart4.texture);
 			graphics.shipBoosting1Texture = new PIXI.Texture(PIXI.loader.resources.shipBoosting1.texture);
 			graphics.shipBoosting2Texture = new PIXI.Texture(PIXI.loader.resources.shipBoosting2.texture);
 			graphics.shipBoosting3Texture = new PIXI.Texture(PIXI.loader.resources.shipBoosting3.texture);
 
+			//laser beam on the ship
 			graphics.beamTexture = new PIXI.Texture(PIXI.loader.resources.beam.texture);
 
 			//D-pad and flare button for mobile on-screen controls
@@ -240,6 +257,18 @@ var graphics = {
 			graphics.batteryLifeTexture_0 = new PIXI.Texture(PIXI.loader.resources.batteryLife_0.texture);
 			graphics.batteryLife = new PIXI.Sprite(PIXI.loader.resources.batteryLife_100.texture);
 			graphics.powerupTexture = new PIXI.Texture(PIXI.loader.resources.battery.texture);
+
+			//Score
+			graphics.gameScore = new PIXI.Text('SCORE: 0', {
+				fontWeight: 'bold',
+				fontStyle: 'italic',
+				fontSize: 36,
+				fontFamily: 'Arvo',
+				fill: '#3e1707',
+				align: 'center',
+				stroke: '#a4410e',
+				strokeThickness: 4
+			});
 			
 
 			//Initialize graphics
@@ -267,6 +296,9 @@ var graphics = {
 
 	init: function() {
 		// GUI elements
+		this.gameScore.x = 800;
+		this.gameScore.y = 560;
+		this.gameScore.anchor.x = 0.5;
 		this.batteryLife.x = 850;
 		this.batteryLife.y = 600;
 		this.volumeLine.x = 50;
@@ -319,8 +351,14 @@ var graphics = {
 		this.volumeSlider.on('pointerupoutside', game.onDragEnd);
 		this.volumeSlider.on('pointerup', game.updateSound);
 		this.volumeSlider.on('pointermove', game.onDragMove);
-
 		//Start the game!
+
+		var score = 0;
+		this.app.ticker.add(function() {
+			score = score + 0.0175;
+			graphics.gameScore.text = 'SCORE: ' + Math.floor(score);
+		});
+
 		game.init();
 		game.runOverworld(); //TODO add main menu
 	}
