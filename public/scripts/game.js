@@ -316,23 +316,23 @@ var game = {
     });
     PIXI.sound.add('asteroid_breaking', {
       url: 'sounds/asteroid_breaking.ogg',
-      loop: true,
+      loop: false,
     });
     PIXI.sound.add('beam', {
       url: 'sounds/beam.ogg',
-      loop: true,
+      loop: false,
     });
     PIXI.sound.add('bounce', {
       url: 'sounds/bounce.ogg',
-      loop: true,
+      loop: false,
     });
     PIXI.sound.add('powerup_pickup', {
-      url: 'sounds/menu.ogg',
-      loop: true,
+      url: 'sounds/powerup_pickup.ogg',
+      loop: false,
     });
     PIXI.sound.add('ship_breaking', {
       url: 'sounds/ship_breaking.ogg',
-      loop: true,
+      loop: false,
     });
     
   },
@@ -409,6 +409,7 @@ var game = {
         graphics.app.stage.removeChild(powerup.sprite);
         game.powerups.splice(index, 1);
         game.addBattery(100);
+        game.playSound('powerup_pickup');
       }
 
       //bounce off the walls! 
@@ -450,6 +451,7 @@ var game = {
         graphics.app.stage.removeChild(asteroid.sprite);
         game.asteroids.splice(index, 1);
         game.killPlayer();
+        game.playSound('ship_breaking');
         graphics.gameOver();
       }
 
@@ -598,6 +600,7 @@ var game = {
 
           //remove original asteroid
           graphics.app.stage.removeChild(asteroidFlare.sprite);
+          game.playSound('asteroid_breaking');
 
           //add asteroid pieces
           game.killAsteroidFlare(asteroidFlare);
@@ -613,6 +616,7 @@ var game = {
 
           //remove original asteroid
           graphics.app.stage.removeChild(asteroid.sprite);
+          game.playSound('asteroid_breaking');
 
           //add asteroid pieces
           game.killAsteroid(asteroid);
