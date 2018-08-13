@@ -148,10 +148,11 @@ var game = {
     }
   },
   resetRightWall: function() {
-    graphics.wallRight.x = 950;
+    //graphics.wallRight.x = 950;
+     game.wallRight.xSpeed = 0.3;
   },
   resetLeftWall: function() {
-    graphics.wallLeft.x = -500;
+    game.wallLeft.xSpeed = -0.3;
   },
   boxesIntersect: function (a, b) {
     var ab = a.getBounds();
@@ -315,7 +316,7 @@ var game = {
   },
 
   physics: function (deltaTime) {
-
+    //if (graphics.wallRight.sprite.x > 949) game.wallRight.xSpeed = -0.2;
     //Ship physics
     if (game.player.dead === false) game.playerPhysics(deltaTime);
     if (game.player.dead === true) game.deadPlayerPhysics(deltaTime);
@@ -335,7 +336,13 @@ var game = {
     //Run out of space!
     if (!game.player.dead) {
       game.wallLeft.sprite.x += game.wallLeft.xSpeed * deltaTime;
+      if(this.wallLeft.sprite.x < -499) game.wallLeft.xSpeed = 0.1;
+      if(game.wallLeft.xSpeed < 0.1) game.wallLeft.xSpeed += 0.00075;
+      //--
       game.wallRight.sprite.x += game.wallRight.xSpeed * deltaTime;
+      if(this.wallRight.sprite.x > 949) game.wallRight.xSpeed = -0.1;
+      if(game.wallRight.xSpeed > -0.1) game.wallRight.xSpeed -= 0.00075;
+
     }
 
     if (this.wallLeft.sprite.x > -100) {
@@ -406,7 +413,7 @@ var game = {
 
     //spawn asteroid flares 
     game.asteroidFlareTimer += deltaTime;
-    if (game.asteroidFlareTimer > 1000 && game.player.dead == false) {
+    if (game.asteroidFlareTimer > 750 && game.player.dead == false) {
       graphics.addAsteroidFlare();
       game.asteroidFlareTimer = 0;
     }
