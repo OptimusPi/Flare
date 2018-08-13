@@ -26,7 +26,6 @@ var game = {
   down: keyboard(40),
   space: keyboard(32),
   shift: keyboard(16),
-
   //Functions
   onDragStart: function (event) {
     this.data = event.data;
@@ -58,6 +57,7 @@ var game = {
   },
 
   playSound: function (sound) {
+
     PIXI.sound.play(sound);
   },
   stopSound: function (sound) {
@@ -110,7 +110,8 @@ var game = {
     if (game.player.battery === 0) return;
 
     game.addBattery(-25);
-
+    game.playSound('beam');
+    //game.stopSound('beam');
     graphics.addBeam();
   },
   addBattery: function (percent) {
@@ -313,6 +314,27 @@ var game = {
       url: 'sounds/menu.ogg',
       loop: true,
     });
+    PIXI.sound.add('asteroid_breaking', {
+      url: 'sounds/asteroid_breaking.ogg',
+      loop: false,
+    });
+    PIXI.sound.add('beam', {
+      url: 'sounds/beam.ogg',
+      loop: false,
+    });
+    PIXI.sound.add('bounce', {
+      url: 'sounds/bounce.ogg',
+      loop: false,
+    });
+    PIXI.sound.add('powerup_pickup', {
+      url: 'sounds/powerup_pickup.ogg',
+      loop: false,
+    });
+    PIXI.sound.add('ship_breaking', {
+      url: 'sounds/ship_breaking.ogg',
+      loop: false,
+    });
+    
   },
 
   physics: function (deltaTime) {
@@ -387,6 +409,7 @@ var game = {
         graphics.app.stage.removeChild(powerup.sprite);
         game.powerups.splice(index, 1);
         game.addBattery(100);
+        game.playSound('powerup_pickup');
       }
 
       //bounce off the walls! 
@@ -428,6 +451,7 @@ var game = {
         graphics.app.stage.removeChild(asteroid.sprite);
         game.asteroids.splice(index, 1);
         game.killPlayer();
+        game.playSound('ship_breaking');
         graphics.gameOver();
       }
 
@@ -521,10 +545,12 @@ var game = {
     if (game.boxesIntersect(this.wallLeft.sprite, game.player.sprite)) {
       game.player.xSpeed *= -1.5;//bounce off the walls! 
       game.player.sprite.x += 1.5;
+      game.playSound('bounce');
     }
     if (game.boxesIntersect(this.wallRight.sprite, game.player.sprite)) {
       game.player.xSpeed *= -1.5;//bounce off the walls! 
       game.player.sprite.x -= 1.5;
+      game.playSound('bounce');
     }
     if(game.player.sprite.y < 5) this.player.ySpeed = 2;
     if(game.player.sprite.y > 570) this.player.ySpeed = -2;
@@ -574,6 +600,7 @@ var game = {
 
           //remove original asteroid
           graphics.app.stage.removeChild(asteroidFlare.sprite);
+          game.playSound('asteroid_breaking');
 
           //add asteroid pieces
           game.killAsteroidFlare(asteroidFlare);
@@ -589,6 +616,7 @@ var game = {
 
           //remove original asteroid
           graphics.app.stage.removeChild(asteroid.sprite);
+          game.playSound('asteroid_breaking');
 
           //add asteroid pieces
           game.killAsteroid(asteroid);
