@@ -41,7 +41,7 @@ var graphics = {
 	beamTexture: null,
 	RightFlareTexture: null,
 	LeftFlareTexture: null,
-	astroid1Texture: null,
+	asteroidFlareTexture: null,
 
 	//mobile controls
 	mobileMode: false,
@@ -233,6 +233,22 @@ var graphics = {
 		game.asteroids.push(asteroid);
 	},
 
+	addAsteroidFlare: function () {
+		var asteroidFlareSprite = new PIXI.Sprite(graphics.asteroidFlareTexture);
+		//spawn between the walls
+		asteroidFlareSprite.x = 960 / 2 - asteroidFlareSprite.width;
+		asteroidFlareSprite.y = 0 - asteroidFlareSprite.height;
+
+		graphics.app.stage.addChild(asteroidFlareSprite);
+
+		var asteroidFlare = {
+			sprite: asteroidFlareSprite,
+			ySpeed: 1,
+			xSpeed: 0
+		};
+		game.asteroidFlares.push(asteroidFlare);
+	},
+
 	addPowerup: function () {
 		var powerupSprite = new PIXI.Sprite(graphics.powerupTexture);
 		powerupSprite.x = game.player.sprite.x + game.player.sprite.width / 2 - graphics.powerupTexture.width / 2;
@@ -299,7 +315,7 @@ var graphics = {
 			.add({ name: 'battery', url: 'images/battery.png' })
 			.add({ name: 'wallLeft', url: 'images/wall_left.png' })
 			.add({ name: 'wallRight', url: 'images/wall_right.png' })
-
+			.add({ name: 'asteroidFlare', url: 'images/asteroid_flare.png' })
 			.load(function () {
 				//Load walls
 				graphics.wallLeft = new PIXI.Sprite(PIXI.loader.resources.wallLeft.texture);
@@ -310,6 +326,7 @@ var graphics = {
 				graphics.asteroidsTexture[1] = new PIXI.Texture(PIXI.loader.resources.asteroid2.texture);
 				graphics.asteroidsTexture[2] = new PIXI.Texture(PIXI.loader.resources.asteroid3.texture);
 				graphics.asteroidsTexture[3] = new PIXI.Texture(PIXI.loader.resources.asteroid4.texture);
+				graphics.asteroidFlareTexture = new PIXI.Texture(PIXI.loader.resources.asteroidFlare.texture);
 
 				//Load stars
 				graphics.starTexture[0] = new PIXI.Texture(PIXI.loader.resources.star1.texture);

@@ -10,9 +10,11 @@ var game = {
   rightFlares: [],
   powerups: [],
   asteroids: [],
+  asteroidFlares: [],
   asteroidPieces: [],
   powerupTimer: 0,
   asteroidTimer: 0,
+  asteroidFlareTimer: 0,
   wallLeft: {},
   wallRight: {},
   score: 0,
@@ -139,7 +141,7 @@ var game = {
     game.player.down = 0;
   },
 
-  shootFlare: function () {
+  shootFlare: function () { //TODO Raghav
     if(this.player.battery == 100){
       graphics.addFlare();
       this.addBattery(-100);
@@ -391,10 +393,18 @@ var game = {
     game.asteroidTimer += deltaTime;
     if (game.asteroidTimer > 60 && game.player.dead == false) {
       graphics.addAsteroid(true);
-      if (Math.random() > 0.7)
+      if (Math.random() > 0.9)
       graphics.addAsteroid(false);
 
       game.asteroidTimer = 0;
+    }
+
+    //spawn asteroid flares 
+    game.asteroidFlareTimer += deltaTime;
+    if (game.asteroidFlareTimer > 1000 && game.player.dead == false) {
+      graphics.addAsteroidFlare();
+
+      game.asteroidFlareTimer = 0;
     }
 
     //move asteroids
@@ -424,6 +434,26 @@ var game = {
       if (asteroid.y > 700 || asteroid.y < -100) {
         graphics.app.stage.removeChild(asteroid.sprite);
         game.asteroids.splice(index, 1);
+      }
+    });
+
+    //move asteroid flares
+    game.asteroidFlares.forEach(function (asteroid, index, object) {
+      asteroid.sprite.y += asteroid.ySpeed;
+      asteroid.sprite.x += asteroid.xSpeed;
+
+      //this this asteroid hits players it kills them
+      if (game.player.dead == false && game.boxesIntersect(asteroid.sprite, game.player.sprite)) {
+        graphics.app.stage.removeChild(asteroid.sprite);
+        game.asteroids.splice(index, 1);
+        game.killPlayer();
+        graphics.gameOver();
+      }
+
+      //disappear off screen
+      if (asteroid.y > 700) {
+        graphics.app.stage.removeChild(asteroid.sprite);
+        game.asteroidSprites.splice(index, 1);
       }
     });
 
