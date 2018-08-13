@@ -141,9 +141,9 @@ var game = {
     game.player.down = 0;
   },
 
-  shootFlare: function () { //TODO Raghav
+  shootFlare: function (asteroidFlare) { //TODO Raghav
     if(this.player.battery == 100){
-      graphics.addFlare();
+      graphics.addFlare(asteroidFlare);
       this.addBattery(-100);
     }
   },
@@ -255,6 +255,11 @@ var game = {
     game.asteroidPieces.push(chunks[0]);
     game.asteroidPieces.push(chunks[1]);
     game.asteroidPieces.push(chunks[2]);
+  },
+
+  // Kill red asteroid
+  killAsteroidFlare: function (asteroidFlare) {
+    graphics.addFlare(asteroidFlare);
   },
 
   init: function () {
@@ -553,6 +558,21 @@ var game = {
         graphics.app.stage.removeChild(beam.sprite);
         game.beams.splice(beamIndex, 1);
       }
+      //check for red asteroids
+      game.asteroidFlares.forEach(function (asteroidFlare, index, object) {
+        if (game.boxesIntersect(asteroidFlare.sprite, beam.sprite)) {
+
+          graphics.app.stage.removeChild(beam.sprite);
+          game.beams.splice(beamIndex, 1);
+
+          //remove original asteroid
+          graphics.app.stage.removeChild(asteroidFlare.sprite);
+
+          //add asteroid pieces
+          game.killAsteroidFlare(asteroidFlare);
+          game.asteroidFlares.splice(index, 1);
+        }
+      });
       //check for asteroids
       game.asteroids.forEach(function (asteroid, index, object) {
         if (game.boxesIntersect(asteroid.sprite, beam.sprite)) {

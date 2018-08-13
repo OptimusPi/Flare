@@ -185,10 +185,10 @@ var graphics = {
 		});
 	},
 
-	addFlare: function () {
+	addFlare: function (asteroidFlare) {
 		var leftFlareSprite = new PIXI.Sprite(graphics.leftFlareTexture);
-		leftFlareSprite.x = game.player.sprite.x - game.player.sprite.width - this.leftFlareTexture.width / 2;
-		leftFlareSprite.y = game.player.sprite.y - this.leftFlareTexture.height;
+		leftFlareSprite.x = asteroidFlare.sprite.x - asteroidFlare.sprite.width - this.leftFlareTexture.width / 2;
+		leftFlareSprite.y = asteroidFlare.sprite.y - this.leftFlareTexture.height;
 		graphics.app.stage.addChild(leftFlareSprite);
 		var leftFlare = { sprite: leftFlareSprite, xSpeed: -15 };
 		game.leftFlares.push(leftFlare);
@@ -196,8 +196,8 @@ var graphics = {
 		//------------
 
 		var rightFlareSprite = new PIXI.Sprite(graphics.rightFlareTexture);
-		rightFlareSprite.x = game.player.sprite.x + game.player.sprite.width - this.rightFlareTexture.width / 2;
-		rightFlareSprite.y = game.player.sprite.y - this.rightFlareTexture.height;
+		rightFlareSprite.x = asteroidFlare.sprite.x + asteroidFlare.sprite.width - this.rightFlareTexture.width / 2;
+		rightFlareSprite.y = asteroidFlare.sprite.y - this.rightFlareTexture.height;
 		graphics.app.stage.addChild(rightFlareSprite);
 		var rightFlare = { sprite: rightFlareSprite, xSpeed: 15 };
 		game.rightFlares.push(rightFlare);
