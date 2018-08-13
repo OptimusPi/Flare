@@ -506,9 +506,10 @@ var graphics = {
 
 		//Game over, go back to main menu
 		this.mainMenuButton.on('pointerdown', () => { 
-			graphics.removeGameOver();
-			game.stopSound('game');
-			game.runMenu(true);
+			location.reload();
+			//graphics.removeGameOver();
+			//game.stopSound('game');
+			//game.runMenu(true);
 		});
 
 		//Auto resize window
