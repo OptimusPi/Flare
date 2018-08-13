@@ -49,7 +49,7 @@ var graphics = {
 	rightArrow: null,
 	upArrow: null,
 	downArrow: null,
-	flareButton: null,
+	shootButton: null,
 
 	//GUI elements
 	volumeSlider: null,
@@ -114,7 +114,7 @@ var graphics = {
 			this.app.stage.removeChild(this.rightArrow);
 			this.app.stage.removeChild(this.upArrow);
 			this.app.stage.removeChild(this.downArrow);
-			this.app.stage.removeChild(this.flareButton);
+			this.app.stage.removeChild(this.shootButton);
 		}
 		this.app.stage.removeChild(this.batteryLife);
 	},
@@ -125,7 +125,7 @@ var graphics = {
 			this.app.stage.addChild(this.rightArrow);
 			this.app.stage.addChild(this.upArrow);
 			this.app.stage.addChild(this.downArrow);
-			this.app.stage.addChild(this.flareButton);
+			this.app.stage.addChild(this.shootButton);
 		}
 		this.app.stage.addChild(this.volumeLine);
 		this.app.stage.addChild(this.volumeSlider);
@@ -303,7 +303,7 @@ var graphics = {
 			.add({ name: 'rightArrow', url: 'images/GUI/right_arrow.png' })
 			.add({ name: 'upArrow', url: 'images/GUI/up_arrow.png' })
 			.add({ name: 'downArrow', url: 'images/GUI/down_arrow.png' })
-			.add({ name: 'flareButton', url: 'images/GUI/flare_button.png' })
+			.add({ name: 'shootButton', url: 'images/GUI/shoot_button.png' })
 			.add({ name: 'volumeLine', url: 'images/GUI/volume_line.png' })
 			.add({ name: 'volumeSlider', url: 'images/GUI/volume_slider.png' })
 			.add({ name: 'menuButton', url: 'images/GUI/menu_button.png' })
@@ -360,7 +360,7 @@ var graphics = {
 				graphics.rightArrow = new PIXI.Sprite(PIXI.loader.resources.rightArrow.texture);
 				graphics.upArrow = new PIXI.Sprite(PIXI.loader.resources.upArrow.texture);
 				graphics.downArrow = new PIXI.Sprite(PIXI.loader.resources.downArrow.texture);
-				graphics.flareButton = new PIXI.Sprite(PIXI.loader.resources.flareButton.texture);
+				graphics.shootButton = new PIXI.Sprite(PIXI.loader.resources.shootButton.texture);
 				graphics.volumeLine = new PIXI.Sprite(PIXI.loader.resources.volumeLine.texture);
 				graphics.volumeSlider = new PIXI.Sprite(PIXI.loader.resources.volumeSlider.texture);
 
@@ -501,8 +501,8 @@ var graphics = {
 		this.upArrow.y = 310;
 		this.downArrow.x = 150;
 		this.downArrow.y = 510;
-		this.flareButton.x = 150;
-		this.flareButton.y = 410;
+		this.shootButton.x = 800;
+		this.shootButton.y = 410;
 		this.leftArrow.interactive = true;
 		this.leftArrow.buttonMode = true;
 		this.rightArrow.interactive = true;
@@ -511,8 +511,8 @@ var graphics = {
 		this.upArrow.buttonMode = true;
 		this.downArrow.interactive = true;
 		this.downArrow.buttonMode = true;
-		this.flareButton.interactive = true;
-		this.flareButton.buttonMode = true;
+		this.shootButton.interactive = true;
+		this.shootButton.buttonMode = true;
 		this.playButton.interactive = true;
 		this.playButton.buttonMode = true;
 		this.playMobileButton.interactive = true;
@@ -531,7 +531,7 @@ var graphics = {
 		this.downArrow.on('pointerup', game.stopPlayerDown);
 
 		//shoot a flare to battle the walls
-		this.flareButton.on('pointerdown', game.fireFlare);
+		this.shootButton.on('pointerdown', game.shootBeam);
 
 		//Play the game
 		this.playButton.on('pointerdown', () => { game.runOverworld(false) });

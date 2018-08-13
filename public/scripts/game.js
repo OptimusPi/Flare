@@ -106,10 +106,10 @@ var game = {
     game.player.down = 1;
   },
   shootBeam: function () {
-    if (this.player.dead === true) return;
-    if (this.player.battery === 0) return;
+    if (game.player.dead === true) return;
+    if (game.player.battery === 0) return;
 
-    this.addBattery(-25);
+    game.addBattery(-25);
 
     graphics.addBeam();
   },
