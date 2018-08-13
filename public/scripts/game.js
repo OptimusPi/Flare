@@ -316,7 +316,7 @@ var game = {
     //laser beam projectile physics
     game.beamPhysics(deltaTime);
     
-    //flare physucs
+    //flare physics
     game.flarePhysics(deltaTime);
 
     //asteroids and broken asteroid pieces physics
@@ -326,8 +326,10 @@ var game = {
     game.powerupPhysics(deltaTime);
 
     //Run out of space!
-    game.wallLeft.sprite.x += game.wallLeft.xSpeed * deltaTime;
-    game.wallRight.sprite.x += game.wallRight.xSpeed * deltaTime;
+    if (!game.player.dead) {
+      game.wallLeft.sprite.x += game.wallLeft.xSpeed * deltaTime;
+      game.wallRight.sprite.x += game.wallRight.xSpeed * deltaTime;
+    }
 
     if (this.wallLeft.sprite.x > -100) {
       this.wallLeft.sprite.x = -100;
@@ -364,11 +366,23 @@ var game = {
     //move powerups
     game.powerups.forEach(function (powerup, index, object) {
       powerup.sprite.y += powerup.ySpeed;
+      powerup.sprite.x += powerup.xSpeed;
+      
 
       if (game.boxesIntersect(powerup.sprite, game.player.sprite)) {
         graphics.app.stage.removeChild(powerup.sprite);
         game.powerups.splice(index, 1);
         game.addBattery(100);
+      }
+
+      //bounce off the walls! 
+      if (game.boxesIntersect(game.wallLeft.sprite, powerup.sprite)) {
+        powerup.xSpeed *= -1;//bounce off the walls! 
+        powerup.sprite.x += 2;
+      }
+      if (game.boxesIntersect(game.wallRight.sprite, powerup.sprite)) {
+        powerup.xSpeed *= -1;//bounce off the walls! 
+        powerup.sprite.x -= 2.0;
       }
     });
   },
@@ -376,7 +390,10 @@ var game = {
     //spawn asteroids 
     game.asteroidTimer += deltaTime;
     if (game.asteroidTimer > 60 && game.player.dead == false) {
-      graphics.addAsteroid();
+      graphics.addAsteroid(true);
+      if (Math.random() > 0.7)
+      graphics.addAsteroid(false);
+
       game.asteroidTimer = 0;
     }
 
@@ -404,7 +421,7 @@ var game = {
       }
 
       //disappear off screen
-      if (asteroid.y > 640) {
+      if (asteroid.y > 700 || asteroid.y < -100) {
         graphics.app.stage.removeChild(asteroid.sprite);
         game.asteroids.splice(index, 1);
       }

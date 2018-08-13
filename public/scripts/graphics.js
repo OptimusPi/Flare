@@ -169,7 +169,7 @@ var graphics = {
 		this.app.stage.addChild(this.mainMenuLabel);
 	},
 
-	removeGameOver: function() {
+	removeGameOver: function () {
 		this.app.stage.removeChild(this.gameOverLabel);
 		this.app.stage.removeChild(this.mainMenuButton);
 		this.app.stage.removeChild(this.mainMenuLabel);
@@ -185,21 +185,21 @@ var graphics = {
 		});
 	},
 
-	addFlare: function() {
+	addFlare: function () {
 		var leftFlareSprite = new PIXI.Sprite(graphics.leftFlareTexture);
 		leftFlareSprite.x = game.player.sprite.x - game.player.sprite.width - this.leftFlareTexture.width / 2;
 		leftFlareSprite.y = game.player.sprite.y - this.leftFlareTexture.height;
 		graphics.app.stage.addChild(leftFlareSprite);
-		var leftFlare = { sprite: leftFlareSprite, xSpeed: -15};
+		var leftFlare = { sprite: leftFlareSprite, xSpeed: -15 };
 		game.leftFlares.push(leftFlare);
 
 		//------------
-		
+
 		var rightFlareSprite = new PIXI.Sprite(graphics.rightFlareTexture);
 		rightFlareSprite.x = game.player.sprite.x + game.player.sprite.width - this.rightFlareTexture.width / 2;
 		rightFlareSprite.y = game.player.sprite.y - this.rightFlareTexture.height;
 		graphics.app.stage.addChild(rightFlareSprite);
-		var rightFlare = { sprite: rightFlareSprite, xSpeed: 15};
+		var rightFlare = { sprite: rightFlareSprite, xSpeed: 15 };
 		game.rightFlares.push(rightFlare);
 	},
 	addBeam: function () {
@@ -212,19 +212,23 @@ var graphics = {
 		game.beams.push(beam);
 	},
 
-	addAsteroid: function () {
+	addAsteroid: function (top) {
 		var asteroidSprite = new PIXI.Sprite(graphics.asteroidsTexture[0]);
 		//spawn between the walls
 		asteroidSprite.x = Math.random()
 			* (game.wallRight.sprite.x - ((game.wallLeft.sprite.x + game.wallLeft.sprite.width)) - asteroidSprite.width * 2)
 			+ game.wallLeft.sprite.x + game.wallLeft.sprite.width + asteroidSprite.width;
-		asteroidSprite.y = -30;
+
+
+		if (top) asteroidSprite.y = -30;
+		else asteroidSprite.y = 640;
+
 		graphics.app.stage.addChild(asteroidSprite);
 
 		var asteroid = {
-			sprite: asteroidSprite, 
-			ySpeed: Math.random() + 1, 
-			xSpeed: Math.random()*2 - 1
+			sprite: asteroidSprite,
+			ySpeed: top ? Math.random() + 1 : (Math.random() - 1) * 0.5,
+			xSpeed: Math.random() * 2 - 1
 		};
 		game.asteroids.push(asteroid);
 	},
@@ -235,7 +239,7 @@ var graphics = {
 		powerupSprite.y = 0;
 		graphics.app.stage.addChild(powerupSprite);
 
-		var powerup = { sprite: powerupSprite, ySpeed: 3.14 };
+		var powerup = { sprite: powerupSprite, ySpeed: 3.14, xSpeed: (Math.random() - 0.5) * 1.5 };
 		game.powerups.push(powerup);
 	},
 
@@ -268,7 +272,7 @@ var graphics = {
 			.add({ name: 'asteroid2', url: 'images/asteroid2.png' })
 			.add({ name: 'asteroid3', url: 'images/asteroid3.png' })
 			.add({ name: 'asteroid4', url: 'images/asteroid4.png' })
-			.add({ name: 'beam', url: 'images/beam.png' }) 
+			.add({ name: 'beam', url: 'images/beam.png' })
 			.add({ name: 'rightFlare', url: 'images/flare_right.png' })
 			.add({ name: 'leftFlare', url: 'images/flare_left.png' })
 			.add({ name: 'ship', url: 'images/ship.png' })
@@ -513,11 +517,11 @@ var graphics = {
 		this.flareButton.on('pointerdown', game.fireFlare);
 
 		//Play the game
-		this.playButton.on('pointerdown', () => { game.runOverworld(false)});
-		this.playMobileButton.on('pointerdown', () => { game.runOverworld(true)});
+		this.playButton.on('pointerdown', () => { game.runOverworld(false) });
+		this.playMobileButton.on('pointerdown', () => { game.runOverworld(true) });
 
 		//Game over, go back to main menu
-		this.mainMenuButton.on('pointerdown', () => { 
+		this.mainMenuButton.on('pointerdown', () => {
 			location.reload();
 			//graphics.removeGameOver();
 			//game.stopSound('game');
@@ -536,7 +540,7 @@ var graphics = {
 		this.volumeSlider.on('pointerupoutside', game.onDragEnd);
 		this.volumeSlider.on('pointerup', game.updateSound);
 		this.volumeSlider.on('pointermove', game.onDragMove);
-		
+
 		//Start the game!
 		game.init();
 		game.runMenu(); //TODO add main menu
