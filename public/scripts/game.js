@@ -403,7 +403,6 @@ var game = {
     game.asteroidFlareTimer += deltaTime;
     if (game.asteroidFlareTimer > 1000 && game.player.dead == false) {
       graphics.addAsteroidFlare();
-
       game.asteroidFlareTimer = 0;
     }
 
