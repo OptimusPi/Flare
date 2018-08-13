@@ -359,11 +359,11 @@ var game = {
     if (!game.player.dead) {
       game.wallLeft.sprite.x += game.wallLeft.xSpeed * deltaTime;
       if(this.wallLeft.sprite.x < -499) game.wallLeft.xSpeed = 0.1;
-      if(game.wallLeft.xSpeed < 0.1) game.wallLeft.xSpeed += 0.00075;
+      if(game.wallLeft.xSpeed < 0.11) game.wallLeft.xSpeed += 0.00075;
       //--
       game.wallRight.sprite.x += game.wallRight.xSpeed * deltaTime;
       if(this.wallRight.sprite.x > 949) game.wallRight.xSpeed = -0.1;
-      if(game.wallRight.xSpeed > -0.1) game.wallRight.xSpeed -= 0.00075;
+      if(game.wallRight.xSpeed > -0.11) game.wallRight.xSpeed -= 0.00075;
 
     }
 
