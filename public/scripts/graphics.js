@@ -233,8 +233,6 @@ var graphics = {
 		var powerupSprite = new PIXI.Sprite(graphics.powerupTexture);
 		powerupSprite.x = game.player.sprite.x + game.player.sprite.width / 2 - graphics.powerupTexture.width / 2;
 		powerupSprite.y = 0;
-		powerupSprite.xSpeed = Math.random() - 0.5;
-		powerupSprite.xSpeed *= 1.5;
 		graphics.app.stage.addChild(powerupSprite);
 
 		var powerup = { sprite: powerupSprite, ySpeed: 3.14 };

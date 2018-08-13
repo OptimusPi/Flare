@@ -140,7 +140,7 @@ var game = {
   },
 
   shootFlare: function () {
-    if (this.player.battery == 100) {
+    if(this.player.battery == 100){
       graphics.addFlare();
       this.addBattery(-100);
     }
@@ -157,15 +157,15 @@ var game = {
     return ab.x + ab.width > bb.x && ab.x < bb.x + bb.width && ab.y + ab.height > bb.y && ab.y < bb.y + bb.height;
   },
 
-  startScore: function () {
-    game.score = 0;
-    graphics.app.ticker.add(function (deltaTime) {
+  startScore: function() {
+		game.score = 0;
+		graphics.app.ticker.add(function (deltaTime) {
       if (game.player.dead)
         return;
 
-      game.score += 0.0175 * deltaTime;
-      graphics.gameScore.text = 'Score:' + Math.floor(game.score);
-    });
+			game.score += 0.0175 * deltaTime;
+			graphics.gameScore.text = 'Score:' + Math.floor(game.score);
+		});
   },
 
   killPlayer: function () {
@@ -228,7 +228,7 @@ var game = {
     }, {
       sprite: new PIXI.Sprite(graphics.asteroidsTexture[3]), xSpeed: Math.random() - 0.5, ySpeed: -7
     }];
-
+    
     //
     //Position dead asteroid chunks
     //
@@ -277,14 +277,14 @@ var game = {
 
     //Up arrow key press method
     this.up.press = function () {
-      game.movePlayerUp();
+       game.movePlayerUp();
     };
     this.up.release = function () {
       game.stopPlayerUp();
     };
     //shift button press
     this.shift.press = function () {
-      game.shootFlare();
+          game.shootFlare();
     };
 
     //Down arrow key press method
@@ -315,7 +315,7 @@ var game = {
 
     //laser beam projectile physics
     game.beamPhysics(deltaTime);
-
+    
     //flare physucs
     game.flarePhysics(deltaTime);
 
@@ -326,10 +326,8 @@ var game = {
     game.powerupPhysics(deltaTime);
 
     //Run out of space!
-    if (!game.player.dead) {
-      game.wallLeft.sprite.x += game.wallLeft.xSpeed * deltaTime;
-      game.wallRight.sprite.x += game.wallRight.xSpeed * deltaTime;
-    }
+    game.wallLeft.sprite.x += game.wallLeft.xSpeed * deltaTime;
+    game.wallRight.sprite.x += game.wallRight.xSpeed * deltaTime;
 
     if (this.wallLeft.sprite.x > -100) {
       this.wallLeft.sprite.x = -100;
@@ -358,7 +356,7 @@ var game = {
   powerupPhysics: function (deltaTime) {
     //spawn powerups 
     this.powerupTimer += deltaTime;
-    if (this.powerupTimer > 300 && game.player.dead === false) {
+    if (this.powerupTimer > 250 && game.player.dead === false) {
       graphics.addPowerup();
       this.powerupTimer = 0;
     }
@@ -413,7 +411,7 @@ var game = {
     });
 
     //move dead asteroid pieces
-    game.asteroidPieces.forEach(function (asteroidPiece, index, object) {
+    game.asteroidPieces.forEach(function (asteroidPiece, index, object) { 
       asteroidPiece.sprite.y += asteroidPiece.ySpeed;
       asteroidPiece.sprite.x += asteroidPiece.xSpeed;
 
@@ -424,14 +422,14 @@ var game = {
       }
     });
   },
-
+  
   playerPhysics: function (deltaTime) {
     //Accelerate ship
     var maxHorizontal = 4;
     var maxVertical = 4;
     horizontal = this.player.right + this.player.left;
     vertical = this.player.down + this.player.up;
-
+    
     //X
     this.player.xSpeed += horizontal * 0.32 * deltaTime;
     if (this.player.xSpeed > maxHorizontal) this.player.xSpeed = maxHorizontal;
@@ -470,8 +468,8 @@ var game = {
       game.player.xSpeed *= -1.5;//bounce off the walls! 
       game.player.sprite.x -= 1.5;
     }
-    if (game.player.sprite.y < 5) this.player.ySpeed = 2;
-    if (game.player.sprite.y > 570) this.player.ySpeed = -2;
+    if(game.player.sprite.y < 5) this.player.ySpeed = 2;
+    if(game.player.sprite.y > 570) this.player.ySpeed = -2;
   },
 
   flarePhysics: function (deltaTime) {
@@ -493,9 +491,9 @@ var game = {
       rightFlare.sprite.x += rightFlare.xSpeed * deltaTime;
 
       //Check if it hits the wall, then get rid of it
-      if (game.boxesIntersect(flare.sprite, game.wallRight.sprite)) {
-        graphics.app.stage.removeChild(flare.sprite);
-        game.resetWalls();
+      if (game.boxesIntersect(rightFlare.sprite, game.wallRight.sprite)){
+        graphics.app.stage.removeChild(rightFlare.sprite);
+        game.resetRightWall();
       }
     });
   },
@@ -527,4 +525,3 @@ var game = {
     });
   }
 }
-
