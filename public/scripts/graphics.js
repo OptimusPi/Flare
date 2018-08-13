@@ -87,8 +87,8 @@ var graphics = {
 		this.wallRight.y = 0;
 		this.app.stage.addChild(this.wallRight);
 
-		game.wallLeft = { sprite: this.wallLeft, xSpeed: 0.1 };
-		game.wallRight = { sprite: this.wallRight, xSpeed: -0.1 };
+		game.wallLeft = { sprite: this.wallLeft, xSpeed: 0.11 };
+		game.wallRight = { sprite: this.wallRight, xSpeed: -0.11 };
 
 	},
 	addPlayer: function (x, y) {
