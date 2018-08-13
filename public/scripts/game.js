@@ -353,7 +353,7 @@ var game = {
   powerupPhysics: function (deltaTime) {
     //spawn powerups 
     this.powerupTimer += deltaTime;
-    if (this.powerupTimer > 200 && game.player.dead === false) {
+    if (this.powerupTimer > 250 && game.player.dead === false) {
       graphics.addPowerup();
       this.powerupTimer = 0;
     }
@@ -372,7 +372,7 @@ var game = {
   asteroidPhysics: function (deltaTime) {
     //spawn asteroids 
     game.asteroidTimer += deltaTime;
-    if (game.asteroidTimer > 80 && game.player.dead == false) {
+    if (game.asteroidTimer > 60 && game.player.dead == false) {
       graphics.addAsteroid();
       game.asteroidTimer = 0;
     }

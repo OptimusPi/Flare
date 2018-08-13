@@ -59,7 +59,7 @@ var graphics = {
 
 	addSpace: function () {
 		//this.app.stage.addChild(this.space);
-		for (var i = 0; i < 50; i++) {
+		for (var i = 0; i < 200; i++) {
 			var x = Math.random() * 960 % 960;
 			var y = Math.random() * 640 % 640;
 			var ySpeed = Math.random() * 1000 % 3;
@@ -86,8 +86,8 @@ var graphics = {
 		this.wallRight.y = 0;
 		this.app.stage.addChild(this.wallRight);
 
-		game.wallLeft = { sprite: this.wallLeft, xSpeed: 0.08 };
-		game.wallRight = { sprite: this.wallRight, xSpeed: -0.08 };
+		game.wallLeft = { sprite: this.wallLeft, xSpeed: 0.2 };
+		game.wallRight = { sprite: this.wallRight, xSpeed: -0.2 };
 
 	},
 	addPlayer: function (x, y) {
@@ -259,7 +259,7 @@ var graphics = {
 			.add({ name: 'asteroid3', url: 'images/asteroid3.png' })
 			.add({ name: 'asteroid4', url: 'images/asteroid4.png' })
 			.add({ name: 'beam', url: 'images/beam.png' }) 
-			.add({ name: 'flare', url: 'images/flare.png' })
+			.add({ name: 'flare', url: 'images/flare_right.png' })
 			.add({ name: 'ship', url: 'images/ship.png' })
 			.add({ name: 'shipPart1', url: 'images/ship_part1.png' })
 			.add({ name: 'shipPart2', url: 'images/ship_part2.png' })
