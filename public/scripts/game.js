@@ -26,7 +26,6 @@ var game = {
   down: keyboard(40),
   space: keyboard(32),
   shift: keyboard(16),
-
   //Functions
   onDragStart: function (event) {
     this.data = event.data;
@@ -58,6 +57,7 @@ var game = {
   },
 
   playSound: function (sound) {
+
     PIXI.sound.play(sound);
   },
   stopSound: function (sound) {
@@ -110,7 +110,8 @@ var game = {
     if (game.player.battery === 0) return;
 
     game.addBattery(-25);
-
+    game.playSound('beam');
+    //game.stopSound('beam');
     graphics.addBeam();
   },
   addBattery: function (percent) {
@@ -313,6 +314,27 @@ var game = {
       url: 'sounds/menu.ogg',
       loop: true,
     });
+    PIXI.sound.add('asteroid_breaking', {
+      url: 'sounds/asteroid_breaking.ogg',
+      loop: true,
+    });
+    PIXI.sound.add('beam', {
+      url: 'sounds/beam.ogg',
+      loop: true,
+    });
+    PIXI.sound.add('bounce', {
+      url: 'sounds/bounce.ogg',
+      loop: true,
+    });
+    PIXI.sound.add('powerup_pickup', {
+      url: 'sounds/menu.ogg',
+      loop: true,
+    });
+    PIXI.sound.add('ship_breaking', {
+      url: 'sounds/ship_breaking.ogg',
+      loop: true,
+    });
+    
   },
 
   physics: function (deltaTime) {
@@ -521,10 +543,12 @@ var game = {
     if (game.boxesIntersect(this.wallLeft.sprite, game.player.sprite)) {
       game.player.xSpeed *= -1.5;//bounce off the walls! 
       game.player.sprite.x += 1.5;
+      game.playSound('bounce');
     }
     if (game.boxesIntersect(this.wallRight.sprite, game.player.sprite)) {
       game.player.xSpeed *= -1.5;//bounce off the walls! 
       game.player.sprite.x -= 1.5;
+      game.playSound('bounce');
     }
     if(game.player.sprite.y < 5) this.player.ySpeed = 2;
     if(game.player.sprite.y > 570) this.player.ySpeed = -2;
