@@ -39,7 +39,8 @@ var graphics = {
 	shipPart3Texture: null,
 	shipPart4Texture: null,
 	beamTexture: null,
-	flareTexture: null,
+	RightFlareTexture: null,
+	LeftFlareTexture: null,
 	astroid1Texture: null,
 
 	//mobile controls
@@ -185,12 +186,21 @@ var graphics = {
 	},
 
 	addFlare: function() {
-		var flareSprite = new PIXI.Sprite(graphics.flareTexture);
-		flareSprite.x = game.player.sprite.x + game.player.sprite.width - this.flareTexture.width / 2;
-		flareSprite.y = game.player.sprite.y - this.flareTexture.height;
-		graphics.app.stage.addChild(flareSprite);
-		var flare = { sprite: flareSprite, xSpeed: 15};
-		game.flares.push(flare);
+		var leftFlareSprite = new PIXI.Sprite(graphics.leftFlareTexture);
+		leftFlareSprite.x = game.player.sprite.x - game.player.sprite.width - this.leftFlareTexture.width / 2;
+		leftFlareSprite.y = game.player.sprite.y - this.leftFlareTexture.height;
+		graphics.app.stage.addChild(leftFlareSprite);
+		var leftFlare = { sprite: leftFlareSprite, xSpeed: -15};
+		game.leftFlares.push(leftFlare);
+
+		//------------
+		
+		var rightFlareSprite = new PIXI.Sprite(graphics.rightFlareTexture);
+		rightFlareSprite.x = game.player.sprite.x + game.player.sprite.width - this.rightFlareTexture.width / 2;
+		rightFlareSprite.y = game.player.sprite.y - this.rightFlareTexture.height;
+		graphics.app.stage.addChild(rightFlareSprite);
+		var rightFlare = { sprite: rightFlareSprite, xSpeed: 15};
+		game.rightFlares.push(rightFlare);
 	},
 	addBeam: function () {
 		var beamSprite = new PIXI.Sprite(graphics.beamTexture);
@@ -259,7 +269,8 @@ var graphics = {
 			.add({ name: 'asteroid3', url: 'images/asteroid3.png' })
 			.add({ name: 'asteroid4', url: 'images/asteroid4.png' })
 			.add({ name: 'beam', url: 'images/beam.png' }) 
-			.add({ name: 'flare', url: 'images/flare_right.png' })
+			.add({ name: 'rightFlare', url: 'images/flare_right.png' })
+			.add({ name: 'leftFlare', url: 'images/flare_left.png' })
 			.add({ name: 'ship', url: 'images/ship.png' })
 			.add({ name: 'shipPart1', url: 'images/ship_part1.png' })
 			.add({ name: 'shipPart2', url: 'images/ship_part2.png' })
@@ -321,7 +332,8 @@ var graphics = {
 				//laser beam on the ship
 				graphics.beamTexture = new PIXI.Texture(PIXI.loader.resources.beam.texture);
 				//Flare
-				graphics.flareTexture = new PIXI.Texture(PIXI.loader.resources.flare.texture);
+				graphics.rightFlareTexture = new PIXI.Texture(PIXI.loader.resources.rightFlare.texture);
+				graphics.leftFlareTexture = new PIXI.Texture(PIXI.loader.resources.leftFlare.texture);
 				//D-pad and flare button for mobile on-screen controls
 				graphics.leftArrow = new PIXI.Sprite(PIXI.loader.resources.leftArrow.texture);
 				graphics.rightArrow = new PIXI.Sprite(PIXI.loader.resources.rightArrow.texture);
