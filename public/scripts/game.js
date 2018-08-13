@@ -274,7 +274,7 @@ var game = {
 
     //Up arrow key press method
     this.up.press = function () {
-      game.movePlayerUp();
+       game.movePlayerUp();
     };
     this.up.release = function () {
       game.stopPlayerUp();
@@ -465,6 +465,8 @@ var game = {
       game.player.xSpeed *= -1.5;//bounce off the walls! 
       game.player.sprite.x -= 1.5;
     }
+    if(game.player.sprite.y < 5) this.player.ySpeed = 2;
+    if(game.player.sprite.y > 570) this.player.ySpeed = -2;
   },
 
   flarePhysics: function (deltaTime) {
