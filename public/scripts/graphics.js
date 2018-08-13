@@ -220,14 +220,14 @@ var graphics = {
 			+ game.wallLeft.sprite.x + game.wallLeft.sprite.width + asteroidSprite.width;
 
 
-		if (top) asteroidSprite.y = -30;
+		if (top) asteroidSprite.y = - graphics.asteroidsTexture[0].height;
 		else asteroidSprite.y = 640;
 
 		graphics.app.stage.addChild(asteroidSprite);
 
 		var asteroid = {
 			sprite: asteroidSprite,
-			ySpeed: top ? Math.random() + 1 : (Math.random() - 1) * 0.5,
+			ySpeed: top ? Math.random() + 1 : (Math.random() - 1) * 0.9,
 			xSpeed: Math.random() * 2 - 1
 		};
 		game.asteroids.push(asteroid);
