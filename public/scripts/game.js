@@ -6,7 +6,8 @@ var game = {
   player: { sprite: null, dead: false, battery: 100, xSpeed: 0, ySpeed: 0, left: 0, right: 0, up: 0, down: 0 },
   shipParts: [],
   beams: [],
-  flares: [],
+  leftFlares: [],
+  rightFlares: [],
   powerups: [],
   asteroids: [],
   asteroidPieces: [],
@@ -144,9 +145,11 @@ var game = {
       this.addBattery(-100);
     }
   },
-  resetWalls: function () {
-    graphics.wallLeft.x = -500;
+  resetRightWall: function() {
     graphics.wallRight.x = 950;
+  },
+  resetLeftWall: function() {
+    graphics.wallLeft.x = -500;
   },
   boxesIntersect: function (a, b) {
     var ab = a.getBounds();
@@ -473,9 +476,21 @@ var game = {
 
   flarePhysics: function (deltaTime) {
     //move flares to the right
-    game.flares.forEach(function (flare, index, object) {
+    game.leftFlares.forEach(function (leftFlare, index, object) {
       //move to the right
-      flare.sprite.x += flare.xSpeed * deltaTime;
+      leftFlare.sprite.x += leftFlare.xSpeed * deltaTime;
+
+      //Check if it hits the wall, then get rid of it
+      if (game.boxesIntersect(leftFlare.sprite, game.wallLeft.sprite)){
+        graphics.app.stage.removeChild(leftFlare.sprite);
+        game.resetLeftWall();
+      }
+    });
+
+    //------
+    game.rightFlares.forEach(function (rightFlare, index, object) {
+      //move to the right
+      rightFlare.sprite.x += rightFlare.xSpeed * deltaTime;
 
       //Check if it hits the wall, then get rid of it
       if (game.boxesIntersect(flare.sprite, game.wallRight.sprite)) {
