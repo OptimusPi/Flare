@@ -366,15 +366,16 @@ var game = {
 
     //connect sprites to physics in game code
     game.ticker = new PIXI.ticker.Ticker();
+    console.log(game.ticker);
     game.ticker.stop();
-    game.ticker.add((deltaTime) => {
+    game.ticker.add(function(deltaTime) {
       game.physics(deltaTime);
     });
 
     //score ticker, run slowly to optimize speed
     game.scoreTicker = new PIXI.ticker.Ticker();
     game.scoreTicker.stop();
-    game.scoreTicker.add((deltaTime) => {
+    game.scoreTicker.add(function(deltaTime) {
       game.addScore(deltaTime);
       graphics.drawScore(game.state.score);
     });

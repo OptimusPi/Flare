@@ -277,7 +277,7 @@ var graphics = {
 		}
 		PIXI.utils.sayHello(type);
 
-		graphics.app = new PIXI.Application(graphics.screenWidth, graphics.screenHeight, { backgroundColor: graphics.backgroundColor });
+		graphics.app = new PIXI.Application(graphics.screenWidth, graphics.screenHeight, { backgroundColor: graphics.backgroundColor});
 
 		console.log(document);
 		console.log(document.body);
@@ -464,7 +464,7 @@ var graphics = {
 				//always animate stars
 				const animationTicker = new PIXI.ticker.Ticker();
 				animationTicker.stop();
-				animationTicker.add((deltaTime) => {
+				animationTicker.add(function(deltaTime) {
 					graphics.animateStars(deltaTime);
 				});
 				animationTicker.speed = 0.5;
@@ -555,11 +555,11 @@ var graphics = {
 		graphics.shootButton.on('pointerdown', game.shootBeam);
 
 		//Play the game
-		graphics.playButton.on('pointerdown', () => { game.runOverworld(false) });
-		graphics.playMobileButton.on('pointerdown', () => { game.runOverworld(true) });
+		graphics.playButton.on('pointerdown', function() { game.runOverworld(false) });
+		graphics.playMobileButton.on('pointerdown', function() { game.runOverworld(true) });
 
 		//Game over, go back to main menu
-		graphics.mainMenuButton.on('pointerdown', () => {
+		graphics.mainMenuButton.on('pointerdown', function() {
 			graphics.removeGameOver();
 			graphics.removeOverworldGUI();
 			game.runMenu();
