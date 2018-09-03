@@ -52,6 +52,7 @@ var graphics = {
 	shootButton: null,
 
 	//GUI elements
+	initButton: null,
 	volumeSlider: null,
 	volumeLine: null,
 	mainMenuButton: null,
@@ -408,6 +409,19 @@ var graphics = {
 					strokeThickness: 1
 				});
 
+				//Init Button
+				graphics.initButton = new PIXI.Sprite(PIXI.loader.resources.menuButton.texture);
+				graphics.initLabel = new PIXI.Text('Play Flare', {
+					fontWeight: 'normal',
+					fontStyle: 'normal',
+					fontSize: 32,
+					fontFamily: 'Courier New',
+					fill: '#FFF',
+					align: 'left',
+					stroke: '#AAA',
+					strokeThickness: 1
+				});
+
 				//Play Button
 				graphics.playButton = new PIXI.Sprite(PIXI.loader.resources.menuButton.texture);
 				graphics.playLabel = new PIXI.Text('Play PC Mode', {
@@ -474,6 +488,11 @@ var graphics = {
 
 	init: function () {
 		// GUI elements
+		graphics.initButton.x = 355;
+		graphics.initButton.y = 200;
+		graphics.initLabel.x = 483;
+		graphics.initLabel.y = 215;
+		graphics.initLabel.anchor.x = 0.5;
 		graphics.playButton.x = 355;
 		graphics.playButton.y = 200;
 		graphics.playLabel.x = 483;
@@ -531,6 +550,9 @@ var graphics = {
 		graphics.shootButton.interactive = true;
 		graphics.shootButton.interactiveChildren = false;
 		graphics.shootButton.buttonMode = true;
+		graphics.initButton.interactive = true;
+		graphics.initButton.interactiveChildren = false;
+		graphics.initButton.buttonMode = true;
 		graphics.playButton.interactive = true;
 		graphics.playButton.interactiveChildren = false;
 		graphics.playButton.buttonMode = true;
@@ -578,12 +600,21 @@ var graphics = {
 		graphics.volumeSlider.on('pointerup', game.updateSound);
 		graphics.volumeSlider.on('pointermove', game.onDragMove);
 
+
 		//Build stars once
 		graphics.addSpace();
 
-		//Start the game!
-		game.init();
-		game.runMenu();
+		//splash screen to get around auto play policies
+		graphics.app.stage.addChild(graphics.initButton);
+		graphics.app.stage.addChild(graphics.initLabel);
+		graphics.initButton.on('pointerdown', function() {
+			graphics.app.stage.removeChild(graphics.initLabel);
+			graphics.app.stage.removeChild(graphics.initButton);
+			
+			//Start the game!
+			game.init();
+			game.runMenu();
+		});
 	}
 };
 
