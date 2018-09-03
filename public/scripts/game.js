@@ -497,15 +497,15 @@ var game = {
     }
 
     //move asteroids
-    for (let i = 0; i < game.state.asteroids.length; i++) {
-      let asteroid = game.state.asteroids[i];
+    for (let index = 0; index < game.state.asteroids.length; index++) {
+      let asteroid = game.state.asteroids[index];
       asteroid.sprite.y += asteroid.ySpeed;
       asteroid.sprite.x += asteroid.xSpeed;
 
       //this this asteroid hits players it kills them
       if (game.state.player.dead == false && game.boxesIntersect(asteroid.sprite, game.state.player.sprite)) {
         graphics.app.stage.removeChild(asteroid.sprite);
-        game.state.asteroids.splice(i, 1);
+        game.state.asteroids.splice(index, 1);
         game.killPlayer();
       }
 
@@ -522,13 +522,13 @@ var game = {
       //disappear off screen
       if (asteroid.y > 700 || asteroid.y < -100) {
         graphics.app.stage.removeChild(asteroid.sprite);
-        game.state.asteroids.splice(i, 1);
+        game.state.asteroids.splice(index, 1);
       }
     }
 
     //move asteroid flares
-    for (let i = 0; i < game.state.asteroidFlares.length; i++) {
-      let asteroidFlare = game.state.asteroidFlares[i];
+    for (let index = 0; index < game.state.asteroidFlares.length; index++) {
+      let asteroidFlare = game.state.asteroidFlares[index];
       asteroidFlare.sprite.y += asteroidFlare.ySpeed;
       asteroidFlare.sprite.x += asteroidFlare.xSpeed;
 
@@ -547,8 +547,8 @@ var game = {
     }
 
     //move dead asteroid pieces
-    for (let i = 0; i < game.state.asteroidPieces.length; i++) {
-      let asteroidPiece = game.state.asteroidPieces[i];
+    for (let index = 0; index < game.state.asteroidPieces.length; index++) {
+      let asteroidPiece = game.state.asteroidPieces[index];
       asteroidPiece.sprite.y += asteroidPiece.ySpeed;
       asteroidPiece.sprite.x += asteroidPiece.xSpeed;
 
@@ -613,8 +613,8 @@ var game = {
 
   flarePhysics: function (deltaTime) {
     //move flares to the right
-    for (let i = 0; i < game.state.leftFlares.length; i++) {
-      let leftFlare = game.state.leftFlares[i];
+    for (let index = 0; index < game.state.leftFlares.length; index++) {
+      let leftFlare = game.state.leftFlares[index];
       //move to the right
       leftFlare.sprite.x += leftFlare.xSpeed * deltaTime;
 
@@ -627,8 +627,8 @@ var game = {
       }
     }
 
-    for (let i = 0; i < game.state.rightFlares.length; i++) {
-      let rightFlare = game.state.rightFlares[i];
+    for (let index = 0; index < game.state.rightFlares.length; index++) {
+      let rightFlare = game.state.rightFlares[index];
       //move to the right
       rightFlare.sprite.x += rightFlare.xSpeed * deltaTime;
 
