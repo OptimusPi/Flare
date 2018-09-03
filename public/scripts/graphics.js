@@ -81,9 +81,9 @@ var graphics = {
 		graphics.addStars();
 	},
 	addStars: function() {
-		graphics.stars.forEach(star => {
-			graphics.app.stage.addChild(star.sprite);
-		});
+		for (let i = 0; i < graphics.stars.length; i++) {
+			graphics.app.stage.addChild(graphics.stars[i].sprite);
+		}
 	},
 	addWalls: function () {
 		graphics.wallLeft.x = -500;
@@ -182,13 +182,14 @@ var graphics = {
 	},
 
 	animateStars: function (deltaTime) {
-		graphics.stars.forEach(star => {
+		for (let i = 0; i < graphics.stars.length; i++) {
+			let star = graphics.stars[i];
 			star.sprite.y += star.ySpeed * deltaTime;
 			if (star.sprite.y > 640) {
 				star.sprite.y = -star.sprite.height;
 				star.sprite.x = Math.random() * 960 % 960;
 			}
-		});
+		}	
 	},
 
 	addFlare: function (asteroidFlare) {
@@ -466,6 +467,7 @@ var graphics = {
 				animationTicker.add((deltaTime) => {
 					graphics.animateStars(deltaTime);
 				});
+				animationTicker.speed = 0.5;
 				animationTicker.start();
 			});
 	},

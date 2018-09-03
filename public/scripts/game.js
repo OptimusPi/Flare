@@ -23,6 +23,7 @@ var game = {
 
   state: null,
   ticker: null,
+  scoreTicker: null,
 
   //keyboard arrow keys
   left: keyboard(37),
@@ -90,6 +91,7 @@ var game = {
     game.playSound('game');
     game.updateSound();
     game.ticker.start();
+    game.scoreTicker.start();
   },
   setState: function(state) {
     game.state = JSON.parse(JSON.stringify(state));
@@ -100,15 +102,19 @@ var game = {
     //stop game physics loop
     game.ticker.stop();
 
+    //stop score ticker
+    game.scoreTicker.stop();
+
     /** remove all game object collections **/
-    game.state.asteroids.forEach(asteroid => { graphics.app.stage.removeChild(asteroid.sprite); });
-    game.state.asteroidFlares.forEach(asteroidFlare => { graphics.app.stage.removeChild(asteroidFlare.sprite); });
-    game.state.beams.forEach(beam => { graphics.app.stage.removeChild(beam.sprite); });
-    game.state.powerups.forEach(powerup => { graphics.app.stage.removeChild(powerup.sprite); });
-    game.state.shipParts.forEach(shipPart => { graphics.app.stage.removeChild(shipPart.sprite); });
-    game.state.leftFlares.forEach(leftFlare => { graphics.app.stage.removeChild(leftFlare.sprite); });
-    game.state.rightFlares.forEach(rightFlare => { graphics.app.stage.removeChild(rightFlare.sprite); });
-    game.state.asteroidPieces.forEach(asteroidPiece => { graphics.app.stage.removeChild(asteroidPiece.sprite); });
+    for (let i = 0; i < game.state.asteroids.length; i++) graphics.app.stage.removeChild(game.state.asteroids[i].sprite);
+    for (let i = 0; i < game.state.asteroidFlares.length; i++) graphics.app.stage.removeChild(game.state.asteroidFlares[i].sprite);
+    for (let i = 0; i < game.state.beams.length; i++) graphics.app.stage.removeChild(game.state.beams[i].sprite);
+    for (let i = 0; i < game.state.powerups.length; i++) graphics.app.stage.removeChild(game.state.powerups[i].sprite);
+    for (let i = 0; i < game.state.shipParts.length; i++) graphics.app.stage.removeChild(game.state.shipParts[i].sprite);
+    for (let i = 0; i < game.state.leftFlares.length; i++) graphics.app.stage.removeChild(game.state.leftFlares[i].sprite);
+    for (let i = 0; i < game.state.rightFlares.length; i++) graphics.app.stage.removeChild(game.state.rightFlares[i].sprite);
+    for (let i = 0; i < game.state.asteroidPieces.length; i++) graphics.app.stage.removeChild(game.state.asteroidPieces[i].sprite);
+
     
     /** remove all game objects **/
     graphics.app.stage.removeChild(game.state.wallLeft.sprite);
@@ -187,7 +193,7 @@ var game = {
     if (game.state.player.dead)
         return;
 
-    game.state.score += 0.0175 * deltaTime;
+    game.state.score += 0.875 * deltaTime;
   },
 
   killPlayer: function () {
@@ -363,9 +369,16 @@ var game = {
     game.ticker.stop();
     game.ticker.add((deltaTime) => {
       game.physics(deltaTime);
+    });
+
+    //score ticker, run slowly to optimize speed
+    game.scoreTicker = new PIXI.ticker.Ticker();
+    game.scoreTicker.stop();
+    game.scoreTicker.add((deltaTime) => {
       game.addScore(deltaTime);
       graphics.drawScore(game.state.score);
     });
+    game.scoreTicker.speed = 0.02;
   },
 
   physics: function (deltaTime) {
@@ -438,14 +451,15 @@ var game = {
     }
 
     //move powerups
-    game.state.powerups.forEach(function (powerup, index, object) {
+    for (let i = 0; i < game.state.powerups.length; i++) {
+      let powerup = game.state.powerups[i];
       powerup.sprite.y += powerup.ySpeed;
       powerup.sprite.x += powerup.xSpeed;
 
 
       if (game.boxesIntersect(powerup.sprite, game.state.player.sprite)) {
         graphics.app.stage.removeChild(powerup.sprite);
-        game.state.powerups.splice(index, 1);
+        game.state.powerups.splice(i, 1);
         game.addBattery(100);
         game.playSound('powerup_pickup');
 
@@ -462,7 +476,7 @@ var game = {
         powerup.xSpeed *= -1;//bounce off the walls! 
         powerup.sprite.x -= 2.0;
       }
-    });
+    }
   },
   asteroidPhysics: function (deltaTime) {
     //spawn asteroids 
@@ -483,14 +497,15 @@ var game = {
     }
 
     //move asteroids
-    game.state.asteroids.forEach(function (asteroid, index, object) {
+    for (let i = 0; i < game.state.asteroids.length; i++) {
+      let asteroid = game.state.asteroids[i];
       asteroid.sprite.y += asteroid.ySpeed;
       asteroid.sprite.x += asteroid.xSpeed;
 
       //this this asteroid hits players it kills them
       if (game.state.player.dead == false && game.boxesIntersect(asteroid.sprite, game.state.player.sprite)) {
         graphics.app.stage.removeChild(asteroid.sprite);
-        game.state.asteroids.splice(index, 1);
+        game.state.asteroids.splice(i, 1);
         game.killPlayer();
       }
 
@@ -507,31 +522,33 @@ var game = {
       //disappear off screen
       if (asteroid.y > 700 || asteroid.y < -100) {
         graphics.app.stage.removeChild(asteroid.sprite);
-        game.state.asteroids.splice(index, 1);
+        game.state.asteroids.splice(i, 1);
       }
-    });
+    }
 
     //move asteroid flares
-    game.state.asteroidFlares.forEach(function (asteroid, index, object) {
-      asteroid.sprite.y += asteroid.ySpeed;
-      asteroid.sprite.x += asteroid.xSpeed;
+    for (let i = 0; i < game.state.asteroidFlares.length; i++) {
+      let asteroidFlare = game.state.asteroidFlares[i];
+      asteroidFlare.sprite.y += asteroidFlare.ySpeed;
+      asteroidFlare.sprite.x += asteroidFlare.xSpeed;
 
-      //this this asteroid hits players it kills them
-      if (game.state.player.dead == false && game.boxesIntersect(asteroid.sprite, game.state.player.sprite)) {
-        graphics.app.stage.removeChild(asteroid.sprite);
-        game.state.asteroids.splice(index, 1);
+      //this this asteroidFlare hits players it kills them
+      if (game.state.player.dead == false && game.boxesIntersect(asteroidFlare.sprite, game.state.player.sprite)) {
+        graphics.app.stage.removeChild(asteroidFlare.sprite);
+        game.state.asteroidFlares.splice(index, 1);
         game.killPlayer();
       }
 
       //disappear off screen
-      if (asteroid.y > 700) {
-        graphics.app.stage.removeChild(asteroid.sprite);
-        game.state.asteroidSprites.splice(index, 1);
+      if (asteroidFlare.y > 700) {
+        graphics.app.stage.removeChild(asteroidFlare.sprite);
+        game.state.asteroidFlareSprites.splice(index, 1);
       }
-    });
+    }
 
     //move dead asteroid pieces
-    game.state.asteroidPieces.forEach(function (asteroidPiece, index, object) {
+    for (let i = 0; i < game.state.asteroidPieces.length; i++) {
+      let asteroidPiece = game.state.asteroidPieces[i];
       asteroidPiece.sprite.y += asteroidPiece.ySpeed;
       asteroidPiece.sprite.x += asteroidPiece.xSpeed;
 
@@ -540,7 +557,7 @@ var game = {
         graphics.app.stage.removeChild(asteroidPiece.sprite);
         game.state.asteroidPieces.splice(index, 1);
       }
-    });
+    }
   },
 
   playerPhysics: function (deltaTime) {
@@ -596,7 +613,8 @@ var game = {
 
   flarePhysics: function (deltaTime) {
     //move flares to the right
-    game.state.leftFlares.forEach(function (leftFlare, index, object) {
+    for (let i = 0; i < game.state.leftFlares.length; i++) {
+      let leftFlare = game.state.leftFlares[i];
       //move to the right
       leftFlare.sprite.x += leftFlare.xSpeed * deltaTime;
 
@@ -607,10 +625,10 @@ var game = {
         game.resetLeftWall();
         game.playSound('asteroid_breaking');
       }
-    });
+    }
 
-    //------
-    game.state.rightFlares.forEach(function (rightFlare, index, object) {
+    for (let i = 0; i < game.state.rightFlares.length; i++) {
+      let rightFlare = game.state.rightFlares[i];
       //move to the right
       rightFlare.sprite.x += rightFlare.xSpeed * deltaTime;
 
@@ -621,11 +639,12 @@ var game = {
         game.resetRightWall();
         game.playSound('asteroid_breaking');
       }
-    });
+    }
   },
   beamPhysics: function (deltaTime) {
     //move beams
-    game.state.beams.forEach(function (beam, beamIndex, object) {
+    for (let beamIndex = 0; beamIndex < game.state.beams.length; beamIndex++) {
+      let beam = game.state.beams[beamIndex];
       //move upward
       beam.sprite.y += beam.ySpeed * deltaTime;
       //if it moves off screen get rid of it
@@ -634,7 +653,8 @@ var game = {
         game.state.beams.splice(beamIndex, 1);
       }
       //check for red asteroids
-      game.state.asteroidFlares.forEach(function (asteroidFlare, index, object) {
+      for (let index = 0; index < game.state.asteroidFlares.length; index++) {
+        let asteroidFlare = game.state.asteroidFlares[index];
         if (game.boxesIntersect(asteroidFlare.sprite, beam.sprite)) {
 
           graphics.app.stage.removeChild(beam.sprite);
@@ -652,9 +672,10 @@ var game = {
           game.state.score++;
           graphics.drawScore(game.state.score);
         }
-      });
+      }
       //check for asteroids
-      game.state.asteroids.forEach(function (asteroid, index, object) {
+      for (let index = 0; index < game.state.asteroids.length; index++) {
+        let asteroid = game.state.asteroids[index];
         if (game.boxesIntersect(asteroid.sprite, beam.sprite)) {
 
           graphics.app.stage.removeChild(beam.sprite);
@@ -672,7 +693,7 @@ var game = {
           game.state.score++;
           graphics.drawScore(game.state.score);
         }
-      });
-    });
+      }
+    }
   }
 };
