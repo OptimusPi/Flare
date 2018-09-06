@@ -52,6 +52,7 @@ var graphics = {
 	shootButton: null,
 
 	//GUI elements
+	initButton: null,
 	volumeSlider: null,
 	volumeLine: null,
 	mainMenuButton: null,
@@ -81,9 +82,9 @@ var graphics = {
 		graphics.addStars();
 	},
 	addStars: function() {
-		graphics.stars.forEach(star => {
-			graphics.app.stage.addChild(star.sprite);
-		});
+		for (let i = 0; i < graphics.stars.length; i++) {
+			graphics.app.stage.addChild(graphics.stars[i].sprite);
+		}
 	},
 	addWalls: function () {
 		graphics.wallLeft.x = -500;
@@ -182,13 +183,14 @@ var graphics = {
 	},
 
 	animateStars: function (deltaTime) {
-		graphics.stars.forEach(star => {
+		for (let i = 0; i < graphics.stars.length; i++) {
+			let star = graphics.stars[i];
 			star.sprite.y += star.ySpeed * deltaTime;
 			if (star.sprite.y > 640) {
 				star.sprite.y = -star.sprite.height;
 				star.sprite.x = Math.random() * 960 % 960;
 			}
-		});
+		}	
 	},
 
 	addFlare: function (asteroidFlare) {
@@ -276,7 +278,7 @@ var graphics = {
 		}
 		PIXI.utils.sayHello(type);
 
-		graphics.app = new PIXI.Application(graphics.screenWidth, graphics.screenHeight, { backgroundColor: graphics.backgroundColor });
+		graphics.app = new PIXI.Application(graphics.screenWidth, graphics.screenHeight, { backgroundColor: graphics.backgroundColor});
 
 		console.log(document);
 		console.log(document.body);
@@ -407,6 +409,19 @@ var graphics = {
 					strokeThickness: 1
 				});
 
+				//Init Button
+				graphics.initButton = new PIXI.Sprite(PIXI.loader.resources.menuButton.texture);
+				graphics.initLabel = new PIXI.Text('Play Flare', {
+					fontWeight: 'normal',
+					fontStyle: 'normal',
+					fontSize: 32,
+					fontFamily: 'Courier New',
+					fill: '#FFF',
+					align: 'left',
+					stroke: '#AAA',
+					strokeThickness: 1
+				});
+
 				//Play Button
 				graphics.playButton = new PIXI.Sprite(PIXI.loader.resources.menuButton.texture);
 				graphics.playLabel = new PIXI.Text('Play PC Mode', {
@@ -463,15 +478,21 @@ var graphics = {
 				//always animate stars
 				const animationTicker = new PIXI.ticker.Ticker();
 				animationTicker.stop();
-				animationTicker.add((deltaTime) => {
+				animationTicker.add(function(deltaTime) {
 					graphics.animateStars(deltaTime);
 				});
+				animationTicker.speed = 0.5;
 				animationTicker.start();
 			});
 	},
 
 	init: function () {
 		// GUI elements
+		graphics.initButton.x = 355;
+		graphics.initButton.y = 200;
+		graphics.initLabel.x = 483;
+		graphics.initLabel.y = 215;
+		graphics.initLabel.anchor.x = 0.5;
 		graphics.playButton.x = 355;
 		graphics.playButton.y = 200;
 		graphics.playLabel.x = 483;
@@ -515,20 +536,31 @@ var graphics = {
 		graphics.shootButton.x = 800;
 		graphics.shootButton.y = 410;
 		graphics.leftArrow.interactive = true;
+		graphics.leftArrow.interactiveChildren = false;
 		graphics.leftArrow.buttonMode = true;
 		graphics.rightArrow.interactive = true;
+		graphics.rightArrow.interactiveChildren = false;
 		graphics.rightArrow.buttonMode = true;
 		graphics.upArrow.interactive = true;
+		graphics.upArrow.interactiveChildren = false;
 		graphics.upArrow.buttonMode = true;
 		graphics.downArrow.interactive = true;
+		graphics.downArrow.interactiveChildren = false;
 		graphics.downArrow.buttonMode = true;
 		graphics.shootButton.interactive = true;
+		graphics.shootButton.interactiveChildren = false;
 		graphics.shootButton.buttonMode = true;
+		graphics.initButton.interactive = true;
+		graphics.initButton.interactiveChildren = false;
+		graphics.initButton.buttonMode = true;
 		graphics.playButton.interactive = true;
+		graphics.playButton.interactiveChildren = false;
 		graphics.playButton.buttonMode = true;
 		graphics.playMobileButton.interactive = true;
+		graphics.playMobileButton.interactiveChildren = false;
 		graphics.playMobileButton.buttonMode = true;
 		graphics.mainMenuButton.interactive = true;
+		graphics.mainMenuButton.interactiveChildren = false;
 		graphics.mainMenuButton.buttonMode = true;
 		//press touch screen constrols
 		graphics.leftArrow.on('pointerdown', game.movePlayerLeft);
@@ -545,11 +577,11 @@ var graphics = {
 		graphics.shootButton.on('pointerdown', game.shootBeam);
 
 		//Play the game
-		graphics.playButton.on('pointerdown', () => { game.runOverworld(false) });
-		graphics.playMobileButton.on('pointerdown', () => { game.runOverworld(true) });
+		graphics.playButton.on('pointerdown', function() { game.runOverworld(false) });
+		graphics.playMobileButton.on('pointerdown', function() { game.runOverworld(true) });
 
 		//Game over, go back to main menu
-		graphics.mainMenuButton.on('pointerdown', () => {
+		graphics.mainMenuButton.on('pointerdown', function() {
 			graphics.removeGameOver();
 			graphics.removeOverworldGUI();
 			game.runMenu();
@@ -568,12 +600,21 @@ var graphics = {
 		graphics.volumeSlider.on('pointerup', game.updateSound);
 		graphics.volumeSlider.on('pointermove', game.onDragMove);
 
+
 		//Build stars once
 		graphics.addSpace();
 
-		//Start the game!
-		game.init();
-		game.runMenu();
+		//splash screen to get around auto play policies
+		graphics.app.stage.addChild(graphics.initButton);
+		graphics.app.stage.addChild(graphics.initLabel);
+		graphics.initButton.on('pointerdown', function() {
+			graphics.app.stage.removeChild(graphics.initLabel);
+			graphics.app.stage.removeChild(graphics.initButton);
+			
+			//Start the game!
+			game.init();
+			game.runMenu();
+		});
 	}
 };
 
