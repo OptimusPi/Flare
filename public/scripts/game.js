@@ -543,7 +543,7 @@ var game = {
       //disappear off screen
       if (asteroidFlare.y > 700) {
         graphics.app.stage.removeChild(asteroidFlare.sprite);
-        game.state.asteroidFlareSprites.splice(index, 1);
+        game.state.asteroidFlares.splice(index, 1);
       }
     }
 
