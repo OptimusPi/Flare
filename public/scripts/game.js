@@ -2,7 +2,7 @@ debug.log('game.js');
 
 const initialGameState = {
   //player
-  player: { sprite: null, dead: false, battery: 100, xSpeed: 0, ySpeed: 0, left: 0, right: 0, up: 0, down: 0 },
+  player: { sprite: null, dead: false, battery: 100, xSpeed: 0, ySpeed: 0, horizontal: 0, vertical: 0 },
   shipParts: [],
   beams: [],
   leftFlares: [],
@@ -58,6 +58,51 @@ var game = {
 
       graphics.volumeSlider.x = x - 16;
       game.updateSound();
+    }
+  },
+
+  thumbstickTouch: function (event) {
+    this.data = event.data;
+    this.alpha = 0.6;
+    this.dragging = true;
+  },
+
+  thumbstickReset: function () {
+    this.alpha = 1;
+    this.dragging = false;
+    this.data = null;
+
+    graphics.thumbstick.x =  graphics.thumbstickOrigin.x;
+    graphics.thumbstick.y =  graphics.thumbstickOrigin.y;
+  },
+
+  thumbstickMove: function () {
+    var thumbstickAreaDiameter = 50;
+
+    if (this.dragging) {
+      var x = this.data.getLocalPosition(this.parent).x;
+      var y = this.data.getLocalPosition(this.parent).y;
+
+      //todo - if distance > 50, calculate distance of 50
+      var bigX = x - graphics.thumbstickOrigin.x;
+      var bigY = y - graphics.thumbstickOrigin.y;
+      var newX = x;
+      var newY = y;
+      var distance = Math.sqrt(Math.abs(bigX)*Math.abs(bigX) + Math.abs(bigY)*Math.abs(bigY));
+
+
+      if (distance > thumbstickAreaDiameter) {
+        var ratio = thumbstickAreaDiameter / distance;
+        newX = graphics.thumbstickOrigin.x + bigX * ratio;
+        newY = graphics.thumbstickOrigin.y + bigY * ratio;
+      }
+
+      graphics.thumbstick.x = newX;
+      graphics.thumbstick.y = newY;
+
+      //move move the ship controls
+      game.state.player.horizontal = (newX - graphics.thumbstickOrigin.x) / thumbstickAreaDiameter;
+      game.state.player.vertical = (newY - graphics.thumbstickOrigin.y) / thumbstickAreaDiameter;
     }
   },
 
@@ -563,10 +608,11 @@ var game = {
 
   playerPhysics: function (deltaTime) {
     //Accelerate ship
-    var maxHorizontal = 4;
-    var maxVertical = 4;
-    horizontal = game.state.player.right + game.state.player.left;
-    vertical = game.state.player.down + game.state.player.up;
+    horizontal = game.state.player.horizontal;
+    vertical = game.state.player.vertical;
+    var maxHorizontal = 4 * Math.abs(horizontal);
+    var maxVertical = 4 * Math.abs(vertical);
+
 
     //X
     game.state.player.xSpeed += horizontal * 0.32 * deltaTime;
