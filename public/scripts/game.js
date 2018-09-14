@@ -2,7 +2,7 @@ debug.log('game.js');
 
 const initialGameState = {
   //player
-  player: { sprite: null, dead: false, battery: 100, xSpeed: 0, ySpeed: 0, horizontal: 0, vertical: 0 },
+  player: { sprite: null, dead: false, frame: 0, battery: 100, xSpeed: 0, ySpeed: 0, left: 0, right: 0, up: 0, down: 0, horizontal: 0, vertical: 0 },
   shipParts: [],
   beams: [],
   leftFlares: [],
@@ -74,6 +74,8 @@ var game = {
 
     graphics.thumbstick.x =  graphics.thumbstickOrigin.x;
     graphics.thumbstick.y =  graphics.thumbstickOrigin.y;
+    game.state.player.horizontal = 0;
+    game.state.player.vertical = 0;
   },
 
   thumbstickMove: function () {
@@ -107,7 +109,6 @@ var game = {
   },
 
   playSound: function (sound) {
-
     PIXI.sound.play(sound);
   },
   stopSound: function (sound) {
@@ -336,6 +337,7 @@ var game = {
   },
 
   init: function () {
+
     //initial state
     game.setState(initialGameState);
 
@@ -608,23 +610,24 @@ var game = {
 
   playerPhysics: function (deltaTime) {
     //Accelerate ship
-    horizontal = game.state.player.horizontal;
-    vertical = game.state.player.vertical;
+    horizontal = game.state.player.horizontal + game.state.player.left + game.state.player.right;
+    vertical = game.state.player.vertical + game.state.player.up + game.state.player.down;
     var maxHorizontal = 4 * Math.abs(horizontal);
     var maxVertical = 4 * Math.abs(vertical);
 
-
     //X
-    game.state.player.xSpeed += horizontal * 0.32 * deltaTime;
-    if (game.state.player.xSpeed > maxHorizontal) game.state.player.xSpeed = maxHorizontal;
-    if (game.state.player.xSpeed < -maxHorizontal) game.state.player.xSpeed = -maxHorizontal;
-    if (horizontal === 0) game.state.player.xSpeed *= 0.92 * deltaTime;
+    game.state.player.xSpeed += horizontal * 0.5 * deltaTime;
+    if (horizontal === 0) game.state.player.xSpeed *= 0.8 / deltaTime;
+    else if (game.state.player.xSpeed > maxHorizontal) game.state.player.xSpeed = maxHorizontal;
+    else if (game.state.player.xSpeed < -maxHorizontal) game.state.player.xSpeed = -maxHorizontal;
+
 
     //Y
-    game.state.player.ySpeed += vertical * 0.32 * deltaTime;
-    if (game.state.player.ySpeed > maxVertical) game.state.player.ySpeed = maxVertical;
-    if (game.state.player.ySpeed < -maxVertical) game.state.player.ySpeed = -maxVertical;
-    if (vertical === 0) game.state.player.ySpeed *= 0.92 * deltaTime;
+    game.state.player.ySpeed += vertical * 0.5 * deltaTime;
+    if (vertical === 0) game.state.player.ySpeed *= 0.8 / deltaTime;
+    else if (game.state.player.ySpeed > maxVertical) game.state.player.ySpeed = maxVertical;
+    else if (game.state.player.ySpeed < -maxVertical) game.state.player.ySpeed = -maxVertical;
+
 
     //Move ship based on it's calculated 
     game.state.player.sprite.x += game.state.player.xSpeed * deltaTime;
@@ -633,15 +636,14 @@ var game = {
     //Display ship boosters
     if (horizontal !== 0 || vertical !== 0) {
       //TODO put animations in graphics.js ?
-      game.state.player.sprite.frame += deltaTime;
-      if (game.state.player.sprite.frame % 8 < 8) game.state.player.sprite.texture = graphics.shipBoosting3Texture;
-      if (game.state.player.sprite.frame % 8 < 5) game.state.player.sprite.texture = graphics.shipBoosting2Texture;
-      if (game.state.player.sprite.frame % 8 < 2) game.state.player.sprite.texture = graphics.shipBoosting1Texture;
+      game.state.player.frame += deltaTime;
+      if (game.state.player.frame % 8 < 8) game.state.player.sprite.texture = graphics.shipBoosting3Texture;
+      if (game.state.player.frame % 8 < 5) game.state.player.sprite.texture = graphics.shipBoosting2Texture;
+      if (game.state.player.frame % 8 < 2) game.state.player.sprite.texture = graphics.shipBoosting1Texture;
     } else {
-      game.state.player.sprite.frame = 0;
-      game.state.player.sprite.frame += deltaTime;
-      if (game.state.player.sprite.frame % 8 < 8) game.state.player.sprite.texture = graphics.shipTexture;
-      if (game.state.player.sprite.frame % 8 < 4) game.state.player.sprite.texture = graphics.shipBoosting1Texture;
+      game.state.player.frame += deltaTime;
+      if (game.state.player.frame % 8 < 8) game.state.player.sprite.texture = graphics.shipTexture;
+      if (game.state.player.frame % 8 < 5) game.state.player.sprite.texture = graphics.shipBoosting1Texture;
     }
     //bounce off the walls! 
     if (game.boxesIntersect(game.state.wallLeft.sprite, game.state.player.sprite)) {
