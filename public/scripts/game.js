@@ -413,7 +413,6 @@ var game = {
 
     //connect sprites to physics in game code
     game.ticker = new PIXI.ticker.Ticker();
-    console.log(game.ticker);
     game.ticker.stop();
     game.ticker.add(function(deltaTime) {
       game.physics(deltaTime);
@@ -636,14 +635,14 @@ var game = {
     //Display ship boosters
     if (horizontal !== 0 || vertical !== 0) {
       //TODO put animations in graphics.js ?
-      game.state.player.frame += deltaTime;
-      if (game.state.player.frame % 8 < 8) game.state.player.sprite.texture = graphics.shipBoosting3Texture;
-      if (game.state.player.frame % 8 < 5) game.state.player.sprite.texture = graphics.shipBoosting2Texture;
-      if (game.state.player.frame % 8 < 2) game.state.player.sprite.texture = graphics.shipBoosting1Texture;
+      game.state.player.sprite.frame += deltaTime;
+      if (game.state.player.sprite.frame % 6 < 6) game.state.player.sprite.texture = graphics.shipBoosting3Texture;
+      if (game.state.player.sprite.frame % 6 < 4) game.state.player.sprite.texture = graphics.shipBoosting2Texture;
+      if (game.state.player.sprite.frame % 6 < 2) game.state.player.sprite.texture = graphics.shipBoosting1Texture;
     } else {
-      game.state.player.frame += deltaTime;
-      if (game.state.player.frame % 8 < 8) game.state.player.sprite.texture = graphics.shipTexture;
-      if (game.state.player.frame % 8 < 5) game.state.player.sprite.texture = graphics.shipBoosting1Texture;
+      game.state.player.sprite.frame += deltaTime;
+      if (game.state.player.sprite.frame % 6 < 6) game.state.player.sprite.texture = graphics.shipTexture;
+      if (game.state.player.sprite.frame % 6 < 3) game.state.player.sprite.texture = graphics.shipBoosting1Texture;
     }
     //bounce off the walls! 
     if (game.boxesIntersect(game.state.wallLeft.sprite, game.state.player.sprite)) {

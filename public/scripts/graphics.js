@@ -57,12 +57,20 @@ var graphics = {
 	mainMenuButton: null,
 	playButton: null,
 	playMobileButton: null,
+	starCount: 1200,
 
 	addSpace: function () {
+
+		//create sprite containers
+		let starContainers = [];
+		for (let i = 0; i < 10; i++) {
+			starContainers.push(new PIXI.particles.ParticleContainer());
+		}
+
 		//graphics.app.stage.addChild(graphics.space);
-		for (var i = 0; i < 100; i++) {
-			var x = (Math.random() * 192 % 192 ) * 5;
-			var y = (Math.random() * 128 % 128 ) * 5;
+		for (var i = 0; i < graphics.starCount; i++) {
+			var x = (Math.random() * 980 % 980 ) - 10;
+			var y = (Math.random() * 660 % 660 ) - 10;
 			var ySpeed = Math.random() * 1000 % 3;
 			ySpeed *= 0.04 + 0.9;
 
@@ -75,14 +83,14 @@ var graphics = {
 			star.sprite.x = x;
 			star.sprite.y = y;
 			graphics.stars.push(star);
+
+			//add to correct container
+			starContainers[img].addChild(star.sprite);
 		}
 
 		//draw stars
-		graphics.addStars();
-	},
-	addStars: function() {
-		for (let i = 0; i < graphics.stars.length; i++) {
-			graphics.app.stage.addChild(graphics.stars[i].sprite);
+		for (let i = 0; i < 10; i++) {
+			graphics.app.stage.addChild(starContainers[i]);
 		}
 	},
 	addWalls: function () {
@@ -104,6 +112,7 @@ var graphics = {
 
 		// create new sprite TOO make it from the image textures loaded in
 		player.sprite = new PIXI.Sprite(graphics.shipTexture);
+		player.sprite.frame = 0;
 
 		//add sprite to player
 		player.sprite.x = x;
@@ -342,7 +351,7 @@ var graphics = {
 				graphics.starTexture[5] = new PIXI.Texture(PIXI.loader.resources.star6.texture);
 				graphics.starTexture[6] = new PIXI.Texture(PIXI.loader.resources.star7.texture);
 				graphics.starTexture[7] = new PIXI.Texture(PIXI.loader.resources.star8.texture);
-				graphics.starTexture[7] = new PIXI.Texture(PIXI.loader.resources.star9.texture);
+				graphics.starTexture[8] = new PIXI.Texture(PIXI.loader.resources.star9.texture);
 				graphics.starTexture[9] = new PIXI.Texture(PIXI.loader.resources.star10.texture);
 
 				//Load player ship
@@ -515,6 +524,7 @@ var graphics = {
 		graphics.batteryLife.y = 600;
 		graphics.volumeLine.x = 50;
 		graphics.volumeLine.y = 16;
+		graphics.volumeSlider.zOrder = 101;
 		graphics.volumeSlider.x = 90;//134;
 		graphics.volumeSlider.y = 8;
 		graphics.shootButton.x = 800;
