@@ -21,6 +21,7 @@ const initialGameState = {
 
 var game = {
 
+  test: false,
   state: null,
   ticker: null,
   scoreTicker: null,
@@ -85,13 +86,11 @@ var game = {
       var x = this.data.getLocalPosition(this.parent).x;
       var y = this.data.getLocalPosition(this.parent).y;
 
-      //todo - if distance > 50, calculate distance of 50
       var bigX = x - graphics.thumbstickOrigin.x;
       var bigY = y - graphics.thumbstickOrigin.y;
       var newX = x;
       var newY = y;
       var distance = Math.sqrt(Math.abs(bigX)*Math.abs(bigX) + Math.abs(bigY)*Math.abs(bigY));
-
 
       if (distance > thumbstickAreaDiameter) {
         var ratio = thumbstickAreaDiameter / distance;
@@ -215,13 +214,6 @@ var game = {
   },
   stopPlayerDown: function () {
     game.state.player.down = 0;
-  },
-
-  shootFlare: function (asteroidFlare) { //TODO Raghav
-    if (game.state.player.battery == 100) {
-      graphics.addFlare(asteroidFlare);
-      game.addBattery(-100);
-    }
   },
   resetRightWall: function () {
     game.state.wallRight.xSpeed = 5;
@@ -367,10 +359,7 @@ var game = {
     game.up.release = function () {
       game.stopPlayerUp();
     };
-    //shift button press
-    game.shift.press = function () {
-      game.shootFlare();
-    };
+
 
     //Down arrow key press method
     game.down.press = function () {
@@ -428,26 +417,76 @@ var game = {
     game.scoreTicker.speed = 0.02;
   },
 
+  testInfo: {
+    start: "",
+    playerPhysics: "",
+    deadPlayerPhysics: "",
+    beamPhysics: "",
+    flarePhysics: "",
+    asteroidPhysics: "",
+    powerupPhysics: "",
+    wallPhysics: ""
+  },
+
+  testTrigger: false,
+
   physics: function (deltaTime) {
     //if (graphics.wallRight.sprite.x > 949) game.wallRight.xSpeed = -0.2;
     //Ship physics
+
+    if (game.test)
+      game.testInfo.start = window.performance.now();
+
     if (game.state.player.dead === false) game.playerPhysics(deltaTime);
+
+    if (game.test)
+      game.testInfo.playerPhysics = window.performance.now();
+
+
     if (game.state.player.dead === true) game.deadPlayerPhysics(deltaTime);
+
+    if (game.test)
+      game.testInfo.deadPlayerPhysics = "test: " + window.performance.now();
 
     //laser beam projectile physics
     game.beamPhysics(deltaTime);
 
+    if (game.test)
+      game.testInfo.beamPhysics = "test: " + window.performance.now();
+
     //flare physics
     game.flarePhysics(deltaTime);
+
+    if (game.test)
+      game.testInfo.flarePhysics = "test: " + window.performance.now();
 
     //asteroids and broken asteroid pieces physics
     game.asteroidPhysics(deltaTime);
 
+    if (game.test)
+      game.testInfo.asteroidPhysics = "test: " + window.performance.now();
+
     //powerups physics
-    game.powerupPhysics(deltaTime);
+      game.powerupPhysics(deltaTime);
+
+    if (game.test)
+      game.testInfo.powerupPhysics = "test: " + window.performance.now();
 
     //Run out of space!
     game.wallPhysics(deltaTime);
+
+    if (game.test)
+      game.testInfo.wallPhysics = "test: " + window.performance.now();
+
+    if (game.test) {
+      console.log(game.testInfo);
+      game.test = false;
+    }
+
+    if (game.testTrigger) {
+      game.testTrigger = false;
+      game.test = true;
+    }
   },
 
   wallPhysics: function(deltaTime) {
@@ -537,8 +576,8 @@ var game = {
     }
 
     //spawn asteroid flares 
-    
     if (game.state.score - game.state.asteroidFlareTimer > 50) {
+       game.testTrigger = true;
        graphics.addAsteroidFlare();
        game.state.asteroidFlareTimer = game.state.score;
     }
@@ -634,7 +673,8 @@ var game = {
 
     //Display ship boosters
     if (horizontal !== 0 || vertical !== 0) {
-      //TODO put animations in graphics.js ?
+      //TODO put animations in graphics.js
+      //TODO use sprite sheet
       game.state.player.sprite.frame += deltaTime;
       if (game.state.player.sprite.frame % 6 < 6) game.state.player.sprite.texture = graphics.shipBoosting3Texture;
       if (game.state.player.sprite.frame % 6 < 4) game.state.player.sprite.texture = graphics.shipBoosting2Texture;

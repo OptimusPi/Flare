@@ -57,7 +57,7 @@ var graphics = {
 	mainMenuButton: null,
 	playButton: null,
 	playMobileButton: null,
-	starCount: 1200,
+	starCount: 500,
 
 	addSpace: function () {
 
