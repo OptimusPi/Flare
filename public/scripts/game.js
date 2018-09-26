@@ -2,7 +2,7 @@ debug.log('game.js');
 
 const initialGameState = {
   //player
-  player: { sprite: null, dead: false, battery: 100, xSpeed: 0, ySpeed: 0, left: 0, right: 0, up: 0, down: 0 },
+  player: { sprite: null, dead: false, frame: 0, battery: 100, xSpeed: 0, ySpeed: 0, left: 0, right: 0, up: 0, down: 0, horizontal: 0, vertical: 0 },
   shipParts: [],
   beams: [],
   leftFlares: [],
@@ -21,6 +21,7 @@ const initialGameState = {
 
 var game = {
 
+  test: false,
   state: null,
   ticker: null,
   scoreTicker: null,
@@ -61,8 +62,52 @@ var game = {
     }
   },
 
-  playSound: function (sound) {
+  thumbstickTouch: function (event) {
+    this.data = event.data;
+    this.alpha = 0.6;
+    this.dragging = true;
+  },
 
+  thumbstickReset: function () {
+    this.alpha = 1;
+    this.dragging = false;
+    this.data = null;
+
+    graphics.thumbstick.x =  graphics.thumbstickOrigin.x;
+    graphics.thumbstick.y =  graphics.thumbstickOrigin.y;
+    game.state.player.horizontal = 0;
+    game.state.player.vertical = 0;
+  },
+
+  thumbstickMove: function () {
+    var thumbstickAreaDiameter = 50;
+
+    if (this.dragging) {
+      var x = this.data.getLocalPosition(this.parent).x;
+      var y = this.data.getLocalPosition(this.parent).y;
+
+      var bigX = x - graphics.thumbstickOrigin.x;
+      var bigY = y - graphics.thumbstickOrigin.y;
+      var newX = x;
+      var newY = y;
+      var distance = Math.sqrt(Math.abs(bigX)*Math.abs(bigX) + Math.abs(bigY)*Math.abs(bigY));
+
+      if (distance > thumbstickAreaDiameter) {
+        var ratio = thumbstickAreaDiameter / distance;
+        newX = graphics.thumbstickOrigin.x + bigX * ratio;
+        newY = graphics.thumbstickOrigin.y + bigY * ratio;
+      }
+
+      graphics.thumbstick.x = newX;
+      graphics.thumbstick.y = newY;
+
+      //move move the ship controls
+      game.state.player.horizontal = (newX - graphics.thumbstickOrigin.x) / thumbstickAreaDiameter;
+      game.state.player.vertical = (newY - graphics.thumbstickOrigin.y) / thumbstickAreaDiameter;
+    }
+  },
+
+  playSound: function (sound) {
     PIXI.sound.play(sound);
   },
   stopSound: function (sound) {
@@ -169,13 +214,6 @@ var game = {
   },
   stopPlayerDown: function () {
     game.state.player.down = 0;
-  },
-
-  shootFlare: function (asteroidFlare) { //TODO Raghav
-    if (game.state.player.battery == 100) {
-      graphics.addFlare(asteroidFlare);
-      game.addBattery(-100);
-    }
   },
   resetRightWall: function () {
     game.state.wallRight.xSpeed = 5;
@@ -291,6 +329,7 @@ var game = {
   },
 
   init: function () {
+
     //initial state
     game.setState(initialGameState);
 
@@ -320,10 +359,7 @@ var game = {
     game.up.release = function () {
       game.stopPlayerUp();
     };
-    //shift button press
-    game.shift.press = function () {
-      game.shootFlare();
-    };
+
 
     //Down arrow key press method
     game.down.press = function () {
@@ -381,26 +417,76 @@ var game = {
     game.scoreTicker.speed = 0.02;
   },
 
+  testInfo: {
+    start: "",
+    playerPhysics: "",
+    deadPlayerPhysics: "",
+    beamPhysics: "",
+    flarePhysics: "",
+    asteroidPhysics: "",
+    powerupPhysics: "",
+    wallPhysics: ""
+  },
+
+  testTrigger: false,
+
   physics: function (deltaTime) {
     //if (graphics.wallRight.sprite.x > 949) game.wallRight.xSpeed = -0.2;
     //Ship physics
+
+    if (game.test)
+      game.testInfo.start = window.performance.now();
+
     if (game.state.player.dead === false) game.playerPhysics(deltaTime);
+
+    if (game.test)
+      game.testInfo.playerPhysics = window.performance.now();
+
+
     if (game.state.player.dead === true) game.deadPlayerPhysics(deltaTime);
+
+    if (game.test)
+      game.testInfo.deadPlayerPhysics = "test: " + window.performance.now();
 
     //laser beam projectile physics
     game.beamPhysics(deltaTime);
 
+    if (game.test)
+      game.testInfo.beamPhysics = "test: " + window.performance.now();
+
     //flare physics
     game.flarePhysics(deltaTime);
+
+    if (game.test)
+      game.testInfo.flarePhysics = "test: " + window.performance.now();
 
     //asteroids and broken asteroid pieces physics
     game.asteroidPhysics(deltaTime);
 
+    if (game.test)
+      game.testInfo.asteroidPhysics = "test: " + window.performance.now();
+
     //powerups physics
-    game.powerupPhysics(deltaTime);
+      game.powerupPhysics(deltaTime);
+
+    if (game.test)
+      game.testInfo.powerupPhysics = "test: " + window.performance.now();
 
     //Run out of space!
     game.wallPhysics(deltaTime);
+
+    if (game.test)
+      game.testInfo.wallPhysics = "test: " + window.performance.now();
+
+    if (game.test) {
+      console.log(game.testInfo);
+      game.test = false;
+    }
+
+    if (game.testTrigger) {
+      game.testTrigger = false;
+      game.test = true;
+    }
   },
 
   wallPhysics: function(deltaTime) {
@@ -490,8 +576,8 @@ var game = {
     }
 
     //spawn asteroid flares 
-    
     if (game.state.score - game.state.asteroidFlareTimer > 50) {
+       game.testTrigger = true;
        graphics.addAsteroidFlare();
        game.state.asteroidFlareTimer = game.state.score;
     }
@@ -562,22 +648,24 @@ var game = {
 
   playerPhysics: function (deltaTime) {
     //Accelerate ship
-    var maxHorizontal = 4;
-    var maxVertical = 4;
-    horizontal = game.state.player.right + game.state.player.left;
-    vertical = game.state.player.down + game.state.player.up;
+    horizontal = game.state.player.horizontal + game.state.player.left + game.state.player.right;
+    vertical = game.state.player.vertical + game.state.player.up + game.state.player.down;
+    var maxHorizontal = 4 * Math.abs(horizontal);
+    var maxVertical = 4 * Math.abs(vertical);
 
     //X
-    game.state.player.xSpeed += horizontal * 0.32 * deltaTime;
-    if (game.state.player.xSpeed > maxHorizontal) game.state.player.xSpeed = maxHorizontal;
-    if (game.state.player.xSpeed < -maxHorizontal) game.state.player.xSpeed = -maxHorizontal;
-    if (horizontal === 0) game.state.player.xSpeed *= 0.92 * deltaTime;
+    game.state.player.xSpeed += horizontal * 0.5 * deltaTime;
+    if (horizontal === 0) game.state.player.xSpeed *= 0.8 / deltaTime;
+    else if (game.state.player.xSpeed > maxHorizontal) game.state.player.xSpeed = maxHorizontal;
+    else if (game.state.player.xSpeed < -maxHorizontal) game.state.player.xSpeed = -maxHorizontal;
+
 
     //Y
-    game.state.player.ySpeed += vertical * 0.32 * deltaTime;
-    if (game.state.player.ySpeed > maxVertical) game.state.player.ySpeed = maxVertical;
-    if (game.state.player.ySpeed < -maxVertical) game.state.player.ySpeed = -maxVertical;
-    if (vertical === 0) game.state.player.ySpeed *= 0.92 * deltaTime;
+    game.state.player.ySpeed += vertical * 0.5 * deltaTime;
+    if (vertical === 0) game.state.player.ySpeed *= 0.8 / deltaTime;
+    else if (game.state.player.ySpeed > maxVertical) game.state.player.ySpeed = maxVertical;
+    else if (game.state.player.ySpeed < -maxVertical) game.state.player.ySpeed = -maxVertical;
+
 
     //Move ship based on it's calculated 
     game.state.player.sprite.x += game.state.player.xSpeed * deltaTime;
@@ -585,7 +673,8 @@ var game = {
 
     //Display ship boosters
     if (horizontal !== 0 || vertical !== 0) {
-      //TODO put animations in graphics.js ?
+      //TODO put animations in graphics.js
+      //TODO use sprite sheet
       game.state.player.sprite.frame += deltaTime;
       if (game.state.player.sprite.frame % 6 < 6) game.state.player.sprite.texture = graphics.shipBoosting3Texture;
       if (game.state.player.sprite.frame % 6 < 4) game.state.player.sprite.texture = graphics.shipBoosting2Texture;

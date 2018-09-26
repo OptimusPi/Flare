@@ -45,11 +45,10 @@ var graphics = {
 
 	//mobile controls
 	mobileMode: false,
-	leftArrow: null,
-	rightArrow: null,
-	upArrow: null,
-	downArrow: null,
 	shootButton: null,
+	thumbstick_area: null,
+	thumbstick: null,
+	thumbstickOrigin: { x: 130, y: 450 },
 
 	//GUI elements
 	initButton: null,
@@ -58,7 +57,7 @@ var graphics = {
 	mainMenuButton: null,
 	playButton: null,
 	playMobileButton: null,
-	starCount: 1200,
+	starCount: 500,
 
 	addSpace: function () {
 
@@ -125,11 +124,9 @@ var graphics = {
 	},
 	removeOverworldGUI: function () {
 		if (graphics.mobileMode) {
-			graphics.app.stage.removeChild(graphics.leftArrow);
-			graphics.app.stage.removeChild(graphics.rightArrow);
-			graphics.app.stage.removeChild(graphics.upArrow);
-			graphics.app.stage.removeChild(graphics.downArrow);
 			graphics.app.stage.removeChild(graphics.shootButton);
+			graphics.app.stage.removeChild(graphics.thumbstick_area);
+			graphics.app.stage.removeChild(graphics.thumbstick);
 		}
 		graphics.app.stage.removeChild(graphics.batteryLife);
 		graphics.app.stage.removeChild(graphics.gameScore);
@@ -138,11 +135,9 @@ var graphics = {
 
 	addOverworldGUI: function () {
 		if (graphics.mobileMode) {
-			graphics.app.stage.addChild(graphics.leftArrow);
-			graphics.app.stage.addChild(graphics.rightArrow);
-			graphics.app.stage.addChild(graphics.upArrow);
-			graphics.app.stage.addChild(graphics.downArrow);
 			graphics.app.stage.addChild(graphics.shootButton);
+			graphics.app.stage.addChild(graphics.thumbstick_area);
+			graphics.app.stage.addChild(graphics.thumbstick);
 		}
 		graphics.app.stage.addChild(graphics.volumeLine);
 		graphics.app.stage.addChild(graphics.volumeSlider);
@@ -320,11 +315,9 @@ var graphics = {
 			.add({ name: 'shipBoosting1', url: 'images/shipBoosting1.png' })
 			.add({ name: 'shipBoosting2', url: 'images/shipBoosting2.png' })
 			.add({ name: 'shipBoosting3', url: 'images/shipBoosting3.png' })
-			.add({ name: 'leftArrow', url: 'images/GUI/left_arrow.png' })
-			.add({ name: 'rightArrow', url: 'images/GUI/right_arrow.png' })
-			.add({ name: 'upArrow', url: 'images/GUI/up_arrow.png' })
-			.add({ name: 'downArrow', url: 'images/GUI/down_arrow.png' })
 			.add({ name: 'shootButton', url: 'images/GUI/shoot_button.png' })
+			.add({ name: 'thumbstick_area', url: 'images/GUI/thumbstick_area.png' })
+			.add({ name: 'thumbstick', url: 'images/GUI/thumbstick.png' })
 			.add({ name: 'volumeLine', url: 'images/GUI/volume_line.png' })
 			.add({ name: 'volumeSlider', url: 'images/GUI/volume_slider.png' })
 			.add({ name: 'menuButton', url: 'images/GUI/menu_button.png' })
@@ -376,12 +369,11 @@ var graphics = {
 				//Flare
 				graphics.rightFlareTexture = new PIXI.Texture(PIXI.loader.resources.rightFlare.texture);
 				graphics.leftFlareTexture = new PIXI.Texture(PIXI.loader.resources.leftFlare.texture);
-				//D-pad and flare button for mobile on-screen controls
-				graphics.leftArrow = new PIXI.Sprite(PIXI.loader.resources.leftArrow.texture);
-				graphics.rightArrow = new PIXI.Sprite(PIXI.loader.resources.rightArrow.texture);
-				graphics.upArrow = new PIXI.Sprite(PIXI.loader.resources.upArrow.texture);
-				graphics.downArrow = new PIXI.Sprite(PIXI.loader.resources.downArrow.texture);
+				//mobile on-screen controls
 				graphics.shootButton = new PIXI.Sprite(PIXI.loader.resources.shootButton.texture);
+				graphics.thumbstick_area = new PIXI.Sprite(PIXI.loader.resources.thumbstick_area.texture);
+				graphics.thumbstick = new PIXI.Sprite(PIXI.loader.resources.thumbstick.texture);
+				//volume control
 				graphics.volumeLine = new PIXI.Sprite(PIXI.loader.resources.volumeLine.texture);
 				graphics.volumeSlider = new PIXI.Sprite(PIXI.loader.resources.volumeSlider.texture);
 
@@ -535,32 +527,20 @@ var graphics = {
 		graphics.volumeSlider.zOrder = 101;
 		graphics.volumeSlider.x = 90;//134;
 		graphics.volumeSlider.y = 8;
-		graphics.volumeSlider.zOrder = 100;
-		graphics.leftArrow.x = 50;
-		graphics.leftArrow.y = 410;
-		graphics.rightArrow.x = 250;
-		graphics.rightArrow.y = 410;
-		graphics.upArrow.x = 150;
-		graphics.upArrow.y = 310;
-		graphics.downArrow.x = 150;
-		graphics.downArrow.y = 510;
 		graphics.shootButton.x = 800;
 		graphics.shootButton.y = 410;
-		graphics.leftArrow.interactive = true;
-		graphics.leftArrow.interactiveChildren = false;
-		graphics.leftArrow.buttonMode = true;
-		graphics.rightArrow.interactive = true;
-		graphics.rightArrow.interactiveChildren = false;
-		graphics.rightArrow.buttonMode = true;
-		graphics.upArrow.interactive = true;
-		graphics.upArrow.interactiveChildren = false;
-		graphics.upArrow.buttonMode = true;
-		graphics.downArrow.interactive = true;
-		graphics.downArrow.interactiveChildren = false;
-		graphics.downArrow.buttonMode = true;
+		graphics.thumbstick_area.x = 80;
+		graphics.thumbstick_area.y = 400;
+		graphics.thumbstick.x = graphics.thumbstickOrigin.x;
+		graphics.thumbstick.y = graphics.thumbstickOrigin.y;
+		graphics.thumbstick.anchor.x = 0.5;
+		graphics.thumbstick.anchor.y = 0.5;
 		graphics.shootButton.interactive = true;
 		graphics.shootButton.interactiveChildren = false;
 		graphics.shootButton.buttonMode = true;
+		graphics.thumbstick.interactive = true;
+		graphics.thumbstick.interactiveChildren = false;
+		graphics.thumbstick.buttonMode = true;
 		graphics.initButton.interactive = true;
 		graphics.initButton.interactiveChildren = false;
 		graphics.initButton.buttonMode = true;
@@ -573,16 +553,11 @@ var graphics = {
 		graphics.mainMenuButton.interactive = true;
 		graphics.mainMenuButton.interactiveChildren = false;
 		graphics.mainMenuButton.buttonMode = true;
-		//press touch screen constrols
-		graphics.leftArrow.on('pointerdown', game.movePlayerLeft);
-		graphics.rightArrow.on('pointerdown', game.movePlayerRight);
-		graphics.upArrow.on('pointerdown', game.movePlayerUp);
-		graphics.downArrow.on('pointerdown', game.movePlayerDown);
-		//release touch screen controls
-		graphics.leftArrow.on('pointerup', game.stopPlayerLeft);
-		graphics.rightArrow.on('pointerup', game.stopPlayerRight);
-		graphics.upArrow.on('pointerup', game.stopPlayerUp);
-		graphics.downArrow.on('pointerup', game.stopPlayerDown);
+		//touch screen controls
+		graphics.thumbstick.on('pointerdown', game.thumbstickTouch);
+		graphics.thumbstick.on('pointermove', game.thumbstickMove);
+		graphics.thumbstick.on('pointerup', game.thumbstickReset);
+		graphics.thumbstick.on('pointerupoutside', game.thumbstickReset);
 
 		//shoot a flare to battle the walls
 		graphics.shootButton.on('pointerdown', game.shootBeam);
