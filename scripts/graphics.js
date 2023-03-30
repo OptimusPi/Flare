@@ -45,191 +45,179 @@ var graphics = {
 
 	//mobile controls
 	mobileMode: false,
+	leftArrow: null,
+	rightArrow: null,
+	upArrow: null,
+	downArrow: null,
 	shootButton: null,
-	thumbstick_area: null,
-	thumbstick: null,
-	thumbstickOrigin: { x: 130, y: 450 },
 
 	//GUI elements
-	initButton: null,
 	volumeSlider: null,
 	volumeLine: null,
 	mainMenuButton: null,
 	playButton: null,
 	playMobileButton: null,
-	starCount: 500,
 
 	addSpace: function () {
-
-		//create sprite containers
-		let starContainers = [];
-		for (let i = 0; i < 10; i++) {
-			starContainers.push(new PIXI.particles.ParticleContainer());
-		}
-
-		//graphics.app.stage.addChild(graphics.space);
-		for (var i = 0; i < graphics.starCount; i++) {
-			var x = (Math.random() * 980 % 980 ) - 10;
-			var y = (Math.random() * 660 % 660 ) - 10;
+		//this.app.stage.addChild(this.space);
+		for (var i = 0; i < 200; i++) {
+			var x = Math.random() * 960 % 960;
+			var y = Math.random() * 640 % 640;
 			var ySpeed = Math.random() * 1000 % 3;
 			ySpeed *= 0.04 + 0.9;
 
 			var img = Math.ceil(Math.random() * 20) - 1;
-			if (img > 9) img = Math.ceil(Math.random() * 3) - 1;
+
 			var star = {
-				sprite: new PIXI.Sprite(graphics.starTexture[img]),
+				sprite: new PIXI.Sprite(this.starTexture[img]),
 				ySpeed: ySpeed * 0.04 + 0.8
 			};
 			star.sprite.x = x;
 			star.sprite.y = y;
-			graphics.stars.push(star);
-
-			//add to correct container
-			starContainers[img].addChild(star.sprite);
-		}
-
-		//draw stars
-		for (let i = 0; i < 10; i++) {
-			graphics.app.stage.addChild(starContainers[i]);
+			this.app.stage.addChild(star.sprite);
+			this.stars.push(star);
 		}
 	},
 	addWalls: function () {
-		graphics.wallLeft.x = -500;
-		graphics.wallLeft.y = 0;
-		graphics.app.stage.addChild(graphics.wallLeft);
+		this.wallLeft.x = -500;
+		this.wallLeft.y = 0;
+		this.app.stage.addChild(this.wallLeft);
 
-		graphics.wallRight.x = 950;
-		graphics.wallRight.y = 0;
-		graphics.app.stage.addChild(graphics.wallRight);
+		this.wallRight.x = 950;
+		this.wallRight.y = 0;
+		this.app.stage.addChild(this.wallRight);
 
-		game.state.wallLeft = { sprite: graphics.wallLeft, xSpeed: 0.11 };
-		game.state.wallRight = { sprite: graphics.wallRight, xSpeed: -0.11 };
+		game.wallLeft = { sprite: this.wallLeft, xSpeed: 0.11 };
+		game.wallRight = { sprite: this.wallRight, xSpeed: -0.11 };
+
 	},
 	addPlayer: function (x, y) {
 
 		//create player base, then add a sprite to it.
-		var player = game.state.player;
+		var player = game.player;
 
 		// create new sprite TOO make it from the image textures loaded in
-		player.sprite = new PIXI.Sprite(graphics.shipTexture);
-		player.sprite.frame = 0;
+		player.sprite = new PIXI.Sprite(this.shipTexture);
 
 		//add sprite to player
 		player.sprite.x = x;
 		player.sprite.y = y;
-		game.state.player = player;
+		game.player = player;
 
 		//add sprite to the screen.
-		graphics.app.stage.addChild(game.state.player.sprite);
+		this.app.stage.addChild(game.player.sprite);
 	},
+
 	removeOverworldGUI: function () {
-		if (graphics.mobileMode) {
-			graphics.app.stage.removeChild(graphics.shootButton);
-			graphics.app.stage.removeChild(graphics.thumbstick_area);
-			graphics.app.stage.removeChild(graphics.thumbstick);
+		if (this.mobileMode) {
+			this.app.stage.removeChild(this.leftArrow);
+			this.app.stage.removeChild(this.rightArrow);
+			this.app.stage.removeChild(this.upArrow);
+			this.app.stage.removeChild(this.downArrow);
+			this.app.stage.removeChild(this.shootButton);
 		}
-		graphics.app.stage.removeChild(graphics.batteryLife);
-		graphics.app.stage.removeChild(graphics.gameScore);
-		graphics.app.stage.removeChild(graphics.batteryLabel);
+		this.app.stage.removeChild(this.batteryLife);
 	},
 
 	addOverworldGUI: function () {
-		if (graphics.mobileMode) {
-			graphics.app.stage.addChild(graphics.shootButton);
-			graphics.app.stage.addChild(graphics.thumbstick_area);
-			graphics.app.stage.addChild(graphics.thumbstick);
+		if (this.mobileMode) {
+			this.app.stage.addChild(this.leftArrow);
+			this.app.stage.addChild(this.rightArrow);
+			this.app.stage.addChild(this.upArrow);
+			this.app.stage.addChild(this.downArrow);
+			this.app.stage.addChild(this.shootButton);
 		}
-		graphics.app.stage.addChild(graphics.volumeLine);
-		graphics.app.stage.addChild(graphics.volumeSlider);
-		graphics.app.stage.addChild(graphics.batteryLife);
-		graphics.app.stage.addChild(graphics.gameScore);
-		graphics.app.stage.addChild(graphics.batteryLabel);
+		this.app.stage.addChild(this.volumeLine);
+		this.app.stage.addChild(this.volumeSlider);
+		this.app.stage.addChild(this.batteryLife);
+		this.app.stage.addChild(this.gameScore);
+		this.app.stage.addChild(this.batteryLabel);
 	},
 
 	addMenuGUI: function () {
-		graphics.app.stage.addChild(graphics.playButton);
-		graphics.app.stage.addChild(graphics.playLabel);
-		graphics.app.stage.addChild(graphics.playMobileButton);
-		graphics.app.stage.addChild(graphics.playMobileLabel);
-		graphics.app.stage.addChild(graphics.volumeLine);
-		graphics.app.stage.addChild(graphics.volumeSlider);
+		this.app.stage.addChild(this.playButton);
+		this.app.stage.addChild(this.playLabel);
+		this.app.stage.addChild(this.playMobileButton);
+		this.app.stage.addChild(this.playMobileLabel);
+		this.app.stage.addChild(this.volumeLine);
+		this.app.stage.addChild(this.volumeSlider);
 	},
 
 	removeMenuGUI: function () {
-		graphics.app.stage.removeChild(graphics.playButton);
-		graphics.app.stage.removeChild(graphics.playLabel);
-		graphics.app.stage.removeChild(graphics.playMobileButton);
-		graphics.app.stage.removeChild(graphics.playMobileLabel);
+		this.app.stage.removeChild(this.playButton);
+		this.app.stage.removeChild(this.playLabel);
+		this.app.stage.removeChild(this.playMobileButton);
+		this.app.stage.removeChild(this.playMobileLabel);
 	},
 
 	runOverworld: function (mobileMode) {
-		graphics.removeMenuGUI();
-		graphics.mobileMode = mobileMode;
-		graphics.addWalls();
-		graphics.addPlayer(512, 512);
-		graphics.addOverworldGUI();
+		this.removeMenuGUI();
+		this.mobileMode = mobileMode;
+		this.addWalls();
+		this.addPlayer(512, 512);
+		this.addOverworldGUI();
 	},
 
 	runMenu: function () {
-		graphics.addMenuGUI();
+		this.addSpace();
+		this.addMenuGUI();
 	},
 
 	gameOver: function () {
-		graphics.app.stage.addChild(graphics.gameOverLabel);
-		graphics.app.stage.addChild(graphics.mainMenuButton);
-		graphics.app.stage.addChild(graphics.mainMenuLabel);
+		this.app.stage.addChild(this.gameOverLabel);
+		this.app.stage.addChild(this.mainMenuButton);
+		this.app.stage.addChild(this.mainMenuLabel);
 	},
 
 	removeGameOver: function () {
-		graphics.app.stage.removeChild(graphics.gameOverLabel);
-		graphics.app.stage.removeChild(graphics.mainMenuButton);
-		graphics.app.stage.removeChild(graphics.mainMenuLabel);
+		this.app.stage.removeChild(this.gameOverLabel);
+		this.app.stage.removeChild(this.mainMenuButton);
+		this.app.stage.removeChild(this.mainMenuLabel);
 	},
 
 	animateStars: function (deltaTime) {
-		for (let i = 0; i < graphics.stars.length; i++) {
-			let star = graphics.stars[i];
+		graphics.stars.forEach(star => {
 			star.sprite.y += star.ySpeed * deltaTime;
 			if (star.sprite.y > 640) {
 				star.sprite.y = -star.sprite.height;
 				star.sprite.x = Math.random() * 960 % 960;
 			}
-		}	
+		});
 	},
 
 	addFlare: function (asteroidFlare) {
 		var leftFlareSprite = new PIXI.Sprite(graphics.leftFlareTexture);
-		leftFlareSprite.x = asteroidFlare.sprite.x - asteroidFlare.sprite.width - graphics.leftFlareTexture.width / 2;
-		leftFlareSprite.y = asteroidFlare.sprite.y - graphics.leftFlareTexture.height;
+		leftFlareSprite.x = asteroidFlare.sprite.x - asteroidFlare.sprite.width - this.leftFlareTexture.width / 2;
+		leftFlareSprite.y = asteroidFlare.sprite.y - this.leftFlareTexture.height;
 		graphics.app.stage.addChild(leftFlareSprite);
 		var leftFlare = { sprite: leftFlareSprite, xSpeed: -15 };
-		game.state.leftFlares.push(leftFlare);
+		game.leftFlares.push(leftFlare);
 
 		//------------
 
 		var rightFlareSprite = new PIXI.Sprite(graphics.rightFlareTexture);
-		rightFlareSprite.x = asteroidFlare.sprite.x + asteroidFlare.sprite.width - graphics.rightFlareTexture.width / 2;
-		rightFlareSprite.y = asteroidFlare.sprite.y - graphics.rightFlareTexture.height;
+		rightFlareSprite.x = asteroidFlare.sprite.x + asteroidFlare.sprite.width - this.rightFlareTexture.width / 2;
+		rightFlareSprite.y = asteroidFlare.sprite.y - this.rightFlareTexture.height;
 		graphics.app.stage.addChild(rightFlareSprite);
 		var rightFlare = { sprite: rightFlareSprite, xSpeed: 15 };
-		game.state.rightFlares.push(rightFlare);
+		game.rightFlares.push(rightFlare);
 	},
 	addBeam: function () {
 		var beamSprite = new PIXI.Sprite(graphics.beamTexture);
-		beamSprite.x = game.state.player.sprite.x + game.state.player.sprite.width / 2 - graphics.beamTexture.width / 2;
-		beamSprite.y = game.state.player.sprite.y - graphics.beamTexture.height;
+		beamSprite.x = game.player.sprite.x + game.player.sprite.width / 2 - this.beamTexture.width / 2;
+		beamSprite.y = game.player.sprite.y - this.beamTexture.height;
 		graphics.app.stage.addChild(beamSprite);
 
 		var beam = { sprite: beamSprite, ySpeed: -30 };
-		game.state.beams.push(beam);
+		game.beams.push(beam);
 	},
 
 	addAsteroid: function (top) {
 		var asteroidSprite = new PIXI.Sprite(graphics.asteroidsTexture[0]);
 		//spawn between the walls
 		asteroidSprite.x = Math.random()
-			* (game.state.wallRight.sprite.x - ((game.state.wallLeft.sprite.x + game.state.wallLeft.sprite.width)) - asteroidSprite.width * 2)
-			+ game.state.wallLeft.sprite.x + game.state.wallLeft.sprite.width + asteroidSprite.width;
+			* (game.wallRight.sprite.x - ((game.wallLeft.sprite.x + game.wallLeft.sprite.width)) - asteroidSprite.width * 2)
+			+ game.wallLeft.sprite.x + game.wallLeft.sprite.width + asteroidSprite.width;
 
 
 		if (top) asteroidSprite.y = - graphics.asteroidsTexture[0].height;
@@ -242,13 +230,13 @@ var graphics = {
 			ySpeed: top ? Math.random() + 1 : (Math.random() - 1) * 0.9,
 			xSpeed: Math.random() * 2 - 1
 		};
-		game.state.asteroids.push(asteroid);
+		game.asteroids.push(asteroid);
 	},
 
 	addAsteroidFlare: function () {
 		var asteroidFlareSprite = new PIXI.Sprite(graphics.asteroidFlareTexture);
 		//spawn between the walls
-		asteroidFlareSprite.x = 960 / 2 - asteroidFlareSprite.width / 2;
+		asteroidFlareSprite.x = 960 / 2 - asteroidFlareSprite.width;
 		asteroidFlareSprite.y = 0 - asteroidFlareSprite.height;
 
 		graphics.app.stage.addChild(asteroidFlareSprite);
@@ -258,21 +246,17 @@ var graphics = {
 			ySpeed: 1,
 			xSpeed: 0
 		};
-		game.state.asteroidFlares.push(asteroidFlare);
+		game.asteroidFlares.push(asteroidFlare);
 	},
 
 	addPowerup: function () {
 		var powerupSprite = new PIXI.Sprite(graphics.powerupTexture);
-		powerupSprite.x = game.state.player.sprite.x + game.state.player.sprite.width / 2 - graphics.powerupTexture.width / 2;
+		powerupSprite.x = game.player.sprite.x + game.player.sprite.width / 2 - graphics.powerupTexture.width / 2;
 		powerupSprite.y = 0;
 		graphics.app.stage.addChild(powerupSprite);
 
 		var powerup = { sprite: powerupSprite, ySpeed: 3.14, xSpeed: (Math.random() - 0.5) * 1.5 };
-		game.state.powerups.push(powerup);
-	},
-
-	drawScore: function () {
-		graphics.gameScore.text = 'Score:' + Math.floor(game.state.score);
+		game.powerups.push(powerup);
 	},
 
 	start: function () {
@@ -282,12 +266,12 @@ var graphics = {
 		}
 		PIXI.utils.sayHello(type);
 
-		graphics.app = new PIXI.Application(graphics.screenWidth, graphics.screenHeight, { backgroundColor: graphics.backgroundColor});
+		this.app = new PIXI.Application(this.screenWidth, this.screenHeight, { backgroundColor: this.backgroundColor });
 
 		console.log(document);
 		console.log(document.body);
 
-		document.getElementById('content').appendChild(graphics.app.view);
+		document.getElementById('content').appendChild(this.app.view);
 
 		PIXI.loader
 			.add({ name: 'star1', url: 'images/star1.png' })
@@ -315,9 +299,11 @@ var graphics = {
 			.add({ name: 'shipBoosting1', url: 'images/shipBoosting1.png' })
 			.add({ name: 'shipBoosting2', url: 'images/shipBoosting2.png' })
 			.add({ name: 'shipBoosting3', url: 'images/shipBoosting3.png' })
+			.add({ name: 'leftArrow', url: 'images/GUI/left_arrow.png' })
+			.add({ name: 'rightArrow', url: 'images/GUI/right_arrow.png' })
+			.add({ name: 'upArrow', url: 'images/GUI/up_arrow.png' })
+			.add({ name: 'downArrow', url: 'images/GUI/down_arrow.png' })
 			.add({ name: 'shootButton', url: 'images/GUI/shoot_button.png' })
-			.add({ name: 'thumbstick_area', url: 'images/GUI/thumbstick_area.png' })
-			.add({ name: 'thumbstick', url: 'images/GUI/thumbstick.png' })
 			.add({ name: 'volumeLine', url: 'images/GUI/volume_line.png' })
 			.add({ name: 'volumeSlider', url: 'images/GUI/volume_slider.png' })
 			.add({ name: 'menuButton', url: 'images/GUI/menu_button.png' })
@@ -351,7 +337,7 @@ var graphics = {
 				graphics.starTexture[5] = new PIXI.Texture(PIXI.loader.resources.star6.texture);
 				graphics.starTexture[6] = new PIXI.Texture(PIXI.loader.resources.star7.texture);
 				graphics.starTexture[7] = new PIXI.Texture(PIXI.loader.resources.star8.texture);
-				graphics.starTexture[8] = new PIXI.Texture(PIXI.loader.resources.star9.texture);
+				graphics.starTexture[7] = new PIXI.Texture(PIXI.loader.resources.star9.texture);
 				graphics.starTexture[9] = new PIXI.Texture(PIXI.loader.resources.star10.texture);
 
 				//Load player ship
@@ -369,11 +355,12 @@ var graphics = {
 				//Flare
 				graphics.rightFlareTexture = new PIXI.Texture(PIXI.loader.resources.rightFlare.texture);
 				graphics.leftFlareTexture = new PIXI.Texture(PIXI.loader.resources.leftFlare.texture);
-				//mobile on-screen controls
+				//D-pad and flare button for mobile on-screen controls
+				graphics.leftArrow = new PIXI.Sprite(PIXI.loader.resources.leftArrow.texture);
+				graphics.rightArrow = new PIXI.Sprite(PIXI.loader.resources.rightArrow.texture);
+				graphics.upArrow = new PIXI.Sprite(PIXI.loader.resources.upArrow.texture);
+				graphics.downArrow = new PIXI.Sprite(PIXI.loader.resources.downArrow.texture);
 				graphics.shootButton = new PIXI.Sprite(PIXI.loader.resources.shootButton.texture);
-				graphics.thumbstick_area = new PIXI.Sprite(PIXI.loader.resources.thumbstick_area.texture);
-				graphics.thumbstick = new PIXI.Sprite(PIXI.loader.resources.thumbstick.texture);
-				//volume control
 				graphics.volumeLine = new PIXI.Sprite(PIXI.loader.resources.volumeLine.texture);
 				graphics.volumeSlider = new PIXI.Sprite(PIXI.loader.resources.volumeSlider.texture);
 
@@ -403,19 +390,6 @@ var graphics = {
 					fontWeight: 'normal',
 					fontStyle: 'normal',
 					fontSize: 24,
-					fontFamily: 'Courier New',
-					fill: '#FFF',
-					align: 'left',
-					stroke: '#AAA',
-					strokeThickness: 1
-				});
-
-				//Init Button
-				graphics.initButton = new PIXI.Sprite(PIXI.loader.resources.menuButton.texture);
-				graphics.initLabel = new PIXI.Text('Play Flare', {
-					fontWeight: 'normal',
-					fontStyle: 'normal',
-					fontSize: 32,
 					fontFamily: 'Courier New',
 					fill: '#FFF',
 					align: 'left',
@@ -476,101 +450,99 @@ var graphics = {
 				//Initialize graphics
 				graphics.init();
 
-				//always animate stars
 				const animationTicker = new PIXI.ticker.Ticker();
 				animationTicker.stop();
-				animationTicker.add(function(deltaTime) {
+				animationTicker.add((deltaTime) => {
 					graphics.animateStars(deltaTime);
 				});
-				animationTicker.speed = 0.5;
 				animationTicker.start();
 			});
 	},
 
 	init: function () {
 		// GUI elements
-		graphics.initButton.x = 355;
-		graphics.initButton.y = 200;
-		graphics.initLabel.x = 483;
-		graphics.initLabel.y = 215;
-		graphics.initLabel.anchor.x = 0.5;
-		graphics.playButton.x = 355;
-		graphics.playButton.y = 200;
-		graphics.playLabel.x = 483;
-		graphics.playLabel.y = 215;
-		graphics.playLabel.anchor.x = 0.5;
-		graphics.playMobileButton.x = 352;
-		graphics.playMobileButton.y = 300;
-		graphics.playMobileLabel.x = 483;
-		graphics.playMobileLabel.y = 315;
-		graphics.playMobileLabel.anchor.x = 0.5;
-		graphics.mainMenuButton.x = 352;
-		graphics.mainMenuButton.y = 300;
-		graphics.gameOverLabel.x = 483;
-		graphics.gameOverLabel.y = 215;
-		graphics.gameOverLabel.anchor.x = 0.5;
-		graphics.mainMenuLabel.x = 483;
-		graphics.mainMenuLabel.y = 315;
-		graphics.mainMenuLabel.anchor.x = 0.5;
+		this.playButton.x = 355;
+		this.playButton.y = 200;
+		this.playLabel.x = 483;
+		this.playLabel.y = 215;
+		this.playLabel.anchor.x = 0.5;
+		this.playMobileButton.x = 352;
+		this.playMobileButton.y = 300;
+		this.playMobileLabel.x = 483;
+		this.playMobileLabel.y = 315;
+		this.playMobileLabel.anchor.x = 0.5;
+		this.mainMenuButton.x = 352;
+		this.mainMenuButton.y = 300;
+		this.gameOverLabel.x = 483;
+		this.gameOverLabel.y = 215;
+		this.gameOverLabel.anchor.x = 0.5;
+		this.mainMenuLabel.x = 483;
+		this.mainMenuLabel.y = 315;
+		this.mainMenuLabel.anchor.x = 0.5;
 
 
-		graphics.gameScore.x = 740;
-		graphics.gameScore.y = 560;
-		graphics.gameScore.anchor.x = 0;
-		graphics.batteryLabel.x = 740;
-		graphics.batteryLabel.y = 594;
-		graphics.batteryLabel.anchor.x = 0;
-		graphics.batteryLife.x = 850;
-		graphics.batteryLife.y = 600;
-		graphics.volumeLine.x = 50;
-		graphics.volumeLine.y = 16;
-		graphics.volumeSlider.zOrder = 101;
-		graphics.volumeSlider.x = 90;//134;
-		graphics.volumeSlider.y = 8;
-		graphics.shootButton.x = 800;
-		graphics.shootButton.y = 410;
-		graphics.thumbstick_area.x = 80;
-		graphics.thumbstick_area.y = 400;
-		graphics.thumbstick.x = graphics.thumbstickOrigin.x;
-		graphics.thumbstick.y = graphics.thumbstickOrigin.y;
-		graphics.thumbstick.anchor.x = 0.5;
-		graphics.thumbstick.anchor.y = 0.5;
-		graphics.shootButton.interactive = true;
-		graphics.shootButton.interactiveChildren = false;
-		graphics.shootButton.buttonMode = true;
-		graphics.thumbstick.interactive = true;
-		graphics.thumbstick.interactiveChildren = false;
-		graphics.thumbstick.buttonMode = true;
-		graphics.initButton.interactive = true;
-		graphics.initButton.interactiveChildren = false;
-		graphics.initButton.buttonMode = true;
-		graphics.playButton.interactive = true;
-		graphics.playButton.interactiveChildren = false;
-		graphics.playButton.buttonMode = true;
-		graphics.playMobileButton.interactive = true;
-		graphics.playMobileButton.interactiveChildren = false;
-		graphics.playMobileButton.buttonMode = true;
-		graphics.mainMenuButton.interactive = true;
-		graphics.mainMenuButton.interactiveChildren = false;
-		graphics.mainMenuButton.buttonMode = true;
-		//touch screen controls
-		graphics.thumbstick.on('pointerdown', game.thumbstickTouch);
-		graphics.thumbstick.on('pointermove', game.thumbstickMove);
-		graphics.thumbstick.on('pointerup', game.thumbstickReset);
-		graphics.thumbstick.on('pointerupoutside', game.thumbstickReset);
+		this.gameScore.x = 740;
+		this.gameScore.y = 560;
+		this.gameScore.anchor.x = 0;
+		this.batteryLabel.x = 740;
+		this.batteryLabel.y = 594;
+		this.batteryLabel.anchor.x = 0;
+		this.batteryLife.x = 850;
+		this.batteryLife.y = 600;
+		this.volumeLine.x = 50;
+		this.volumeLine.y = 16;
+		this.volumeSlider.x = 90;//134;
+		this.volumeSlider.y = 8;
+		this.leftArrow.x = 50;
+		this.leftArrow.y = 410;
+		this.rightArrow.x = 250;
+		this.rightArrow.y = 410;
+		this.upArrow.x = 150;
+		this.upArrow.y = 310;
+		this.downArrow.x = 150;
+		this.downArrow.y = 510;
+		this.shootButton.x = 800;
+		this.shootButton.y = 410;
+		this.leftArrow.interactive = true;
+		this.leftArrow.buttonMode = true;
+		this.rightArrow.interactive = true;
+		this.rightArrow.buttonMode = true;
+		this.upArrow.interactive = true;
+		this.upArrow.buttonMode = true;
+		this.downArrow.interactive = true;
+		this.downArrow.buttonMode = true;
+		this.shootButton.interactive = true;
+		this.shootButton.buttonMode = true;
+		this.playButton.interactive = true;
+		this.playButton.buttonMode = true;
+		this.playMobileButton.interactive = true;
+		this.playMobileButton.buttonMode = true;
+		this.mainMenuButton.interactive = true;
+		this.mainMenuButton.buttonMode = true;
+		//press touch screen constrols
+		this.leftArrow.on('pointerdown', game.movePlayerLeft);
+		this.rightArrow.on('pointerdown', game.movePlayerRight);
+		this.upArrow.on('pointerdown', game.movePlayerUp);
+		this.downArrow.on('pointerdown', game.movePlayerDown);
+		//release touch screen controls
+		this.leftArrow.on('pointerup', game.stopPlayerLeft);
+		this.rightArrow.on('pointerup', game.stopPlayerRight);
+		this.upArrow.on('pointerup', game.stopPlayerUp);
+		this.downArrow.on('pointerup', game.stopPlayerDown);
 
 		//shoot a flare to battle the walls
-		graphics.shootButton.on('pointerdown', game.shootBeam);
+		this.shootButton.on('pointerdown', game.shootBeam);
 
 		//Play the game
-		graphics.playButton.on('pointerdown', function() { game.runOverworld(false) });
-		graphics.playMobileButton.on('pointerdown', function() { game.runOverworld(true) });
+		this.playButton.on('pointerdown', () => { game.runOverworld(false) });
+		this.playMobileButton.on('pointerdown', () => { game.runOverworld(true) });
 
 		//Game over, go back to main menu
-		graphics.mainMenuButton.on('pointerdown', function() {
-			graphics.removeGameOver();
-			graphics.removeOverworldGUI();
-			game.runMenu();
+		this.mainMenuButton.on('pointerdown', () => {
+			location.reload();
+			//graphics.removeGameOver();
+			//game.stopSound('game');
+			//game.runMenu(true);
 		});
 
 		//Auto resize window
@@ -578,29 +550,17 @@ var graphics = {
 		layout.resizeCanvas();
 
 		//Interactivity for volume slide 
-		graphics.volumeSlider.interactive = true;
-		graphics.volumeSlider.buttonMode = true;
-		graphics.volumeSlider.on('pointerdown', game.onDragStart);
-		graphics.volumeSlider.on('pointerup', game.onDragEnd);
-		graphics.volumeSlider.on('pointerupoutside', game.onDragEnd);
-		graphics.volumeSlider.on('pointerup', game.updateSound);
-		graphics.volumeSlider.on('pointermove', game.onDragMove);
+		this.volumeSlider.interactive = true;
+		this.volumeSlider.buttonMode = true;
+		this.volumeSlider.on('pointerdown', game.onDragStart);
+		this.volumeSlider.on('pointerup', game.onDragEnd);
+		this.volumeSlider.on('pointerupoutside', game.onDragEnd);
+		this.volumeSlider.on('pointerup', game.updateSound);
+		this.volumeSlider.on('pointermove', game.onDragMove);
 
-
-		//Build stars once
-		graphics.addSpace();
-
-		//splash screen to get around auto play policies
-		graphics.app.stage.addChild(graphics.initButton);
-		graphics.app.stage.addChild(graphics.initLabel);
-		graphics.initButton.on('pointerdown', function() {
-			graphics.app.stage.removeChild(graphics.initLabel);
-			graphics.app.stage.removeChild(graphics.initButton);
-			
-			//Start the game!
-			game.init();
-			game.runMenu();
-		});
+		//Start the game!
+		game.init();
+		game.runMenu(); //TODO add main menu
 	}
 };
 

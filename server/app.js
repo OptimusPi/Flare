@@ -4,7 +4,6 @@ var http = require('http').Server(app);
 var path = require('path');
 var fs = require('fs');
 
-//TODO learn how to use node.js exports instead (or some other better way)
 function importCode(script){
   var fileName = path.join(__dirname, script + '.js');
   return eval(fs.readFileSync(fileName)+'');
